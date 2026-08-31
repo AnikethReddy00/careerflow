@@ -5,17 +5,123 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 
-const DEFAULT_SCRIPT = `const links = [...document.querySelectorAll("a")]
-  .slice(0, 20)
-  .map((a) => ({ text: a.textContent.trim(), href: a.href }))
-  .filter((item) => item.text || item.href);
+const DEFAULT_SCRIPT = `const clean = (value) => String(value || "").replace(/\\s+/g, " ").trim();
+const visible = (el) => {
+  if (!el) return false;
+  const s = getComputedStyle(el);
+  const r = el.getBoundingClientRect();
+  return s.display !== "none" && s.visibility !== "hidden" && r.width > 0 && r.height > 0;
+};
+const labelTextFor = (el) => {
+  if (!el) return "";
+  const byId = el.id ? document.querySelector(\`label[for="\${CSS.escape(el.id)}"]\`) : null;
+  if (byId) return clean(byId.textContent);
+  const wrappingLabel = el.closest("label");
+  if (wrappingLabel) return clean(wrappingLabel.textContent);
+  const aria = clean(el.getAttribute("aria-label"));
+  if (aria) return aria;
+  const title = clean(el.getAttribute("title"));
+  if (title) return title;
+  const placeholder = clean(el.getAttribute("placeholder"));
+  if (placeholder) return placeholder;
+  return clean(el.name || el.id || el.type || el.tagName);
+};
+const optionText = (opt) => ({
+  label: clean(opt.textContent),
+  value: String(opt.value || ""),
+  selected: !!opt.selected,
+});
+const controls = [...document.querySelectorAll("input, select, textarea")]
+  .filter(visible)
+  .map((el) => {
+    const type = (el.type || el.tagName).toLowerCase();
+    const base = {
+      type,
+      label: labelTextFor(el),
+      required: !!el.required,
+      name: el.name || "",
+      id: el.id || "",
+      placeholder: clean(el.placeholder || ""),
+    };
+
+    if (el.tagName === "SELECT") {
+      return {
+        ...base,
+        kind: "select",
+        multiple: !!el.multiple,
+        options: [...el.options].map(optionText),
+      };
+    }
+
+    if (type === "radio") {
+      return {
+        ...base,
+        kind: "radio",
+        value: String(el.value || ""),
+        checked: !!el.checked,
+      };
+    }
+
+    if (type === "checkbox") {
+      return {
+        ...base,
+        kind: "checkbox",
+        value: String(el.value || ""),
+        checked: !!el.checked,
+      };
+    }
+
+    if (type === "file") {
+      return {
+        ...base,
+        kind: "file",
+        accept: clean(el.accept || ""),
+      };
+    }
+
+    return {
+      ...base,
+      kind: el.tagName.toLowerCase() === "textarea" ? "textarea" : "input",
+      value: clean(el.value || ""),
+    };
+  });
+
+const groupedRadios = Object.values(
+  controls
+    .filter((item) => item.kind === "radio")
+    .reduce((acc, item) => {
+      const key = item.name || item.label || item.id;
+      if (!acc[key]) {
+        acc[key] = {
+          kind: "radio-group",
+          label: item.label,
+          name: item.name,
+          required: item.required,
+          options: [],
+        };
+      }
+      acc[key].options.push({
+        label: item.label,
+        value: item.value,
+        checked: item.checked,
+      });
+      return acc;
+    }, {})
+);
+
+const groups = [
+  ...groupedRadios,
+  ...controls.filter((item) => item.kind !== "radio"),
+];
 
 return {
   title: document.title,
   url: location.href,
-  h1: [...document.querySelectorAll("h1")].map((el) => el.textContent.trim()).filter(Boolean),
-  h2: [...document.querySelectorAll("h2")].map((el) => el.textContent.trim()).filter(Boolean),
-  links,
+  headings: [...document.querySelectorAll("h1, h2, h3")]
+    .filter(visible)
+    .map((el) => clean(el.textContent))
+    .filter(Boolean),
+  formFields: groups,
 };`;
 
 function formatDateTime(value) {
@@ -39,6 +145,7 @@ export default function BrowserLauncherPage() {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+  const [copyNotice, setCopyNotice] = useState("");
 
   async function refreshSessions(nextActiveId = activeSessionId) {
     const res = await fetch("/api/browser");
@@ -139,6 +246,13 @@ export default function BrowserLauncherPage() {
 
   async function handleEvaluate() {
     await runAction("evaluate", { script });
+  }
+
+  function loadMercariInspector() {
+    setScript(DEFAULT_SCRIPT);
+    setCopyNotice("Loaded a form inspector script.");
+    window.clearTimeout(loadMercariInspector._t);
+    loadMercariInspector._t = window.setTimeout(() => setCopyNotice(""), 2000);
   }
 
   async function handleClose() {
@@ -311,17 +425,24 @@ export default function BrowserLauncherPage() {
                   className="mt-3 w-full rounded-2xl border border-zinc-200 bg-zinc-950 px-4 py-3 font-mono text-[13px] leading-6 text-zinc-100 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
                 />
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={handleEvaluate}
-                    disabled={busy || !activeSessionId || !script.trim()}
-                    className="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    Run JS
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleClose}
+                <button
+                  type="button"
+                  onClick={handleEvaluate}
+                  disabled={busy || !activeSessionId || !script.trim()}
+                  className="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Run JS
+                </button>
+                <button
+                  type="button"
+                  onClick={loadMercariInspector}
+                  className="rounded-xl border border-indigo-200 px-4 py-2.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-50"
+                >
+                  Load form inspector
+                </button>
+                <button
+                  type="button"
+                  onClick={handleClose}
                     disabled={busy || !activeSessionId}
                     className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
                   >
@@ -336,6 +457,9 @@ export default function BrowserLauncherPage() {
                   </button>
                 </div>
               </div>
+              {copyNotice && (
+                <p className="mt-2 text-xs text-emerald-700">{copyNotice}</p>
+              )}
 
               <div className="space-y-6">
                 <div className="rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
@@ -374,4 +498,3 @@ export default function BrowserLauncherPage() {
     </div>
   );
 }
-

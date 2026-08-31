@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SOURCE_PLATFORM_VALUES, APPLICATION_STATUS_VALUES } from "@/lib/enums";
+import { useRequireAuth } from "@/lib/useRequireAuth";
 import {
   SOURCE_PLATFORM_LABELS,
   APPLICATION_STATUS_LABELS,
@@ -15,6 +17,9 @@ const EMPTY_FORM = {
   sourcePlatform: "linkedin",
   resumeVersion: "",
   applicationDate: "",
+  // Filled by the AI auto-fill flow; carried through to the create request.
+  jobUrl: "",
+  notes: "",
 };
 
 function formatDate(value) {
@@ -27,12 +32,19 @@ function formatDate(value) {
 }
 
 export default function Dashboard() {
+  const router = useRouter();
+  const { user, checking } = useRequireAuth();
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [savingId, setSavingId] = useState(null);
+  // AI auto-fill: paste a job post -> local model -> pre-filled form.
+  const [showPaste, setShowPaste] = useState(false);
+  const [pasteText, setPasteText] = useState("");
+  const [extracting, setExtracting] = useState(false);
+  const [extractError, setExtractError] = useState("");
 
   // Load the list on mount. The cancelled guard skips the state update if the
   // component unmounts first (and dedupes React 19 StrictMode's double-invoke).
@@ -75,6 +87,9 @@ export default function Dashboard() {
       // Prepend the new one so it shows instantly, then reset the form.
       setApps((prev) => [data.application, ...prev]);
       setForm(EMPTY_FORM);
+      setPasteText("");
+      setShowPaste(false);
+      setExtractError("");
     } catch (e) {
       setError(e.message);
     } finally {
@@ -102,9 +117,52 @@ export default function Dashboard() {
     }
   }
 
+  // Send the pasted job post to the local model and pre-fill the form with what
+  // it extracts. Non-destructive: the user can edit every field before adding.
+  async function handleExtract() {
+    setExtracting(true);
+    setExtractError("");
+    try {
+      const res = await fetch("/api/extract/job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: pasteText }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Couldn't read that job post");
+      const f = data.fields || {};
+      setForm((prev) => ({
+        ...prev,
+        companyName: f.companyName || prev.companyName,
+        roleTitle: f.roleTitle || prev.roleTitle,
+        sourcePlatform: f.sourcePlatform || prev.sourcePlatform,
+        jobUrl: f.jobUrl || "",
+        notes: f.notes || "",
+      }));
+      setShowPaste(false);
+    } catch (e) {
+      setExtractError(e.message);
+    } finally {
+      setExtracting(false);
+    }
+  }
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.replace("/login");
+  }
+
   const inputClass =
     "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
   const labelClass = "mb-1 block text-xs font-medium text-zinc-600";
+
+  if (checking) {
+    return (
+      <div className="flex flex-1 items-center justify-center bg-white text-sm text-zinc-400">
+        Loading…
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col bg-white text-zinc-900">
@@ -126,11 +184,23 @@ export default function Dashboard() {
             Agent
           </Link>
           <Link
-            href="/"
+            href="/browser"
             className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
           >
-            ← Home
+            Browser
           </Link>
+          {user?.email && (
+            <span className="hidden text-sm text-zinc-400 sm:inline">
+              {user.email}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
+          >
+            Log out
+          </button>
         </nav>
       </header>
 
@@ -142,6 +212,53 @@ export default function Dashboard() {
           <p className="mt-1 text-sm text-zinc-500">
             Log every role you apply to. The agent monitors the open ones.
           </p>
+        </div>
+
+        {/* AI auto-fill from a pasted job post */}
+        <div className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-indigo-900">
+                Auto-fill from a job post
+              </h2>
+              <p className="mt-0.5 text-xs text-indigo-700/70">
+                Paste a listing — a local AI model on your machine fills the form.
+                Nothing leaves your computer.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowPaste((v) => !v)}
+              className="rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-50"
+            >
+              {showPaste ? "Hide" : "Paste job post"}
+            </button>
+          </div>
+
+          {showPaste && (
+            <div className="mt-4">
+              <textarea
+                rows={6}
+                className={inputClass}
+                placeholder="Paste the full job description here…"
+                value={pasteText}
+                onChange={(e) => setPasteText(e.target.value)}
+              />
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleExtract}
+                  disabled={extracting || pasteText.trim().length < 40}
+                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+                >
+                  {extracting ? "Reading…" : "Extract with AI"}
+                </button>
+                {extractError && (
+                  <span className="text-xs text-rose-600">{extractError}</span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Add form */}
@@ -227,6 +344,33 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
+
+          {(form.jobUrl || form.notes) && (
+            <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50/50 px-4 py-3 text-xs text-emerald-900">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-medium">
+                  Captured from the post — saved with the application
+                </p>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((f) => ({ ...f, jobUrl: "", notes: "" }))
+                  }
+                  className="text-emerald-700 underline hover:text-emerald-900"
+                >
+                  Clear
+                </button>
+              </div>
+              {form.jobUrl && (
+                <p className="mt-1 truncate">Link: {form.jobUrl}</p>
+              )}
+              {form.notes && (
+                <p className="mt-1 whitespace-pre-wrap text-emerald-800">
+                  {form.notes}
+                </p>
+              )}
+            </div>
+          )}
         </form>
 
         {error && (

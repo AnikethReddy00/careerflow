@@ -43,6 +43,18 @@ export default function Home() {
           >
             Agent
           </Link>
+          <Link
+            href="/browser"
+            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
+          >
+            Browser
+          </Link>
+          <Link
+            href="/login"
+            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
+          >
+            Sign in
+          </Link>
           <button
             type="button"
             onClick={() => setModalOpen(true)}

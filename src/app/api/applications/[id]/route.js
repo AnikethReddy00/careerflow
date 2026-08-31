@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
 import StatusHistory from "@/models/StatusHistory";
-import { getDevUser } from "@/lib/devUser";
+import { getCurrentUser } from "@/lib/session";
 import {
   APPLICATION_STATUS_VALUES,
   SOURCE_PLATFORM_VALUES,
@@ -21,7 +21,10 @@ export async function GET(request, { params }) {
   }
   try {
     await connectDB();
-    const user = await getDevUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
     const application = await Application.findOne({
       _id: id,
       userId: user._id,
@@ -69,7 +72,10 @@ export async function PATCH(request, { params }) {
 
   try {
     await connectDB();
-    const user = await getDevUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
 
     // Scope by userId so one user can never touch another's application.
     const application = await Application.findOne({
@@ -149,7 +155,10 @@ export async function PUT(request, { params }) {
 
   try {
     await connectDB();
-    const user = await getDevUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
     const application = await Application.findOne({
       _id: id,
       userId: user._id,
@@ -187,7 +196,10 @@ export async function DELETE(request, { params }) {
 
   try {
     await connectDB();
-    const user = await getDevUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
     const application = await Application.findOneAndDelete({
       _id: id,
       userId: user._id,

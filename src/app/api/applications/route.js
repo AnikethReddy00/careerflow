@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
-import { getDevUser } from "@/lib/devUser";
+import { getCurrentUser } from "@/lib/session";
 import { SOURCE_PLATFORM_VALUES } from "@/lib/enums";
 
 // Reads/writes per request — never statically cached.
@@ -10,7 +10,10 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     await connectDB();
-    const user = await getDevUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
     const applications = await Application.find({ userId: user._id })
       .sort({ createdAt: -1 })
       .lean();
@@ -53,7 +56,10 @@ export async function POST(request) {
 
   try {
     await connectDB();
-    const user = await getDevUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
     const application = await Application.create({
       userId: user._id,
       companyName: companyName.trim(),

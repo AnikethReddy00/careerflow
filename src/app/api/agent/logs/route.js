@@ -4,7 +4,7 @@
 
 import { connectDB } from "@/lib/mongodb";
 import AgentActionLog from "@/models/AgentActionLog";
-import { getDevUser } from "@/lib/devUser";
+import { getCurrentUser } from "@/lib/session";
 // Imported for its side effect only: registers the Application model so the
 // .populate() below can resolve it (the route never references it directly).
 import "@/models/Application";
@@ -14,7 +14,10 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     await connectDB();
-    const user = await getDevUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
+    }
     const logs = await AgentActionLog.find({ userId: user._id })
       .sort({ cycleAt: -1 })
       .limit(100)

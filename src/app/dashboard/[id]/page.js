@@ -9,6 +9,7 @@ import {
   APPLICATION_STATUS_LABELS,
   STATUS_STYLES,
 } from "@/lib/labels";
+import { useRequireAuth } from "@/lib/useRequireAuth";
 
 function formatDate(value) {
   if (!value) return "—";
@@ -53,6 +54,7 @@ function StatusPill({ status }) {
 export default function ApplicationDetail() {
   const { id } = useParams();
   const router = useRouter();
+  const { checking } = useRequireAuth();
   const [app, setApp] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -166,9 +168,22 @@ export default function ApplicationDetail() {
     }
   }
 
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.replace("/login");
+  }
+
   const inputClass =
     "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
   const labelClass = "mb-1 block text-xs font-medium text-zinc-600";
+
+  if (checking) {
+    return (
+      <div className="flex flex-1 items-center justify-center bg-white text-sm text-zinc-400">
+        Loading…
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col bg-white text-zinc-900">
@@ -181,12 +196,21 @@ export default function ApplicationDetail() {
             CareerFlow<span className="text-indigo-600"> AI</span>
           </span>
         </Link>
-        <Link
-          href="/dashboard"
-          className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-        >
-          ← Applications
-        </Link>
+        <nav className="flex items-center gap-4">
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
+          >
+            ← Applications
+          </Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
+          >
+            Log out
+          </button>
+        </nav>
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-16 pt-6">

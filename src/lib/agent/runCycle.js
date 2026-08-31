@@ -14,7 +14,6 @@ import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
 import OutreachLog from "@/models/OutreachLog";
 import AgentActionLog from "@/models/AgentActionLog";
-import { getDevUser } from "@/lib/devUser";
 import { reason } from "@/lib/agent/reasoner";
 import { AGENT_DECISION, OUTREACH_TYPE } from "@/lib/enums";
 
@@ -51,9 +50,11 @@ function buildFollowUpDraft(application) {
 //                 as a scheduled run would behave.
 //   force=true  → every open application, so a manual "Run now" always produces
 //                 visible, up-to-date reasoning instead of "nothing was due".
-export async function runAgentCycle({ force = false } = {}) {
+export async function runAgentCycle({ user, force = false } = {}) {
+  if (!user) {
+    throw new Error("runAgentCycle requires an authenticated user.");
+  }
   await connectDB();
-  const user = await getDevUser();
   const now = new Date();
 
   const query = { userId: user._id, isOpen: true };

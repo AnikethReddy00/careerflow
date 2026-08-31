@@ -2,7 +2,12 @@
 // stored strings; this file is purely presentational, so the UI (dropdowns,
 // status badges, the Kanban board later) never hard-codes display text.
 
-import { SOURCE_PLATFORM, APPLICATION_STATUS, AGENT_DECISION } from "@/lib/enums";
+import {
+  SOURCE_PLATFORM,
+  APPLICATION_STATUS,
+  AGENT_DECISION,
+  EMAIL_CLASSIFICATION,
+} from "@/lib/enums";
 
 export const SOURCE_PLATFORM_LABELS = {
   [SOURCE_PLATFORM.COMPANY_PORTAL]: "Company portal",
@@ -52,4 +57,25 @@ export const AGENT_DECISION_STYLES = {
   [AGENT_DECISION.DRAFT_FOLLOW_UP]: "bg-indigo-100 text-indigo-700",
   [AGENT_DECISION.ESCALATE]: "bg-amber-100 text-amber-700",
   [AGENT_DECISION.NO_ACTION]: "bg-zinc-100 text-zinc-600",
+};
+
+// Labels + badge classes for how the email-intelligence layer classified an
+// inbound message. Colors intentionally echo the matching application statuses
+// (interview→violet, assessment→amber, offer→emerald, rejection→rose).
+export const EMAIL_CLASSIFICATION_LABELS = {
+  [EMAIL_CLASSIFICATION.INTERVIEW_INVITATION]: "Interview",
+  [EMAIL_CLASSIFICATION.ASSESSMENT]: "Assessment",
+  [EMAIL_CLASSIFICATION.OFFER]: "Offer",
+  [EMAIL_CLASSIFICATION.REJECTION]: "Rejection",
+  [EMAIL_CLASSIFICATION.GENERAL_REPLY]: "Reply",
+  [EMAIL_CLASSIFICATION.IRRELEVANT]: "Not relevant",
+};
+
+export const EMAIL_CLASSIFICATION_STYLES = {
+  [EMAIL_CLASSIFICATION.INTERVIEW_INVITATION]: "bg-violet-100 text-violet-700",
+  [EMAIL_CLASSIFICATION.ASSESSMENT]: "bg-amber-100 text-amber-700",
+  [EMAIL_CLASSIFICATION.OFFER]: "bg-emerald-100 text-emerald-700",
+  [EMAIL_CLASSIFICATION.REJECTION]: "bg-rose-100 text-rose-700",
+  [EMAIL_CLASSIFICATION.GENERAL_REPLY]: "bg-blue-100 text-blue-700",
+  [EMAIL_CLASSIFICATION.IRRELEVANT]: "bg-zinc-100 text-zinc-500",
 };

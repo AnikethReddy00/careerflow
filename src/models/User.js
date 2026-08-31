@@ -9,11 +9,26 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     image: { type: String },
 
-    // Gmail OAuth material. Stored server-side only, never sent to the client.
-    // Left empty until the OAuth flow is wired up.
+    // bcrypt hash of the user's password. `select: false` keeps it out of every
+    // ordinary query result, so it can never accidentally be sent to the client;
+    // login explicitly re-includes it with .select("+passwordHash").
+    passwordHash: { type: String, select: false },
+
+    // Gmail OAuth material, populated when the user connects their Gmail account.
     google: {
-      accessToken: { type: String },
-      refreshToken: { type: String },
+      // Which Google account is connected. Safe to display — used in the UI and
+      // later for matching recruiter emails by sender/thread.
+      email: { type: String },
+      connectedAt: { type: Date },
+
+      // OAuth tokens are secrets: `select: false` keeps them out of ordinary
+      // query results (same guard as passwordHash), so they can never be sent to
+      // the client by accident. Read them explicitly with
+      // .select("+google.refreshToken") only where needed (revoke, and later
+      // minting short-lived access tokens). The refresh token is the long-lived
+      // credential that lets the agent read Gmail while the user is away.
+      refreshToken: { type: String, select: false },
+      accessToken: { type: String, select: false },
       tokenExpiresAt: { type: Date },
       scopes: [{ type: String }],
     },

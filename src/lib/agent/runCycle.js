@@ -16,6 +16,8 @@ import OutreachLog from "@/models/OutreachLog";
 import AgentActionLog from "@/models/AgentActionLog";
 import { reason } from "@/lib/agent/reasoner";
 import { AGENT_DECISION, OUTREACH_TYPE } from "@/lib/enums";
+import { buildCandidateContextForUser } from "@/lib/candidateContextBuilder";
+import { generateFollowUpDraft } from "@/lib/llm/draftFollowUp";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -30,18 +32,22 @@ function dayBucket(now) {
 
 // A plain-text follow-up. This is deliberately a template for now; an LLM will
 // personalise it later, but the queue/approval machinery is identical either way.
-function buildFollowUpDraft(application) {
+function buildFollowUpDraft(application, candidateContext) {
   const applied = application.applicationDate
     ? new Date(application.applicationDate).toLocaleDateString()
     : "recently";
+  const firstName = candidateContext?.personal?.firstName || "";
+  const fullName = [candidateContext?.personal?.firstName, candidateContext?.personal?.lastName]
+    .filter(Boolean)
+    .join(" ");
   const subject = `Following up — ${application.roleTitle} application`;
   const draftText =
-    `Hi,\n\n` +
+    `${firstName ? `Hi ${firstName},` : "Hi,"}\n\n` +
     `I wanted to follow up on my application for the ${application.roleTitle} ` +
     `role at ${application.companyName} (submitted ${applied}). I'm still very ` +
     `interested in the opportunity and would welcome any update on where things ` +
     `stand.\n\n` +
-    `Thank you for your time.\n\nBest regards`;
+    `Thank you for your time.\n\nBest regards${fullName ? `,\n${fullName}` : ""}`;
   return { subject, draftText };
 }
 
@@ -63,6 +69,7 @@ export async function runAgentCycle({ user, force = false } = {}) {
   }
 
   const applications = await Application.find(query);
+  const candidateContext = await buildCandidateContextForUser({ user });
 
   const summary = {
     ranAt: now.toISOString(),
@@ -90,7 +97,11 @@ export async function runAgentCycle({ user, force = false } = {}) {
     let actionTaken;
 
     if (decision === AGENT_DECISION.DRAFT_FOLLOW_UP) {
-      const { subject, draftText } = buildFollowUpDraft(application);
+      const { subject, draftText } = await generateFollowUpDraft({
+        application,
+        candidateContext,
+        followUpNumber: followUpCount + 1,
+      });
       try {
         await OutreachLog.create({
           userId: user._id,

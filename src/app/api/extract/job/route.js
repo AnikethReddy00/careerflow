@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/session";
 import { extractJobPosting } from "@/lib/llm/jobExtraction";
 import { LLMError } from "@/lib/llm";
+import { buildCandidateContextForUser } from "@/lib/candidateContextBuilder";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,11 @@ export async function POST(request) {
 
   try {
     const fields = await extractJobPosting(text.slice(0, MAX_CHARS));
-    return Response.json({ fields });
+    const candidateContext = await buildCandidateContextForUser({
+      user,
+      job: fields,
+    });
+    return Response.json({ fields, candidateContext });
   } catch (err) {
     // A missing/slow local model is the user's setup (502); anything else here
     // is the model failing to produce usable fields (422).

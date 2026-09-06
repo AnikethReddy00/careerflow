@@ -9,6 +9,7 @@ import {
   TERMINAL_STATUSES,
   ACTOR,
 } from "@/lib/enums";
+import { buildCandidateSnapshot, getOrCreateCandidateProfile } from "@/lib/candidateProfile";
 
 export const dynamic = "force-dynamic";
 
@@ -177,6 +178,8 @@ export async function PUT(request, { params }) {
     if (applicationDate) {
       application.applicationDate = new Date(applicationDate);
     }
+    const profile = await getOrCreateCandidateProfile(user);
+    application.candidateSnapshot = buildCandidateSnapshot(profile.toObject());
     await application.save();
 
     return Response.json({ application });

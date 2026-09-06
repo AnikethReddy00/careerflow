@@ -214,6 +214,12 @@ export default function AgentActivity() {
             ← Applications
           </Link>
           <Link
+            href="/profile"
+            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
+          >
+            Profile
+          </Link>
+          <Link
             href="/browser"
             className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
           >

@@ -287,6 +287,9 @@ export default function BrowserLauncherPage() {
           <Link href="/dashboard" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
             Applications
           </Link>
+          <Link href="/profile" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
+            Profile
+          </Link>
           <Link href="/agent" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
             Agent
           </Link>

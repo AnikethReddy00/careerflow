@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
 import { getCurrentUser } from "@/lib/session";
 import { SOURCE_PLATFORM_VALUES } from "@/lib/enums";
+import { buildCandidateSnapshot, getOrCreateCandidateProfile } from "@/lib/candidateProfile";
 
 // Reads/writes per request — never statically cached.
 export const dynamic = "force-dynamic";
@@ -60,6 +61,7 @@ export async function POST(request) {
     if (!user) {
       return Response.json({ error: "Not authenticated" }, { status: 401 });
     }
+    const profile = await getOrCreateCandidateProfile(user);
     const application = await Application.create({
       userId: user._id,
       companyName: companyName.trim(),
@@ -70,6 +72,7 @@ export async function POST(request) {
       notes: notes?.trim() || undefined,
       // Model defaults applicationDate to now if we pass undefined.
       applicationDate: applicationDate ? new Date(applicationDate) : undefined,
+      candidateSnapshot: buildCandidateSnapshot(profile.toObject()),
     });
     return Response.json({ application }, { status: 201 });
   } catch (err) {

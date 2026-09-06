@@ -203,6 +203,12 @@ export default function ApplicationDetail() {
           >
             ← Applications
           </Link>
+          <Link
+            href="/profile"
+            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
+          >
+            Profile
+          </Link>
           <button
             type="button"
             onClick={handleLogout}

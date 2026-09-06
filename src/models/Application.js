@@ -55,6 +55,40 @@ const ApplicationSchema = new mongoose.Schema(
       gmailThreadId: { type: String, default: null }, // confirmation-email thread, if known
       senderDomain: { type: String, default: null }, // e.g. "greenhouse.io"
     },
+
+    candidateSnapshot: {
+      personal: {
+        firstName: { type: String, trim: true },
+        lastName: { type: String, trim: true },
+        email: { type: String, trim: true, lowercase: true },
+        phone: { type: String, trim: true },
+        location: { type: String, trim: true },
+      },
+      skills: [{ type: String, trim: true }],
+      links: {
+        linkedin: { type: String, trim: true },
+        github: { type: String, trim: true },
+        portfolio: { type: String, trim: true },
+        other: [{ type: String, trim: true }],
+      },
+      workAuthorization: {
+        status: { type: String, trim: true },
+        sponsorshipRequired: { type: Boolean, default: null },
+      },
+      preferences: {
+        jobTypes: [{ type: String, trim: true }],
+        preferredLocations: [{ type: String, trim: true }],
+        remotePreference: { type: String, trim: true },
+        industries: [{ type: String, trim: true }],
+      },
+      resume: {
+        fileName: { type: String, trim: true },
+        fileType: { type: String, trim: true },
+        fileUrl: { type: String, trim: true },
+        updatedAt: { type: Date, default: null },
+      },
+      profileUpdatedAt: { type: Date, default: null },
+    },
   },
   { timestamps: true }
 );

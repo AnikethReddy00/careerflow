@@ -44,6 +44,12 @@ export default function Home() {
             Agent
           </Link>
           <Link
+            href="/profile"
+            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
+          >
+            Profile
+          </Link>
+          <Link
             href="/browser"
             className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
           >

@@ -47,9 +47,9 @@ export function buildUserPrompt(messages) {
   const blocks = messages.map(
     (m, i) =>
       `#${i + 1}\n` +
-      `From: ${truncate(m.from, 120)}\n` +
-      `Subject: ${truncate(m.subject, 160)}\n` +
-      `Preview: ${truncate(m.snippet, 240)}`
+      `From: ${truncate(m.from, 80)}\n` +
+      `Subject: ${truncate(m.subject, 100)}\n` +
+      `Preview: ${truncate(m.snippet, 120)}`
   );
   return (
     "Classify each email below into exactly one label:\n" +
@@ -94,14 +94,86 @@ export function parseClassifications(raw, count) {
   return out;
 }
 
+// Heuristic classifier for instant classification and fallback
+export function classifyByHeuristics(messages) {
+  return messages.map((m) => {
+    const text = `${m.from || ""} ${m.subject || ""} ${m.snippet || ""}`.toLowerCase();
+    if (
+      text.includes("offer letter") ||
+      text.includes("offer of employment") ||
+      text.includes("job offer") ||
+      text.includes("formal offer")
+    ) {
+      return EMAIL_CLASSIFICATION.OFFER;
+    }
+    if (
+      text.includes("interview") ||
+      text.includes("schedule a call") ||
+      text.includes("phone screen") ||
+      text.includes("speaking with you") ||
+      text.includes("next steps with") ||
+      text.includes("invitation to connect") ||
+      text.includes("availability for a chat")
+    ) {
+      return EMAIL_CLASSIFICATION.INTERVIEW_INVITATION;
+    }
+    if (
+      text.includes("assessment") ||
+      text.includes("hackerrank") ||
+      text.includes("codesignal") ||
+      text.includes("coding challenge") ||
+      text.includes("take-home") ||
+      text.includes("technical test") ||
+      text.includes("online test")
+    ) {
+      return EMAIL_CLASSIFICATION.ASSESSMENT;
+    }
+    if (
+      text.includes("unfortunately") ||
+      text.includes("not moving forward") ||
+      text.includes("other candidates") ||
+      text.includes("regret to inform") ||
+      text.includes("will not be advancing") ||
+      text.includes("decided to proceed with other") ||
+      text.includes("position has been filled")
+    ) {
+      return EMAIL_CLASSIFICATION.REJECTION;
+    }
+    if (
+      text.includes("thank you for applying") ||
+      text.includes("application received") ||
+      text.includes("we have received your application") ||
+      text.includes("under review") ||
+      text.includes("application status")
+    ) {
+      return EMAIL_CLASSIFICATION.GENERAL_REPLY;
+    }
+    return EMAIL_CLASSIFICATION.IRRELEVANT;
+  });
+}
+
 // Full pipeline: messages -> model -> one enum label per message (input order).
 // Empty input short-circuits without an LLM call.
 export async function classifyEmails(messages) {
   if (!Array.isArray(messages) || messages.length === 0) return [];
-  const raw = await generateJSON({
-    system: SYSTEM_PROMPT,
-    user: buildUserPrompt(messages),
-    schema: CLASSIFICATION_SCHEMA,
-  });
-  return parseClassifications(raw, messages.length);
+  try {
+    const raw = await generateJSON({
+      system: SYSTEM_PROMPT,
+      user: buildUserPrompt(messages),
+      schema: CLASSIFICATION_SCHEMA,
+    });
+    const parsed = parseClassifications(raw, messages.length);
+    const heuristics = classifyByHeuristics(messages);
+
+    // Merge: if LLM returns irrelevant but heuristics detect a clear signal, promote it
+    return parsed.map((label, i) => {
+      if (label === EMAIL_CLASSIFICATION.IRRELEVANT && heuristics[i] !== EMAIL_CLASSIFICATION.IRRELEVANT) {
+        return heuristics[i];
+      }
+      return label;
+    });
+  } catch (err) {
+    console.warn("LLM classification fallback to heuristics:", err.message);
+    return classifyByHeuristics(messages);
+  }
 }

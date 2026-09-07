@@ -69,6 +69,21 @@ function headerValue(headers, name) {
   return found?.value || "";
 }
 
+function parseSender(fromHeader) {
+  const raw = String(fromHeader || "").trim();
+  const emailMatch =
+    raw.match(/<([^>]+)>/) ||
+    raw.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  const email = emailMatch ? emailMatch[1].trim() : raw;
+  const nameMatch = raw.match(/^"?([^"<]+)"?\s*</);
+  const name = nameMatch ? nameMatch[1].trim() : "";
+  return {
+    from: raw,
+    senderEmail: email,
+    senderName: name || (email.includes("@") ? email.split("@")[0] : raw),
+  };
+}
+
 // Fetch just the metadata we need for one message — format=metadata avoids
 // downloading the full body, which keeps the sync fast and cheap.
 export async function getMessageMetadata(accessToken, id) {
@@ -81,10 +96,15 @@ export async function getMessageMetadata(accessToken, id) {
     `/messages/${id}?${params.toString()}`
   );
   const headers = msg.payload?.headers || [];
+  const fromRaw = headerValue(headers, "From");
+  const { senderEmail, senderName } = parseSender(fromRaw);
+
   return {
     id: msg.id,
     threadId: msg.threadId,
-    from: headerValue(headers, "From"),
+    from: fromRaw,
+    senderEmail,
+    senderName,
     subject: headerValue(headers, "Subject"),
     snippet: decodeEntities(msg.snippet || ""),
     // internalDate is ms-since-epoch as a string — more reliable for ordering

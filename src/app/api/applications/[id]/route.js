@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
 import StatusHistory from "@/models/StatusHistory";
+import EmailEvent from "@/models/EmailEvent";
+import OutreachLog from "@/models/OutreachLog";
 import { getCurrentUser } from "@/lib/session";
 import {
   APPLICATION_STATUS_VALUES,
@@ -13,8 +15,8 @@ import { buildCandidateSnapshot, getOrCreateCandidateProfile } from "@/lib/candi
 
 export const dynamic = "force-dynamic";
 
-// GET /api/applications/:id — one application plus its status-change timeline
-// (newest first). Powers the detail page.
+// GET /api/applications/:id — one application plus its status-change timeline,
+// received recruiter emails, and outreach logs (newest first).
 export async function GET(request, { params }) {
   const { id } = await params;
   if (!mongoose.isValidObjectId(id)) {
@@ -33,13 +35,12 @@ export async function GET(request, { params }) {
     if (!application) {
       return Response.json({ error: "Application not found" }, { status: 404 });
     }
-    const history = await StatusHistory.find({
-      applicationId: id,
-      userId: user._id,
-    })
-      .sort({ changedAt: -1 })
-      .lean();
-    return Response.json({ application, history });
+    const [history, emails, outreachLogs] = await Promise.all([
+      StatusHistory.find({ applicationId: id, userId: user._id }).sort({ changedAt: -1 }).lean(),
+      EmailEvent.find({ applicationId: id, userId: user._id }).sort({ receivedAt: -1 }).lean(),
+      OutreachLog.find({ applicationId: id, userId: user._id }).sort({ createdAt: -1 }).lean(),
+    ]);
+    return Response.json({ application, history, emails, outreachLogs });
   } catch (err) {
     return Response.json({ error: err.message }, { status: 500 });
   }

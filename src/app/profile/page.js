@@ -418,7 +418,7 @@ export default function ProfilePage() {
                   AI Resume vs JD Gap Analyzer & Coach
                 </h2>
                 <p className="text-xs text-zinc-500">
-                  Powered by local Qwen 3B. Paste your resume and any job description to discover what you are lacking.
+                  Powered by AI. Paste your resume and any job description to discover what you are lacking.
                 </p>
               </div>
             </div>
@@ -481,7 +481,7 @@ export default function ProfilePage() {
                   disabled={analyzing || !jdText.trim()}
                   className="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-500 disabled:opacity-50"
                 >
-                  {analyzing ? "Qwen 3B Analyzing Gap..." : "🔍 Analyze Resume Gaps with AI"}
+                  {analyzing ? "Analyzing Gap with AI..." : "🔍 Analyze Resume Gaps with AI"}
                 </button>
                 {analysisResult && (
                   <span className="text-xs font-medium text-zinc-500">

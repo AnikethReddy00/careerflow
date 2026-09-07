@@ -188,7 +188,7 @@ export default function Dashboard() {
     }
   }
 
-  // Send the pasted job post to local Qwen 3B
+  // Send the pasted job post to AI model and pre-fill the form
   async function handleExtract() {
     setExtracting(true);
     setExtractError("");
@@ -210,7 +210,7 @@ export default function Dashboard() {
         notes: f.notes || "",
       }));
       setShowPaste(false);
-      setNotice("Extracted details with local Qwen 3B!");
+      setNotice("Extracted details with AI!");
       setTimeout(() => setNotice(""), 4000);
     } catch (e) {
       setExtractError(e.message);
@@ -433,7 +433,7 @@ export default function Dashboard() {
                 Application Command Center
               </h1>
               <p className="mt-1 text-sm text-zinc-500">
-                Single unified pipeline: intake with Qwen 3B, auto-monitor with reasoner, and review follow-ups.
+                Single unified pipeline: intake with AI auto-fill, auto-monitor with reasoner, and review follow-ups.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2.5">
@@ -477,7 +477,7 @@ export default function Dashboard() {
                   </h2>
                 </div>
                 <p className="text-xs text-zinc-500 mt-0.5">
-                  Inbox scanned and categorized by local Qwen 3B.
+                  Inbox scanned and categorized by AI.
                 </p>
               </div>
               <button
@@ -520,9 +520,27 @@ export default function Dashboard() {
                             msg.classification}
                         </span>
                       )}
-                      <span className="text-xs font-semibold text-zinc-800 truncate max-w-[280px]">
-                        {msg.from}
+                      <span className="text-xs font-semibold text-zinc-900 truncate max-w-[200px]">
+                        {msg.senderName || msg.from}
                       </span>
+                      {msg.senderEmail && (
+                        <span className="text-[11px] text-zinc-500 font-mono truncate max-w-[240px]">
+                          &lt;{msg.senderEmail}&gt;
+                        </span>
+                      )}
+
+                      {/* Reply action */}
+                      <a
+                        href={`mailto:${msg.senderEmail || msg.from}?subject=${encodeURIComponent(
+                          msg.subject?.startsWith("Re:")
+                            ? msg.subject
+                            : `Re: ${msg.subject || "Job Application"}`
+                        )}`}
+                        className="inline-flex items-center gap-1 rounded border border-zinc-200 bg-white px-2 py-0.5 text-[11px] font-medium text-zinc-700 hover:bg-zinc-50 hover:text-indigo-600 transition"
+                        title={`Reply directly to ${msg.senderEmail || msg.from}`}
+                      >
+                        ✉️ Reply
+                      </a>
 
                       {/* Linked application or quick-add action */}
                       {msg.matchedApplication ? (
@@ -574,7 +592,7 @@ export default function Dashboard() {
                 </h2>
               </div>
               <span className="text-xs font-medium text-amber-800">
-                Generated with Qwen 3B + Candidate Profile
+                Generated with AI + Candidate Profile
               </span>
             </div>
 
@@ -681,7 +699,7 @@ export default function Dashboard() {
                 1-Click Job Intake & AI Extraction
               </h2>
               <p className="text-xs text-zinc-500">
-                Paste any job posting or fill directly — Qwen 3B extracts role, company, platform, and key skills.
+                Paste any job posting or fill directly — AI extracts role, company, platform, and key skills.
               </p>
             </div>
             <button
@@ -709,7 +727,7 @@ export default function Dashboard() {
                   disabled={extracting || pasteText.trim().length < 40}
                   className="rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
                 >
-                  {extracting ? "Qwen 3B Extracting..." : "Extract with Qwen 3B"}
+                  {extracting ? "Extracting with AI..." : "Extract with AI"}
                 </button>
                 {extractError && (
                   <span className="text-xs text-rose-600">{extractError}</span>

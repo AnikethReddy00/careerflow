@@ -57,6 +57,8 @@ export default function ApplicationDetail() {
   const { checking } = useRequireAuth();
   const [app, setApp] = useState(null);
   const [history, setHistory] = useState([]);
+  const [emails, setEmails] = useState([]);
+  const [outreachLogs, setOutreachLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false); // status change
@@ -64,9 +66,6 @@ export default function ApplicationDetail() {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState(null);
 
-  // Memoized on id so it's a stable effect dependency. No synchronous setState
-  // (everything runs after the first await), which keeps React 19's
-  // set-state-in-effect rule happy.
   const fetchDetail = useCallback(async () => {
     try {
       const res = await fetch(`/api/applications/${id}`);
@@ -74,6 +73,8 @@ export default function ApplicationDetail() {
       if (!res.ok) throw new Error(data.error || "Failed to load application");
       setApp(data.application);
       setHistory(data.history || []);
+      setEmails(data.emails || []);
+      setOutreachLogs(data.outreachLogs || []);
       setError("");
     } catch (e) {
       setError(e.message);
@@ -482,6 +483,72 @@ export default function ApplicationDetail() {
               <p className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
                 {error}
               </p>
+            )}
+
+            {/* Recruiter Emails Linked to this Application */}
+            {emails.length > 0 && (
+              <section className="mt-10">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
+                  Recruiter Emails ({emails.length})
+                </h2>
+                <ul className="mt-4 space-y-3">
+                  {emails.map((m) => (
+                    <li
+                      key={m._id}
+                      className="rounded-xl border border-zinc-100 bg-white p-4"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-xs font-semibold text-zinc-900">
+                          {m.fromAddress}
+                        </span>
+                        <span className="text-xs text-zinc-400">
+                          {formatDateTime(m.receivedAt)}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs font-medium text-zinc-800">
+                        {m.subject}
+                      </p>
+                      {m.snippet && (
+                        <p className="mt-1 text-xs text-zinc-500 line-clamp-2">
+                          {m.snippet}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Follow-up Drafts & Outreach */}
+            {outreachLogs.length > 0 && (
+              <section className="mt-10">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
+                  Follow-Up Outreach ({outreachLogs.length})
+                </h2>
+                <ul className="mt-4 space-y-3">
+                  {outreachLogs.map((log) => (
+                    <li
+                      key={log._id}
+                      className="rounded-xl border border-zinc-100 bg-white p-4"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="rounded bg-indigo-50 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 capitalize">
+                          Status: {log.status.replace("_", " ")}
+                        </span>
+                        <span className="text-xs text-zinc-400">
+                          {formatDateTime(log.createdAt)}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs font-semibold text-zinc-900">
+                        {log.subject}
+                      </p>
+                      <p className="mt-1 whitespace-pre-wrap text-xs text-zinc-600 bg-zinc-50 p-2.5 rounded-lg border border-zinc-100">
+                        {log.finalText || log.draftText}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
 
             {/* Timeline */}

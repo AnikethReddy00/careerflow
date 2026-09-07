@@ -375,16 +375,31 @@ export default function AgentActivity() {
                             m.classification}
                         </span>
                       )}
-                      <p className="truncate text-sm font-medium text-zinc-800">
+                      <p className="truncate text-sm font-semibold text-zinc-900">
                         {m.subject || "(no subject)"}
                       </p>
                       <span className="ml-auto shrink-0 text-xs text-zinc-400">
                         {formatDateTime(m.date)}
                       </span>
                     </div>
-                    <p className="mt-0.5 truncate text-xs text-zinc-500">
-                      {m.from}
-                    </p>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                      <span className="font-medium text-zinc-800">
+                        {m.senderName || m.from}
+                      </span>
+                      {m.senderEmail && (
+                        <span className="text-zinc-500 font-mono">
+                          &lt;{m.senderEmail}&gt;
+                        </span>
+                      )}
+                      <a
+                        href={`mailto:${m.senderEmail || m.from}?subject=${encodeURIComponent(
+                          m.subject?.startsWith("Re:") ? m.subject : `Re: ${m.subject || ""}`
+                        )}`}
+                        className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[11px] font-medium text-indigo-600 hover:bg-zinc-50"
+                      >
+                        Reply
+                      </a>
+                    </div>
                     {m.snippet && (
                       <p className="mt-1 line-clamp-2 text-sm text-zinc-600">
                         {m.snippet}

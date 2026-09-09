@@ -1,10 +1,6 @@
 "use client";
 
-// The consent popup shown on the home page. For now this is UI only — clicking
-// "Grant access" just reports back to the parent. Real Google/Gmail OAuth gets
-// wired to this button in a later stage; the copy already describes exactly the
-// scopes we'll request so the real flow is a drop-in replacement.
-
+// The consent popup shown on the home page.
 const PERMISSIONS = [
   {
     title: "Read your Gmail",
@@ -25,7 +21,7 @@ function Icon({ name }) {
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 1.8,
+    strokeWidth: 2,
     strokeLinecap: "round",
     strokeLinejoin: "round",
   };
@@ -53,7 +49,7 @@ export default function PermissionsModal({ open, onGrant, onDismiss }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans"
       role="dialog"
       aria-modal="true"
       aria-labelledby="permissions-title"
@@ -63,23 +59,23 @@ export default function PermissionsModal({ open, onGrant, onDismiss }) {
         type="button"
         aria-label="Close"
         onClick={onDismiss}
-        className="absolute inset-0 bg-zinc-900/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
       />
 
       {/* Card */}
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl ring-1 ring-zinc-900/5">
-        <div className="mb-1 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+      <div className="relative w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl border border-slate-200">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-200 px-3 py-0.5 text-xs font-semibold text-[#0052CC]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#0052CC]" />
           Connect your inbox
         </div>
 
         <h2
           id="permissions-title"
-          className="mt-3 text-xl font-semibold tracking-tight text-zinc-900"
+          className="text-xl font-extrabold tracking-tight text-[#0F172A]"
         >
           CareerFlow needs two permissions
         </h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-zinc-500">
+        <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-[#64748B]">
           The agent works by watching your inbox and acting on what it finds.
           Here&apos;s exactly what it will do.
         </p>
@@ -88,16 +84,16 @@ export default function PermissionsModal({ open, onGrant, onDismiss }) {
           {PERMISSIONS.map((p) => (
             <li
               key={p.title}
-              className="flex gap-3 rounded-xl border border-zinc-100 bg-zinc-50/60 p-3.5"
+              className="flex gap-3.5 rounded-xl border border-slate-100 bg-slate-50/70 p-3.5"
             >
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-indigo-600 ring-1 ring-zinc-900/5">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#0052CC] border border-blue-200/60 shadow-sm">
                 <Icon name={p.icon} />
               </span>
               <span>
-                <span className="block text-sm font-medium text-zinc-900">
+                <span className="block text-xs font-bold text-[#0F172A]">
                   {p.title}
                 </span>
-                <span className="mt-0.5 block text-[13px] leading-relaxed text-zinc-500">
+                <span className="mt-0.5 block text-xs leading-relaxed text-[#64748B]">
                   {p.body}
                 </span>
               </span>
@@ -105,28 +101,29 @@ export default function PermissionsModal({ open, onGrant, onDismiss }) {
           ))}
         </ul>
 
-        <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-[12.5px] leading-relaxed text-amber-800">
+        <p className="mt-4 rounded-xl bg-amber-50 border border-amber-200/80 px-3.5 py-2.5 text-xs leading-relaxed text-amber-900 font-medium">
           Nothing is sent without your say-so. New accounts start in
           approval-required mode — the agent drafts, you approve.
         </p>
 
-        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <div className="mt-6 flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={onDismiss}
-            className="rounded-lg px-4 py-2.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100"
+            className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
           >
             Not now
           </button>
           <button
             type="button"
             onClick={onGrant}
-            className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="rounded-xl bg-[#0052CC] px-5 py-2.5 text-xs font-bold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
           >
-            Grant access
+            Grant access →
           </button>
         </div>
       </div>
     </div>
   );
 }
+

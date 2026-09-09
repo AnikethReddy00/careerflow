@@ -266,85 +266,88 @@ export default function BrowserLauncherPage() {
 
   if (checking) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white text-sm text-zinc-400">
+      <div className="flex flex-1 items-center justify-center bg-[#F8FAFC] text-sm text-slate-400 font-sans">
         Loading…
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col bg-white text-zinc-900">
-      <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-5">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-            C
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">
-            CareerFlow<span className="text-indigo-600"> AI</span>
-          </span>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Link href="/dashboard" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
-            Applications
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A] font-sans">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+              C
+            </span>
+            <span className="text-base font-bold tracking-tight text-[#0F172A]">
+              CareerFlow<span className="text-[#0052CC]"> AI</span>
+            </span>
           </Link>
-          <Link href="/profile" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
-            Profile
-          </Link>
-          <Link href="/agent" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
-            Agent
-          </Link>
-          {user?.email && <span className="hidden text-sm text-zinc-400 sm:inline">{user.email}</span>}
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            Log out
-          </button>
-        </nav>
+          <nav className="flex items-center gap-3">
+            <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Dashboard
+            </Link>
+            <Link href="/profile" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Profile
+            </Link>
+            <Link href="/agent" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Agent Logs
+            </Link>
+            <Link href="/browser" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80">
+              Browser
+            </Link>
+            {user?.email && <span className="hidden text-xs font-mono text-slate-400 sm:inline">{user.email}</span>}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              Log out
+            </button>
+          </nav>
+        </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-6 pb-16 pt-4">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-6 pb-16 pt-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-              Browser launcher
+            <div className="inline-flex items-center rounded-full border border-blue-200/80 bg-blue-50/80 px-3 py-0.5 text-xs font-semibold text-[#0052CC]">
+              Browser Assist Automation
             </div>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-              Launch a real Chrome window, use it directly, then run JS
+            <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A]">
+              Interactive Browser Automation & Inspector
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
-              Open a URL and a separate headed browser window appears on your desktop.
-              Use your normal mouse and keyboard in that window. Come back here only
-              when you want to run JavaScript against the live page.
+            <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-[#64748B]">
+              Launch a live headed Chrome window on your desktop to inspect job portals, extract forms, and execute custom automation scripts.
             </p>
           </div>
-          <div className="rounded-2xl border border-zinc-200 bg-zinc-50/70 px-4 py-3 text-xs text-zinc-500">
-            <div className="font-medium text-zinc-700">Current session</div>
-            <div className="mt-1 break-all">{activeSession ? activeSession.url : "No session open"}</div>
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 text-xs text-[#64748B] shadow-sm">
+            <div className="font-bold text-[#0F172A]">Active Session</div>
+            <div className="mt-1 break-all font-mono text-slate-700">{activeSession ? activeSession.url : "No active session"}</div>
           </div>
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-          <aside className="rounded-2xl border border-zinc-100 bg-zinc-50/60 p-4">
+        <div className="mt-8 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+          <aside className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Sessions
               </h2>
               <button
                 type="button"
                 onClick={() => refreshSessions()}
                 disabled={busy}
-                className="text-xs font-medium text-indigo-600 hover:underline disabled:cursor-not-allowed disabled:opacity-40"
+                className="text-xs font-bold text-[#0052CC] hover:underline disabled:opacity-40"
               >
-                Refresh list
+                Refresh
               </button>
             </div>
 
-            <div className="mt-3 space-y-2">
+            <div className="mt-4 space-y-2">
               {sessions.length === 0 ? (
-                <p className="rounded-xl border border-dashed border-zinc-200 bg-white px-3 py-4 text-sm text-zinc-400">
-                  No browser sessions yet.
+                <p className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-3 py-4 text-xs text-slate-400">
+                  No active browser sessions.
                 </p>
               ) : (
                 sessions.map((session) => (
@@ -355,15 +358,15 @@ export default function BrowserLauncherPage() {
                       setActiveSessionId(session.id);
                       setResult(null);
                     }}
-                    className={`w-full rounded-xl border px-3 py-3 text-left transition ${
+                    className={`w-full rounded-xl border p-3 text-left transition ${
                       session.id === activeSessionId
-                        ? "border-indigo-200 bg-indigo-50 text-zinc-900"
-                        : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50"
+                        ? "border-blue-300 bg-blue-50/70 text-[#0F172A]"
+                        : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                     }`}
                   >
-                    <div className="truncate text-sm font-medium">{session.title || session.url}</div>
-                    <div className="mt-1 truncate text-xs text-zinc-500">{session.url}</div>
-                    <div className="mt-1 text-[11px] text-zinc-400">
+                    <div className="truncate text-xs font-bold">{session.title || session.url}</div>
+                    <div className="mt-1 truncate text-[11px] text-[#64748B]">{session.url}</div>
+                    <div className="mt-1 text-[10px] text-slate-400">
                       Updated {formatDateTime(session.lastUsedAt)}
                     </div>
                   </button>
@@ -373,122 +376,121 @@ export default function BrowserLauncherPage() {
           </aside>
 
           <section className="space-y-6">
-            <div className="rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
               <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
                 <input
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://example.com/job-posting"
-                  className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-[#0F172A] outline-none transition focus:border-[#0052CC] focus:ring-2 focus:ring-[#0052CC]/15"
                 />
                 <button
                   type="button"
                   onClick={handleOpen}
                   disabled={busy || !url.trim()}
-                  className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-xl bg-[#0052CC] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] disabled:opacity-50"
                 >
-                  Open window
+                  Open Window
                 </button>
                 <button
                   type="button"
                   onClick={handleNavigate}
                   disabled={busy || !url.trim()}
-                  className="rounded-xl border border-zinc-200 px-4 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                 >
                   Navigate
                 </button>
               </div>
-              <p className="mt-3 text-xs text-zinc-500">
-                After the window opens, switch to that Chrome window and interact
-                with it normally. Use this page only to open the site and run JS.
+              <p className="mt-3 text-xs text-[#64748B]">
+                After the window opens, interact with it directly. Run JavaScript scripts against the active DOM below.
               </p>
             </div>
 
             {error && (
-              <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-semibold text-rose-800 shadow-sm">
                 {error}
               </p>
             )}
 
             <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-              <div className="rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
+              <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                    JavaScript
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    JavaScript Automation Script
                   </h2>
-                  <span className="text-xs text-zinc-400">
-                    Active session: {activeSessionId ? "yes" : "no"}
+                  <span className="text-xs font-medium text-slate-400">
+                    Active: {activeSessionId ? "Yes" : "No"}
                   </span>
                 </div>
                 <textarea
                   value={script}
                   onChange={(e) => setScript(e.target.value)}
-                  rows={18}
+                  rows={16}
                   spellCheck="false"
-                  className="mt-3 w-full rounded-2xl border border-zinc-200 bg-zinc-950 px-4 py-3 font-mono text-[13px] leading-6 text-zinc-100 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                  className="mt-3 w-full rounded-xl border border-slate-200 bg-slate-950 px-4 py-3 font-mono text-xs leading-5 text-slate-100 outline-none transition focus:border-[#0052CC] focus:ring-2 focus:ring-[#0052CC]/15"
                 />
                 <div className="mt-3 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={handleEvaluate}
-                  disabled={busy || !activeSessionId || !script.trim()}
-                  className="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Run JS
-                </button>
-                <button
-                  type="button"
-                  onClick={loadMercariInspector}
-                  className="rounded-xl border border-indigo-200 px-4 py-2.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-50"
-                >
-                  Load form inspector
-                </button>
-                <button
-                  type="button"
-                  onClick={handleClose}
-                    disabled={busy || !activeSessionId}
-                    className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  <button
+                    type="button"
+                    onClick={handleEvaluate}
+                    disabled={busy || !activeSessionId || !script.trim()}
+                    className="rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#0043A4] disabled:opacity-50"
                   >
-                    Close window
+                    Run JS Script
+                  </button>
+                  <button
+                    type="button"
+                    onClick={loadMercariInspector}
+                    className="rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-semibold text-[#0052CC] hover:bg-blue-100"
+                  >
+                    Load Form Inspector
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    disabled={busy || !activeSessionId}
+                    className="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100 disabled:opacity-50"
+                  >
+                    Close Window
                   </button>
                   <button
                     type="button"
                     onClick={() => setScript(DEFAULT_SCRIPT)}
-                    className="rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+                    className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50"
                   >
-                    Reset snippet
+                    Reset
                   </button>
                 </div>
+                {copyNotice && (
+                  <p className="mt-2 text-xs font-semibold text-emerald-700">{copyNotice}</p>
+                )}
               </div>
-              {copyNotice && (
-                <p className="mt-2 text-xs text-emerald-700">{copyNotice}</p>
-              )}
 
               <div className="space-y-6">
-                <div className="rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                    Result
+                <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Execution Result
                   </h2>
-                  <pre className="mt-3 max-h-[320px] overflow-auto rounded-2xl bg-zinc-950 p-4 text-[12.5px] leading-6 text-zinc-100">
-                    {result ? JSON.stringify(result, null, 2) : "Run JavaScript to see the returned value here."}
+                  <pre className="mt-3 max-h-[300px] overflow-auto rounded-xl bg-slate-950 p-4 text-xs font-mono leading-5 text-slate-100">
+                    {result ? JSON.stringify(result, null, 2) : "Run JavaScript to see the structured output here."}
                   </pre>
                 </div>
 
-                <div className="rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                    Session
+                <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Session Meta
                   </h2>
-                  <div className="mt-3 space-y-2 text-sm text-zinc-600">
+                  <div className="mt-3 space-y-2 text-xs text-slate-600">
                     <div>
-                      <span className="font-medium text-zinc-800">Title:</span>{" "}
+                      <span className="font-bold text-[#0F172A]">Title:</span>{" "}
                       {activeSession?.title || "—"}
                     </div>
                     <div>
-                      <span className="font-medium text-zinc-800">URL:</span>{" "}
-                      {activeSession?.url || "—"}
+                      <span className="font-bold text-[#0F172A]">URL:</span>{" "}
+                      <span className="font-mono">{activeSession?.url || "—"}</span>
                     </div>
                     <div>
-                      <span className="font-medium text-zinc-800">Updated:</span>{" "}
+                      <span className="font-bold text-[#0F172A]">Updated:</span>{" "}
                       {activeSession?.lastUsedAt ? formatDateTime(activeSession.lastUsedAt) : "—"}
                     </div>
                   </div>
@@ -501,3 +503,4 @@ export default function BrowserLauncherPage() {
     </div>
   );
 }
+

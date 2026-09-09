@@ -6,145 +6,238 @@ import PermissionsModal from "@/components/PermissionsModal";
 
 // The four steps of the agent's reasoning loop — the core idea of the project.
 const LOOP = [
-  { k: "Observe", d: "Reads each open application and scans your inbox for new recruiter mail." },
-  { k: "Reason", d: "Weighs status, days of silence, and any new email against your rules." },
-  { k: "Decide", d: "Update status, draft a follow-up, escalate to you — or do nothing." },
-  { k: "Act", d: "Applies the change, and sends or queues the email based on your settings." },
+  {
+    step: "01",
+    title: "Observe & Ingest",
+    desc: "Reads open pipeline roles, auto-extracts job descriptions, and continuously scans inbox for recruiter messages.",
+    badge: "Inbox & Feed",
+  },
+  {
+    step: "02",
+    title: "Reason & Classify",
+    desc: "Groq LLM classifies emails into interviews, assessments, or rejections and calculates days of silence against SLAs.",
+    badge: "AI Evaluation",
+  },
+  {
+    step: "03",
+    title: "Decide & Plan",
+    desc: "Determines whether to update status, generate personalized follow-up outreach, or escalate attention.",
+    badge: "Decision Engine",
+  },
+  {
+    step: "04",
+    title: "Act & Sync",
+    desc: "Applies pipeline updates, queues high-impact follow-ups for 1-click approval, and logs transparent reasoning.",
+    badge: "Automated Action",
+  },
+];
+
+const HIGHLIGHTS = [
+  { label: "Ultra-Fast Groq AI", value: "Sub-Second", desc: "Instant classification & extraction" },
+  { label: "Inbox Automation", value: "100%", desc: "Direct Gmail OAuth triage" },
+  { label: "Candidate Fit", value: "Smart Gap Analysis", desc: "Resume vs JD skills alignment" },
+  { label: "Pipeline Precision", value: "Autonomous", desc: "Zero manual spreadsheet tracking" },
 ];
 
 export default function Home() {
-  // Popped on load, per the plan — the first thing a new user does is connect Gmail.
-  const [modalOpen, setModalOpen] = useState(true);
-  // Placeholder until real OAuth lands; "Grant access" flips this for now.
+  const [modalOpen, setModalOpen] = useState(false);
   const [connected, setConnected] = useState(false);
 
   return (
-    <div className="flex flex-1 flex-col bg-white text-zinc-900">
-      {/* Header */}
-      <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-            C
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">
-            CareerFlow<span className="text-indigo-600"> AI</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/dashboard"
-            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
-          >
-            Dashboard
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A]">
+      {/* Background ambient glow effect like JobSync */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-gradient-to-b from-[#E6F0FF]/60 via-[#F0F6FF]/30 to-transparent" />
+
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+              C
+            </span>
+            <span className="text-base font-bold tracking-tight text-[#0F172A]">
+              CareerFlow<span className="text-[#0052CC]"> AI</span>
+            </span>
           </Link>
-          <Link
-            href="/agent"
-            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
-          >
-            Agent
-          </Link>
-          <Link
-            href="/profile"
-            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/browser"
-            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
-          >
-            Browser
-          </Link>
-          <Link
-            href="/login"
-            className="rounded-lg px-3.5 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
-          >
-            Sign in
-          </Link>
-          <button
-            type="button"
-            onClick={() => setModalOpen(true)}
-            className="rounded-lg border border-zinc-200 px-3.5 py-2 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50"
-          >
-            {connected ? "Gmail connected ✓" : "Connect Gmail"}
-          </button>
+
+          <nav className="hidden items-center gap-1 sm:flex">
+            <Link
+              href="/dashboard"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/agent"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Agent Activity
+            </Link>
+            <Link
+              href="/profile"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Candidate Profile
+            </Link>
+            <Link
+              href="/browser"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Browser Assist
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-2.5">
+            <Link
+              href="/login"
+              className="rounded-xl px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/dashboard"
+              className="rounded-xl bg-[#0052CC] px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
+            >
+              Get Started →
+            </Link>
+          </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-6">
-        <section className="pt-16 pb-14 sm:pt-24">
-          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-600">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Autonomous career agent
+      {/* Hero Section */}
+      <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-6">
+        <section className="pt-16 pb-14 text-center sm:pt-24 sm:pb-20">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-3.5 py-1 text-xs font-semibold text-[#0052CC]">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            Autonomous Agentic Career Platform
           </div>
 
-          <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-6xl">
-            Your only job is to{" "}
-            <span className="text-indigo-600">apply</span>.
-            <br className="hidden sm:block" />
-            The agent tracks the rest.
+          <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-extrabold tracking-tight text-[#0F172A] sm:text-6xl sm:leading-[1.12]">
+            Your only job is to <span className="text-[#0052CC]">apply</span>.<br />
+            The agent coordinates the rest.
           </h1>
 
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600">
-            CareerFlow watches every application you submit, reads your inbox for
-            recruiter replies, updates each status on its own, and drafts
-            follow-ups when a role goes quiet — running on a schedule, without
-            you pressing a button.
+          <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-[#64748B]">
+            CareerFlow autonomously monitors every job submission, reads your inbox for recruiter replies, classifies interview invites, updates application statuses, and drafts personalized follow-up outreach.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
             <Link
               href="/dashboard"
-              className="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="rounded-xl bg-[#0052CC] px-6 py-3 text-sm font-semibold text-white shadow-md shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5"
             >
-              Open dashboard →
+              Open Command Center →
             </Link>
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="rounded-lg border border-zinc-200 px-5 py-3 text-sm font-semibold text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50"
+              className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300"
             >
-              {connected ? "Gmail connected ✓" : "Connect Gmail"}
+              {connected ? "Gmail Connected ✓" : "Connect Gmail"}
             </button>
           </div>
-        </section>
 
-        {/* The reasoning loop */}
-        <section className="border-t border-zinc-100 py-14">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-            How the agent thinks
-          </h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {LOOP.map((step, i) => (
+          {/* Highlights Row */}
+          <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {HIGHLIGHTS.map((item, idx) => (
               <div
-                key={step.k}
-                className="rounded-2xl border border-zinc-100 bg-zinc-50/60 p-5"
+                key={idx}
+                className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm text-left transition hover:border-blue-200 hover:shadow-md"
               >
-                <div className="flex items-center gap-2 text-indigo-600">
-                  <span className="text-xs font-semibold tabular-nums">
-                    0{i + 1}
-                  </span>
-                  <span className="h-px flex-1 bg-indigo-100" />
+                <div className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
+                  {item.label}
                 </div>
-                <div className="mt-3 text-base font-semibold tracking-tight">
-                  {step.k}
+                <div className="mt-1.5 text-xl font-extrabold text-[#0052CC]">
+                  {item.value}
                 </div>
-                <p className="mt-1.5 text-[13.5px] leading-relaxed text-zinc-500">
-                  {step.d}
-                </p>
+                <div className="mt-1 text-xs text-slate-500">
+                  {item.desc}
+                </div>
               </div>
             ))}
           </div>
-          <p className="mt-6 text-sm text-zinc-500">
-            This loop repeats for every application, every cycle — and each pass
-            is logged, including the times it decides to do nothing.
-          </p>
+        </section>
+
+        {/* The 4-step Reasoning Loop Section */}
+        <section className="border-t border-slate-200/80 py-16">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#0052CC]">
+              Agentic Loop Architecture
+            </div>
+            <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A]">
+              How the Autonomous Reasoner Operates
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-[#64748B]">
+              Every application is evaluated cyclically through a 4-stage cognitive loop, ensuring no opportunity goes cold.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {LOOP.map((step) => (
+              <div
+                key={step.step}
+                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-200 hover:border-blue-300 hover:shadow-md"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 font-mono text-xs font-bold text-[#0052CC]">
+                      {step.step}
+                    </span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+                      {step.badge}
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-[#0F172A] group-hover:text-[#0052CC] transition">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-[#64748B]">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Gap Analyzer & Candidate Profile Spotlight */}
+        <section className="mb-16 rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/50 via-white to-indigo-50/30 p-8 sm:p-10 shadow-sm">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-100/70 px-3 py-0.5 text-xs font-semibold text-[#0052CC]">
+                🤖 AI Resume & JD Gap Analyzer
+              </div>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl">
+                Know Exactly What You&apos;re Lacking Before Applying
+              </h2>
+              <p className="mt-3 text-sm text-[#64748B] leading-relaxed">
+                Paste any job description and let Groq AI compare it against your profile. Get missing skills, experience gaps, fit scores, and actionable recommendations instantly.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/profile"
+                className="rounded-xl bg-[#0052CC] px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
+              >
+                Try Resume Gap Analyzer →
+              </Link>
+            </div>
+          </div>
         </section>
       </main>
 
-      <footer className="mx-auto w-full max-w-5xl px-6 py-8 text-xs text-zinc-400">
-        CareerFlow AI — semester project · full-stack + agentic AI
+      {/* Footer */}
+      <footer className="border-t border-slate-200/80 bg-white py-8 text-center text-xs text-[#64748B]">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
+          <div className="flex items-center gap-2 font-medium">
+            <span className="flex h-5 w-5 items-center justify-center rounded bg-[#0052CC] text-[10px] font-bold text-white">
+              C
+            </span>
+            CareerFlow AI · Autonomous Career Tracking & Outreach
+          </div>
+          <div className="text-slate-400">
+            Powered by Groq AI & Gmail Intelligence
+          </div>
+        </div>
       </footer>
 
       <PermissionsModal
@@ -158,3 +251,4 @@ export default function Home() {
     </div>
   );
 }
+

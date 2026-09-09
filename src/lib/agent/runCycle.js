@@ -156,3 +156,6 @@ export async function runAgentCycle({ user, force = false } = {}) {
 
   return summary;
 }
+
+export { runAgentCycle as runAgent };
+export default runAgentCycle;

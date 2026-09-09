@@ -31,7 +31,6 @@ function formatDateTime(value) {
   });
 }
 
-// Stored dates are ISO; a <input type="date"> wants local yyyy-mm-dd.
 function toDateInput(value) {
   if (!value) return "";
   const d = new Date(value);
@@ -42,8 +41,8 @@ function toDateInput(value) {
 function StatusPill({ status }) {
   return (
     <span
-      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-        STATUS_STYLES[status] || "bg-zinc-100 text-zinc-700"
+      className={`rounded-full px-3 py-1 text-xs font-bold ${
+        STATUS_STYLES[status] || "bg-slate-100 text-slate-700 border border-slate-200"
       }`}
     >
       {APPLICATION_STATUS_LABELS[status] || status}
@@ -61,8 +60,8 @@ export default function ApplicationDetail() {
   const [outreachLogs, setOutreachLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false); // status change
-  const [busy, setBusy] = useState(false); // edit save / delete
+  const [saving, setSaving] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState(null);
 
@@ -100,7 +99,6 @@ export default function ApplicationDetail() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update status");
-      // Refetch so the app card and the timeline both reflect the new entry.
       await fetchDetail();
     } catch (e) {
       setError(e.message);
@@ -175,60 +173,62 @@ export default function ApplicationDetail() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
-  const labelClass = "mb-1 block text-xs font-medium text-zinc-600";
+    "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 transition focus:border-[#0052CC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/15";
+  const labelClass = "mb-1.5 block text-xs font-semibold text-slate-700";
 
   if (checking) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white text-sm text-zinc-400">
+      <div className="flex flex-1 items-center justify-center bg-[#F8FAFC] text-sm text-slate-400 font-sans">
         Loading…
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col bg-white text-zinc-900">
-      <header className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-5">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-            C
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">
-            CareerFlow<span className="text-indigo-600"> AI</span>
-          </span>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            ← Applications
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A] font-sans">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-6 py-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+              C
+            </span>
+            <span className="text-base font-bold tracking-tight text-[#0F172A]">
+              CareerFlow<span className="text-[#0052CC]"> AI</span>
+            </span>
           </Link>
-          <Link
-            href="/profile"
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            Profile
-          </Link>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            Log out
-          </button>
-        </nav>
-      </header>
-
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-16 pt-6">
-        {loading ? (
-          <p className="py-10 text-center text-sm text-zinc-400">Loading…</p>
-        ) : error && !app ? (
-          <div className="rounded-2xl border border-dashed border-zinc-200 py-14 text-center">
-            <p className="text-sm font-medium text-zinc-600">{error}</p>
+          <nav className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="mt-2 inline-block text-sm font-medium text-indigo-600 hover:underline"
+              className="text-sm font-semibold text-[#0052CC] transition hover:underline"
+            >
+              ← Back to Pipeline
+            </Link>
+            <Link
+              href="/profile"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              Profile
+            </Link>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              Log out
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-16 pt-8">
+        {loading ? (
+          <p className="py-10 text-center text-sm text-slate-400">Loading…</p>
+        ) : error && !app ? (
+          <div className="rounded-2xl border border-dashed border-slate-200 py-14 text-center bg-white">
+            <p className="text-sm font-semibold text-slate-700">{error}</p>
+            <Link
+              href="/dashboard"
+              className="mt-2 inline-block text-xs font-bold text-[#0052CC] hover:underline"
             >
               Back to applications
             </Link>
@@ -236,280 +236,282 @@ export default function ApplicationDetail() {
         ) : app ? (
           <>
             {/* Application header */}
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0">
-                <h1 className="text-2xl font-semibold tracking-tight">
-                  {app.roleTitle}
-                </h1>
-                <p className="mt-1 text-zinc-600">{app.companyName}</p>
+            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A]">
+                    {app.roleTitle}
+                  </h1>
+                  <p className="mt-1 text-base font-semibold text-[#64748B]">{app.companyName}</p>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <StatusPill status={app.currentStatus} />
+                  {!editing && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={startEdit}
+                        disabled={busy}
+                        className="rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleDelete}
+                        disabled={busy}
+                        className="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <StatusPill status={app.currentStatus} />
-                {!editing && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={startEdit}
-                      disabled={busy}
-                      className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50 disabled:opacity-50"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleDelete}
-                      disabled={busy}
-                      className="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:opacity-50"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
 
-            {editing ? (
-              /* Edit form */
-              <form
-                onSubmit={handleEditSave}
-                className="mt-6 rounded-2xl border border-zinc-100 bg-zinc-50/60 p-5"
-              >
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className={labelClass} htmlFor="companyName">
-                      Company <span className="text-rose-500">*</span>
-                    </label>
-                    <input
-                      id="companyName"
-                      className={inputClass}
-                      value={editForm.companyName}
-                      onChange={updateEdit("companyName")}
-                      required
-                    />
+              {editing ? (
+                /* Edit form */
+                <form
+                  onSubmit={handleEditSave}
+                  className="mt-6 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-5"
+                >
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className={labelClass} htmlFor="companyName">
+                        Company <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        id="companyName"
+                        className={inputClass}
+                        value={editForm.companyName}
+                        onChange={updateEdit("companyName")}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="roleTitle">
+                        Role <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        id="roleTitle"
+                        className={inputClass}
+                        value={editForm.roleTitle}
+                        onChange={updateEdit("roleTitle")}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="sourcePlatform">
+                        Source <span className="text-rose-500">*</span>
+                      </label>
+                      <select
+                        id="sourcePlatform"
+                        className={inputClass}
+                        value={editForm.sourcePlatform}
+                        onChange={updateEdit("sourcePlatform")}
+                      >
+                        {SOURCE_PLATFORM_VALUES.map((v) => (
+                          <option key={v} value={v}>
+                            {SOURCE_PLATFORM_LABELS[v]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="resumeVersion">
+                        Résumé version
+                      </label>
+                      <input
+                        id="resumeVersion"
+                        className={inputClass}
+                        value={editForm.resumeVersion}
+                        onChange={updateEdit("resumeVersion")}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="applicationDate">
+                        Applied on
+                      </label>
+                      <input
+                        id="applicationDate"
+                        type="date"
+                        className={inputClass}
+                        value={editForm.applicationDate}
+                        onChange={updateEdit("applicationDate")}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="jobUrl">
+                        Job link
+                      </label>
+                      <input
+                        id="jobUrl"
+                        type="url"
+                        className={inputClass}
+                        placeholder="https://…"
+                        value={editForm.jobUrl}
+                        onChange={updateEdit("jobUrl")}
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className={labelClass} htmlFor="notes">
+                        Notes
+                      </label>
+                      <textarea
+                        id="notes"
+                        rows={3}
+                        className={inputClass}
+                        value={editForm.notes}
+                        onChange={updateEdit("notes")}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className={labelClass} htmlFor="roleTitle">
-                      Role <span className="text-rose-500">*</span>
-                    </label>
-                    <input
-                      id="roleTitle"
-                      className={inputClass}
-                      value={editForm.roleTitle}
-                      onChange={updateEdit("roleTitle")}
-                      required
-                    />
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      type="submit"
+                      disabled={busy}
+                      className="rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0043A4] disabled:opacity-60"
+                    >
+                      {busy ? "Saving…" : "Save changes"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(false)}
+                      disabled={busy}
+                      className="rounded-xl px-4 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100 disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
                   </div>
-                  <div>
-                    <label className={labelClass} htmlFor="sourcePlatform">
-                      Source <span className="text-rose-500">*</span>
+                </form>
+              ) : (
+                <>
+                  <dl className="mt-6 grid gap-4 rounded-xl border border-slate-100 bg-slate-50/70 p-5 sm:grid-cols-2">
+                    <div>
+                      <dt className="text-xs font-semibold text-slate-400">Source Platform</dt>
+                      <dd className="mt-0.5 text-sm font-bold text-[#0F172A]">
+                        {SOURCE_PLATFORM_LABELS[app.sourcePlatform] ||
+                          app.sourcePlatform}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-semibold text-slate-400">
+                        Applied Date
+                      </dt>
+                      <dd className="mt-0.5 text-sm font-bold text-[#0F172A]">
+                        {formatDate(app.applicationDate)}
+                      </dd>
+                    </div>
+                    {app.resumeVersion && (
+                      <div>
+                        <dt className="text-xs font-semibold text-slate-400">
+                          Résumé Version
+                        </dt>
+                        <dd className="mt-0.5 text-sm font-semibold text-[#0F172A]">
+                          {app.resumeVersion}
+                        </dd>
+                      </div>
+                    )}
+                    <div>
+                      <dt className="text-xs font-semibold text-slate-400">
+                        Monitoring Status
+                      </dt>
+                      <dd className="mt-0.5 text-sm font-bold text-[#0F172A]">
+                        {app.isOpen ? "🟢 Open — Active Agent Tracking" : "⚪ Closed"}
+                      </dd>
+                    </div>
+                    {app.jobUrl && (
+                      <div className="sm:col-span-2">
+                        <dt className="text-xs font-semibold text-slate-400">
+                          Job Link
+                        </dt>
+                        <dd className="mt-0.5 truncate text-sm">
+                          <a
+                            href={app.jobUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#0052CC] font-semibold hover:underline"
+                          >
+                            {app.jobUrl}
+                          </a>
+                        </dd>
+                      </div>
+                    )}
+                    {app.notes && (
+                      <div className="sm:col-span-2">
+                        <dt className="text-xs font-semibold text-slate-400">
+                          Notes
+                        </dt>
+                        <dd className="mt-0.5 whitespace-pre-wrap text-sm text-[#0F172A]">
+                          {app.notes}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+
+                  {/* Status control */}
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <label
+                      htmlFor="status"
+                      className="text-xs font-bold text-slate-600 uppercase tracking-wider"
+                    >
+                      Update Pipeline Status:
                     </label>
                     <select
-                      id="sourcePlatform"
-                      className={inputClass}
-                      value={editForm.sourcePlatform}
-                      onChange={updateEdit("sourcePlatform")}
+                      id="status"
+                      value={app.currentStatus}
+                      disabled={saving}
+                      onChange={(e) => handleStatusChange(e.target.value)}
+                      className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#0052CC]/25 disabled:opacity-50 ${
+                        STATUS_STYLES[app.currentStatus] ||
+                        "bg-slate-100 text-slate-700 border border-slate-200"
+                      }`}
                     >
-                      {SOURCE_PLATFORM_VALUES.map((v) => (
+                      {APPLICATION_STATUS_VALUES.map((v) => (
                         <option key={v} value={v}>
-                          {SOURCE_PLATFORM_LABELS[v]}
+                          {APPLICATION_STATUS_LABELS[v]}
                         </option>
                       ))}
                     </select>
+                    {saving && (
+                      <span className="text-xs text-slate-400">Saving…</span>
+                    )}
                   </div>
-                  <div>
-                    <label className={labelClass} htmlFor="resumeVersion">
-                      Résumé version
-                    </label>
-                    <input
-                      id="resumeVersion"
-                      className={inputClass}
-                      value={editForm.resumeVersion}
-                      onChange={updateEdit("resumeVersion")}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelClass} htmlFor="applicationDate">
-                      Applied on
-                    </label>
-                    <input
-                      id="applicationDate"
-                      type="date"
-                      className={inputClass}
-                      value={editForm.applicationDate}
-                      onChange={updateEdit("applicationDate")}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelClass} htmlFor="jobUrl">
-                      Job link
-                    </label>
-                    <input
-                      id="jobUrl"
-                      type="url"
-                      className={inputClass}
-                      placeholder="https://…"
-                      value={editForm.jobUrl}
-                      onChange={updateEdit("jobUrl")}
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className={labelClass} htmlFor="notes">
-                      Notes
-                    </label>
-                    <textarea
-                      id="notes"
-                      rows={3}
-                      className={inputClass}
-                      value={editForm.notes}
-                      onChange={updateEdit("notes")}
-                    />
-                  </div>
-                </div>
-                <div className="mt-4 flex gap-2">
-                  <button
-                    type="submit"
-                    disabled={busy}
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60"
-                  >
-                    {busy ? "Saving…" : "Save changes"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditing(false)}
-                    disabled={busy}
-                    className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 disabled:opacity-50"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <>
-                <dl className="mt-6 grid gap-4 rounded-2xl border border-zinc-100 bg-zinc-50/60 p-5 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-xs font-medium text-zinc-400">Source</dt>
-                    <dd className="mt-0.5 text-sm text-zinc-800">
-                      {SOURCE_PLATFORM_LABELS[app.sourcePlatform] ||
-                        app.sourcePlatform}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs font-medium text-zinc-400">
-                      Applied on
-                    </dt>
-                    <dd className="mt-0.5 text-sm text-zinc-800">
-                      {formatDate(app.applicationDate)}
-                    </dd>
-                  </div>
-                  {app.resumeVersion && (
-                    <div>
-                      <dt className="text-xs font-medium text-zinc-400">
-                        Résumé version
-                      </dt>
-                      <dd className="mt-0.5 text-sm text-zinc-800">
-                        {app.resumeVersion}
-                      </dd>
-                    </div>
-                  )}
-                  <div>
-                    <dt className="text-xs font-medium text-zinc-400">
-                      Monitoring
-                    </dt>
-                    <dd className="mt-0.5 text-sm text-zinc-800">
-                      {app.isOpen ? "Open — being tracked" : "Closed"}
-                    </dd>
-                  </div>
-                  {app.jobUrl && (
-                    <div className="sm:col-span-2">
-                      <dt className="text-xs font-medium text-zinc-400">
-                        Job link
-                      </dt>
-                      <dd className="mt-0.5 truncate text-sm">
-                        <a
-                          href={app.jobUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-indigo-600 hover:underline"
-                        >
-                          {app.jobUrl}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
-                  {app.notes && (
-                    <div className="sm:col-span-2">
-                      <dt className="text-xs font-medium text-zinc-400">
-                        Notes
-                      </dt>
-                      <dd className="mt-0.5 whitespace-pre-wrap text-sm text-zinc-800">
-                        {app.notes}
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-
-                {/* Status control */}
-                <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <label
-                    htmlFor="status"
-                    className="text-sm font-medium text-zinc-600"
-                  >
-                    Change status
-                  </label>
-                  <select
-                    id="status"
-                    value={app.currentStatus}
-                    disabled={saving}
-                    onChange={(e) => handleStatusChange(e.target.value)}
-                    className={`cursor-pointer rounded-lg border-0 px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:opacity-50 ${
-                      STATUS_STYLES[app.currentStatus] ||
-                      "bg-zinc-100 text-zinc-700"
-                    }`}
-                  >
-                    {APPLICATION_STATUS_VALUES.map((v) => (
-                      <option key={v} value={v}>
-                        {APPLICATION_STATUS_LABELS[v]}
-                      </option>
-                    ))}
-                  </select>
-                  {saving && (
-                    <span className="text-xs text-zinc-400">Saving…</span>
-                  )}
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
 
             {error && (
-              <p className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+              <p className="mt-4 rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-semibold text-rose-800">
                 {error}
               </p>
             )}
 
             {/* Recruiter Emails Linked to this Application */}
             {emails.length > 0 && (
-              <section className="mt-10">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                  Recruiter Emails ({emails.length})
+              <section className="mt-8">
+                <h2 className="text-base font-bold text-[#0F172A]">
+                  Linked Recruiter Emails ({emails.length})
                 </h2>
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-3 space-y-3">
                   {emails.map((m) => (
                     <li
                       key={m._id}
-                      className="rounded-xl border border-zinc-100 bg-white p-4"
+                      className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-xs font-semibold text-zinc-900">
+                        <span className="text-xs font-bold text-[#0F172A]">
                           {m.fromAddress}
                         </span>
-                        <span className="text-xs text-zinc-400">
+                        <span className="text-xs text-slate-400">
                           {formatDateTime(m.receivedAt)}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs font-medium text-zinc-800">
+                      <p className="mt-1.5 text-xs font-bold text-slate-800">
                         {m.subject}
                       </p>
                       {m.snippet && (
-                        <p className="mt-1 text-xs text-zinc-500 line-clamp-2">
+                        <p className="mt-1 text-xs text-[#64748B] line-clamp-2">
                           {m.snippet}
                         </p>
                       )}
@@ -521,28 +523,28 @@ export default function ApplicationDetail() {
 
             {/* Follow-up Drafts & Outreach */}
             {outreachLogs.length > 0 && (
-              <section className="mt-10">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                  Follow-Up Outreach ({outreachLogs.length})
+              <section className="mt-8">
+                <h2 className="text-base font-bold text-[#0F172A]">
+                  Follow-Up Outreach History ({outreachLogs.length})
                 </h2>
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-3 space-y-3">
                   {outreachLogs.map((log) => (
                     <li
                       key={log._id}
-                      className="rounded-xl border border-zinc-100 bg-white p-4"
+                      className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="rounded bg-indigo-50 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 capitalize">
+                        <span className="rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-bold text-[#0052CC] capitalize">
                           Status: {log.status.replace("_", " ")}
                         </span>
-                        <span className="text-xs text-zinc-400">
+                        <span className="text-xs text-slate-400">
                           {formatDateTime(log.createdAt)}
                         </span>
                       </div>
-                      <p className="mt-2 text-xs font-semibold text-zinc-900">
+                      <p className="mt-2 text-xs font-bold text-[#0F172A]">
                         {log.subject}
                       </p>
-                      <p className="mt-1 whitespace-pre-wrap text-xs text-zinc-600 bg-zinc-50 p-2.5 rounded-lg border border-zinc-100">
+                      <p className="mt-1.5 whitespace-pre-wrap text-xs text-slate-700 bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
                         {log.finalText || log.draftText}
                       </p>
                     </li>
@@ -552,34 +554,34 @@ export default function ApplicationDetail() {
             )}
 
             {/* Timeline */}
-            <section className="mt-10">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                Status history
+            <section className="mt-8">
+              <h2 className="text-base font-bold text-[#0F172A]">
+                Status History Timeline
               </h2>
               {history.length === 0 ? (
-                <p className="mt-4 rounded-2xl border border-dashed border-zinc-200 px-4 py-8 text-center text-sm text-zinc-400">
+                <p className="mt-3 rounded-2xl border border-dashed border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-400">
                   No status changes yet. Every change you or the agent make will
                   be logged here.
                 </p>
               ) : (
-                <ol className="mt-4 space-y-3">
+                <ol className="mt-3 space-y-3">
                   {history.map((h) => (
                     <li
                       key={h._id}
-                      className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-zinc-100 bg-white px-4 py-3"
+                      className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-2xl border border-slate-200/80 bg-white px-5 py-3.5 shadow-sm"
                     >
                       {h.previousStatus && (
                         <>
                           <StatusPill status={h.previousStatus} />
-                          <span className="text-zinc-400">→</span>
+                          <span className="text-slate-400">→</span>
                         </>
                       )}
                       <StatusPill status={h.newStatus} />
-                      <span className="ml-auto text-xs text-zinc-400">
-                        by {h.changedBy} · {formatDateTime(h.changedAt)}
+                      <span className="ml-auto text-xs text-slate-400 font-medium">
+                        by <span className="font-semibold text-slate-600">{h.changedBy}</span> · {formatDateTime(h.changedAt)}
                       </span>
                       {h.reason && (
-                        <p className="w-full text-xs text-zinc-500">
+                        <p className="w-full text-xs text-[#64748B] mt-1">
                           {h.reason}
                         </p>
                       )}
@@ -594,3 +596,4 @@ export default function ApplicationDetail() {
     </div>
   );
 }
+

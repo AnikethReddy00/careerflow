@@ -51,10 +51,10 @@ function toDateInput(value) {
 
 function SectionCard({ title, subtitle, children }) {
   return (
-    <section className="min-w-0 overflow-hidden rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
+    <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
       <div className="mb-4">
-        <h2 className="text-lg font-semibold tracking-tight text-zinc-900">{title}</h2>
-        {subtitle && <p className="mt-1 text-sm text-zinc-500">{subtitle}</p>}
+        <h2 className="text-base font-bold tracking-tight text-[#0F172A]">{title}</h2>
+        {subtitle && <p className="mt-1 text-xs sm:text-sm text-[#64748B]">{subtitle}</p>}
       </div>
       {children}
     </section>
@@ -74,14 +74,14 @@ function RepeaterSection({
     <SectionCard title={title} subtitle={subtitle}>
       <div className="space-y-4">
         {items.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 px-4 py-5 text-sm text-zinc-400">
+          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-sm text-slate-400">
             Nothing added yet.
           </div>
         ) : (
           items.map((item, index) => (
-            <div key={item._id || `${title}-${index}`} className="min-w-0 rounded-xl border border-zinc-200 p-4">
+            <div key={item._id || `${title}-${index}`} className="min-w-0 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <div className="text-sm font-medium text-zinc-700">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-700">
                   {title.slice(0, -1)} {index + 1}
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -89,7 +89,7 @@ function RepeaterSection({
                     type="button"
                     onClick={() => onMove(index, -1)}
                     disabled={index === 0}
-                    className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 disabled:opacity-40"
+                    className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 disabled:opacity-40"
                   >
                     Move up
                   </button>
@@ -97,14 +97,14 @@ function RepeaterSection({
                     type="button"
                     onClick={() => onMove(index, 1)}
                     disabled={index === items.length - 1}
-                    className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 disabled:opacity-40"
+                    className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 disabled:opacity-40"
                   >
                     Move down
                   </button>
                   <button
                     type="button"
                     onClick={() => onRemove(index)}
-                    className="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-medium text-rose-600"
+                    className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100"
                   >
                     Remove
                   </button>
@@ -118,9 +118,9 @@ function RepeaterSection({
       <button
         type="button"
         onClick={onAdd}
-        className="mt-4 rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100"
+        className="mt-4 rounded-xl border border-blue-200 bg-blue-50/70 px-4 py-2 text-xs font-bold text-[#0052CC] transition hover:bg-blue-100"
       >
-        Add {title.slice(0, -1)}
+        + Add {title.slice(0, -1)}
       </button>
     </SectionCard>
   );
@@ -253,7 +253,8 @@ export default function ProfilePage() {
       setProfile(data.profile || EMPTY_PROFILE);
       setCompleteness(data.completeness || completeness);
       setCandidateContext(data.candidateContext || null);
-      setNotice("Profile saved.");
+      setNotice("Profile saved successfully.");
+      setTimeout(() => setNotice(""), 4000);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -270,7 +271,7 @@ export default function ProfilePage() {
       parts.push(`Skills: ${profile.skills.join(", ")}`);
     }
     if (profile.experience?.length) {
-      parts.push("Experience:\n" + profile.experience.map((e) => `- ${e.title} at ${e.company}: ${e.highlights?.join(". ") || ""}`).join("\n"));
+      parts.push("Experience:\n" + profile.experience.map((e) => `- ${e.title} at ${e.company}: ${e.highlights?.join(". ") || e.description || ""}`).join("\n"));
     }
     if (profile.projects?.length) {
       parts.push("Projects:\n" + profile.projects.map((p) => `- ${p.name}: ${p.description || ""} (Tech: ${p.technologies?.join(", ") || ""})`).join("\n"));
@@ -322,69 +323,74 @@ export default function ProfilePage() {
   }
 
   const inputClass =
-    "block min-w-0 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
-  const labelClass = "mb-1 block text-xs font-medium text-zinc-600";
+    "block min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 transition focus:border-[#0052CC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/15";
+  const labelClass = "mb-1.5 block text-xs font-semibold text-slate-700";
 
   if (checking || loading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white text-sm text-zinc-400">
+      <div className="flex flex-1 items-center justify-center bg-[#F8FAFC] text-sm text-slate-400 font-sans">
         Loading…
       </div>
     );
   }
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden bg-zinc-50 text-zinc-900">
-      <header className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5 sm:px-6">
-        <Link href="/" className="flex min-w-0 items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-            C
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">
-            CareerFlow<span className="text-indigo-600"> AI</span>
-          </span>
-        </Link>
-        <nav className="flex min-w-0 flex-wrap items-center justify-end gap-4">
-          <Link href="/dashboard" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
-            Applications
+    <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden bg-[#F8FAFC] text-[#0F172A] font-sans">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+          <Link href="/" className="flex min-w-0 items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+              C
+            </span>
+            <span className="text-base font-bold tracking-tight text-[#0F172A]">
+              CareerFlow<span className="text-[#0052CC]"> AI</span>
+            </span>
           </Link>
-          <Link href="/agent" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
-            Agent
-          </Link>
-          <Link href="/browser" className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
-            Browser
-          </Link>
-          {user?.email && <span className="hidden max-w-[220px] truncate text-sm text-zinc-400 sm:inline">{user.email}</span>}
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            Log out
-          </button>
-        </nav>
+          <nav className="flex min-w-0 flex-wrap items-center justify-end gap-3">
+            <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Dashboard
+            </Link>
+            <Link href="/profile" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80">
+              Profile
+            </Link>
+            <Link href="/agent" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Agent Logs
+            </Link>
+            <Link href="/browser" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Browser
+            </Link>
+            {user?.email && <span className="hidden max-w-[220px] truncate text-xs text-slate-400 sm:inline font-mono">{user.email}</span>}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              Log out
+            </button>
+          </nav>
+        </div>
       </header>
 
-      <main className="mx-auto min-w-0 w-full max-w-6xl flex-1 px-4 pb-16 sm:px-6">
-        <div className="flex min-w-0 flex-wrap items-start justify-between gap-4 pt-6">
+      <main className="mx-auto min-w-0 w-full max-w-6xl flex-1 px-6 pb-16 pt-8">
+        <div className="flex min-w-0 flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-3xl font-semibold tracking-tight">Candidate profile</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A]">Candidate Profile</h1>
+            <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-[#64748B]">
               This is the single source of truth the application tracker, browser-assisted flow,
               and agent all read from when they need your reusable candidate data.
             </p>
           </div>
-          <div className="w-full rounded-2xl border border-indigo-100 bg-white p-4 shadow-sm sm:w-auto sm:min-w-[260px]">
-            <div className="text-xs font-semibold uppercase tracking-wider text-indigo-500">
-              Completeness
+          <div className="w-full rounded-2xl border border-blue-200/80 bg-white p-5 shadow-sm sm:w-auto sm:min-w-[260px]">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#0052CC]">
+              Profile Completeness
             </div>
-            <div className="mt-2 text-3xl font-semibold text-zinc-900">{completeness.percent}%</div>
-            <div className="mt-1 text-sm text-zinc-500">
+            <div className="mt-2 text-3xl font-extrabold text-[#0F172A]">{completeness.percent}%</div>
+            <div className="mt-1 text-xs text-[#64748B]">
               {completeness.completed} of {completeness.total} key profile areas filled.
             </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-100">
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
               <div
-                className="h-full rounded-full bg-indigo-600 transition-all"
+                className="h-full rounded-full bg-[#0052CC] transition-all"
                 style={{ width: `${completeness.percent}%` }}
               />
             </div>
@@ -394,12 +400,12 @@ export default function ProfilePage() {
         {(error || notice) && (
           <div className="mt-6 space-y-3">
             {error && (
-              <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-900 shadow-sm">
                 {error}
               </p>
             )}
             {notice && (
-              <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900 shadow-sm">
                 {notice}
               </p>
             )}
@@ -407,25 +413,25 @@ export default function ProfilePage() {
         )}
 
         {/* AI Resume vs JD Gap Analyzer Chatbot */}
-        <div className="mt-8 overflow-hidden rounded-2xl border border-indigo-200/80 bg-white shadow-sm">
-          <div className="border-b border-indigo-100 bg-indigo-50/50 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-8 overflow-hidden rounded-2xl border border-blue-200/80 bg-white shadow-sm">
+          <div className="border-b border-blue-100 bg-blue-50/50 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white shadow-sm shadow-indigo-200">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
                 🤖
               </span>
               <div>
-                <h2 className="text-base font-bold text-zinc-900">
+                <h2 className="text-base font-bold text-[#0F172A]">
                   AI Resume vs JD Gap Analyzer & Coach
                 </h2>
-                <p className="text-xs text-zinc-500">
-                  Powered by AI. Paste your resume and any job description to discover what you are lacking.
+                <p className="text-xs text-[#64748B]">
+                  Powered by Groq AI. Paste your resume and any job description to discover what you are lacking.
                 </p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setShowAnalyzer((v) => !v)}
-              className="text-xs font-semibold text-indigo-700 hover:text-indigo-900 underline"
+              className="text-xs font-semibold text-[#0052CC] hover:text-[#0043A4] underline"
             >
               {showAnalyzer ? "Collapse Analyzer" : "Open Analyzer"}
             </button>
@@ -436,20 +442,20 @@ export default function ProfilePage() {
               <div className="grid gap-4 lg:grid-cols-2">
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-zinc-700">
+                    <label className="text-xs font-bold text-slate-700">
                       Your Resume Text
                     </label>
                     <button
                       type="button"
                       onClick={handleFillFromProfile}
-                      className="text-[11px] font-medium text-indigo-600 hover:text-indigo-800"
+                      className="text-xs font-semibold text-[#0052CC] hover:text-[#0043A4]"
                     >
                       + Pull from Saved Profile
                     </button>
                   </div>
                   <textarea
                     rows={7}
-                    className="w-full rounded-xl border border-zinc-200 p-3 text-xs text-zinc-800 placeholder-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-sans"
+                    className="w-full rounded-xl border border-slate-200 p-3.5 text-xs text-slate-800 placeholder-slate-400 focus:border-[#0052CC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/15 font-sans leading-relaxed"
                     placeholder="Paste your full resume text here, or click 'Pull from Saved Profile' above..."
                     value={resumeText}
                     onChange={(e) => setResumeText(e.target.value)}
@@ -457,12 +463,12 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-zinc-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
                     Target Job Description (JD) <span className="text-rose-500">*</span>
                   </label>
                   <textarea
                     rows={7}
-                    className="w-full rounded-xl border border-zinc-200 p-3 text-xs text-zinc-800 placeholder-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-sans"
+                    className="w-full rounded-xl border border-slate-200 p-3.5 text-xs text-slate-800 placeholder-slate-400 focus:border-[#0052CC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/15 font-sans leading-relaxed"
                     placeholder="Paste the job requirements, responsibilities, or entire job description here..."
                     value={jdText}
                     onChange={(e) => setJdText(e.target.value)}
@@ -471,7 +477,7 @@ export default function ProfilePage() {
               </div>
 
               {analysisError && (
-                <p className="mt-3 text-xs font-medium text-rose-600">{analysisError}</p>
+                <p className="mt-3 text-xs font-semibold text-rose-600">{analysisError}</p>
               )}
 
               <div className="mt-4 flex items-center gap-3">
@@ -479,14 +485,14 @@ export default function ProfilePage() {
                   type="button"
                   onClick={() => handleAnalyze()}
                   disabled={analyzing || !jdText.trim()}
-                  className="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-500 disabled:opacity-50"
+                  className="rounded-xl bg-[#0052CC] px-5 py-2.5 text-xs font-bold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-50"
                 >
                   {analyzing ? "Analyzing Gap with AI..." : "🔍 Analyze Resume Gaps with AI"}
                 </button>
                 {analysisResult && (
-                  <span className="text-xs font-medium text-zinc-500">
+                  <span className="text-xs font-semibold text-[#64748B]">
                     Fit Score:{" "}
-                    <span className="font-bold text-indigo-600">
+                    <span className="font-extrabold text-[#0052CC]">
                       {analysisResult.matchScore}%
                     </span>
                   </span>
@@ -495,27 +501,27 @@ export default function ProfilePage() {
 
               {/* Chat & Analysis Results Area */}
               {chatMessages.length > 0 && (
-                <div className="mt-6 rounded-xl border border-zinc-200 bg-zinc-50/70 p-5">
+                <div className="mt-6 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-5">
                   <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
                     {chatMessages.map((msg, idx) => (
                       <div key={idx} className="space-y-3">
                         {msg.role === "user" ? (
                           <div className="flex justify-end">
-                            <div className="rounded-2xl bg-indigo-600 px-4 py-2.5 text-xs text-white max-w-[85%] shadow-sm">
+                            <div className="rounded-2xl bg-[#0052CC] px-4 py-2.5 text-xs text-white max-w-[85%] shadow-sm font-medium">
                               {msg.text}
                             </div>
                           </div>
                         ) : (
                           <div className="space-y-3">
                             <div className="flex items-start gap-2.5">
-                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-xs font-bold text-indigo-700">
+                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-xs font-bold text-[#0052CC]">
                                 AI
                               </span>
-                              <div className="flex-1 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm text-xs text-zinc-800">
+                              <div className="flex-1 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm text-xs text-slate-800">
                                 <p className="leading-relaxed font-medium">{msg.text}</p>
 
                                 {msg.analysis && (
-                                  <div className="mt-4 space-y-3 border-t border-zinc-100 pt-3">
+                                  <div className="mt-4 space-y-3 border-t border-slate-100 pt-3">
                                     {/* Missing Skills / What is Lacking */}
                                     {msg.analysis.missingSkills?.length > 0 && (
                                       <div>
@@ -526,7 +532,7 @@ export default function ProfilePage() {
                                           {msg.analysis.missingSkills.map((skill, i) => (
                                             <span
                                               key={i}
-                                              className="rounded-md bg-rose-50 border border-rose-200 px-2 py-0.5 text-[11px] font-semibold text-rose-800"
+                                              className="rounded-lg bg-rose-50 border border-rose-200/80 px-2.5 py-0.5 text-[11px] font-bold text-rose-800"
                                             >
                                               {skill}
                                             </span>
@@ -545,7 +551,7 @@ export default function ProfilePage() {
                                           {msg.analysis.matchingSkills.map((skill, i) => (
                                             <span
                                               key={i}
-                                              className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-800"
+                                              className="rounded-lg bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800"
                                             >
                                               {skill}
                                             </span>
@@ -560,7 +566,7 @@ export default function ProfilePage() {
                                         <h4 className="font-bold text-amber-800 text-xs">
                                           ⚠️ Experience & Depth Gaps:
                                         </h4>
-                                        <ul className="mt-1 list-disc list-inside space-y-0.5 text-zinc-700">
+                                        <ul className="mt-1 list-disc list-inside space-y-0.5 text-slate-700">
                                           {msg.analysis.experienceGaps.map((gap, i) => (
                                             <li key={i}>{gap}</li>
                                           ))}
@@ -571,10 +577,10 @@ export default function ProfilePage() {
                                     {/* Action Recommendations */}
                                     {msg.analysis.recommendations?.length > 0 && (
                                       <div>
-                                        <h4 className="font-bold text-indigo-900 text-xs">
+                                        <h4 className="font-bold text-[#0052CC] text-xs">
                                           💡 Actionable Recommendations:
                                         </h4>
-                                        <ul className="mt-1 list-disc list-inside space-y-0.5 text-zinc-700">
+                                        <ul className="mt-1 list-disc list-inside space-y-0.5 text-slate-700">
                                           {msg.analysis.recommendations.map((rec, i) => (
                                             <li key={i}>{rec}</li>
                                           ))}
@@ -592,10 +598,10 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Follow-up question bar */}
-                  <div className="mt-4 flex gap-2 pt-2 border-t border-zinc-200">
+                  <div className="mt-4 flex gap-2 pt-3 border-t border-slate-200">
                     <input
                       type="text"
-                      className="flex-1 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs text-zinc-800 placeholder-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:border-[#0052CC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/15"
                       placeholder="Ask a follow up (e.g. 'How should I rewrite my bullet points for this?', 'Suggest projects to bridge this gap')..."
                       value={followUpInput}
                       onChange={(e) => setFollowUpInput(e.target.value)}
@@ -610,7 +616,7 @@ export default function ProfilePage() {
                       type="button"
                       onClick={() => handleAnalyze(followUpInput)}
                       disabled={analyzing || !followUpInput.trim()}
-                      className="rounded-xl bg-zinc-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-50"
+                      className="rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0043A4] disabled:opacity-50"
                     >
                       {analyzing ? "..." : "Send"}
                     </button>
@@ -622,14 +628,14 @@ export default function ProfilePage() {
         </div>
 
         <div className="mt-8 grid min-w-0 gap-6">
-          <SectionCard title="Personal information" subtitle="Core contact details reused across applications.">
+          <SectionCard title="Personal Information" subtitle="Core contact details reused across applications.">
             <div className="grid min-w-0 gap-4 md:grid-cols-2">
               {[
-                ["firstName", "First name"],
-                ["lastName", "Last name"],
-                ["email", "Email"],
-                ["phone", "Phone"],
-                ["location", "Location"],
+                ["firstName", "First Name"],
+                ["lastName", "Last Name"],
+                ["email", "Email Address"],
+                ["phone", "Phone Number"],
+                ["location", "Location / City"],
               ].map(([field, label]) => (
                 <label key={field} className="min-w-0">
                   <span className={labelClass}>{label}</span>
@@ -663,9 +669,9 @@ export default function ProfilePage() {
               <div className="grid min-w-0 gap-4 md:grid-cols-2">
                 <label className="min-w-0"><span className={labelClass}>Institution</span><input value={item.institution || ""} onChange={(e) => updateArrayField("education", index, "institution", e.target.value)} className={inputClass} /></label>
                 <label className="min-w-0"><span className={labelClass}>Degree</span><input value={item.degree || ""} onChange={(e) => updateArrayField("education", index, "degree", e.target.value)} className={inputClass} /></label>
-                <label className="min-w-0"><span className={labelClass}>Field</span><input value={item.field || ""} onChange={(e) => updateArrayField("education", index, "field", e.target.value)} className={inputClass} /></label>
-                <label className="min-w-0"><span className={labelClass}>Start date</span><input type="date" value={toDateInput(item.startDate)} onChange={(e) => updateArrayField("education", index, "startDate", e.target.value)} className={inputClass} /></label>
-                <label className="min-w-0"><span className={labelClass}>End date</span><input type="date" value={toDateInput(item.endDate)} onChange={(e) => updateArrayField("education", index, "endDate", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>Field of Study</span><input value={item.field || ""} onChange={(e) => updateArrayField("education", index, "field", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>Start Date</span><input type="date" value={toDateInput(item.startDate)} onChange={(e) => updateArrayField("education", index, "startDate", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>End Date</span><input type="date" value={toDateInput(item.endDate)} onChange={(e) => updateArrayField("education", index, "endDate", e.target.value)} className={inputClass} /></label>
                 <label className="md:col-span-2"><span className={labelClass}>Description</span><textarea value={item.description || ""} onChange={(e) => updateArrayField("education", index, "description", e.target.value)} rows={4} className={inputClass} /></label>
               </div>
             )}
@@ -690,9 +696,9 @@ export default function ProfilePage() {
             renderItem={(item, index) => (
               <div className="grid min-w-0 gap-4 md:grid-cols-2">
                 <label className="min-w-0"><span className={labelClass}>Company</span><input value={item.company || ""} onChange={(e) => updateArrayField("experience", index, "company", e.target.value)} className={inputClass} /></label>
-                <label className="min-w-0"><span className={labelClass}>Title</span><input value={item.title || ""} onChange={(e) => updateArrayField("experience", index, "title", e.target.value)} className={inputClass} /></label>
-                <label className="min-w-0"><span className={labelClass}>Start date</span><input type="date" value={toDateInput(item.startDate)} onChange={(e) => updateArrayField("experience", index, "startDate", e.target.value)} className={inputClass} /></label>
-                <label className="min-w-0"><span className={labelClass}>End date</span><input type="date" value={toDateInput(item.endDate)} onChange={(e) => updateArrayField("experience", index, "endDate", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>Role Title</span><input value={item.title || ""} onChange={(e) => updateArrayField("experience", index, "title", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>Start Date</span><input type="date" value={toDateInput(item.startDate)} onChange={(e) => updateArrayField("experience", index, "startDate", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>End Date</span><input type="date" value={toDateInput(item.endDate)} onChange={(e) => updateArrayField("experience", index, "endDate", e.target.value)} className={inputClass} /></label>
                 <label className="md:col-span-2"><span className={labelClass}>Description</span><textarea value={item.description || ""} onChange={(e) => updateArrayField("experience", index, "description", e.target.value)} rows={4} className={inputClass} /></label>
                 <label className="md:col-span-2"><span className={labelClass}>Skills used</span><input value={joinList(item.skills)} onChange={(e) => updateArrayField("experience", index, "skills", splitList(e.target.value))} placeholder="React, Node.js, SQL" className={inputClass} /></label>
               </div>
@@ -715,8 +721,8 @@ export default function ProfilePage() {
             onMove={(index, direction) => moveArrayItem("projects", index, direction)}
             renderItem={(item, index) => (
               <div className="grid min-w-0 gap-4 md:grid-cols-2">
-                <label className="min-w-0"><span className={labelClass}>Name</span><input value={item.name || ""} onChange={(e) => updateArrayField("projects", index, "name", e.target.value)} className={inputClass} /></label>
-                <label className="min-w-0"><span className={labelClass}>URL</span><input value={item.url || ""} onChange={(e) => updateArrayField("projects", index, "url", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>Project Name</span><input value={item.name || ""} onChange={(e) => updateArrayField("projects", index, "name", e.target.value)} className={inputClass} /></label>
+                <label className="min-w-0"><span className={labelClass}>Project URL</span><input value={item.url || ""} onChange={(e) => updateArrayField("projects", index, "url", e.target.value)} className={inputClass} /></label>
                 <label className="md:col-span-2"><span className={labelClass}>Description</span><textarea value={item.description || ""} onChange={(e) => updateArrayField("projects", index, "description", e.target.value)} rows={4} className={inputClass} /></label>
                 <label className="md:col-span-2"><span className={labelClass}>Technologies</span><input value={joinList(item.technologies)} onChange={(e) => updateArrayField("projects", index, "technologies", splitList(e.target.value))} placeholder="Next.js, MongoDB, Playwright" className={inputClass} /></label>
               </div>
@@ -770,7 +776,7 @@ export default function ProfilePage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Work authorization" subtitle="Stored separately so later automations can reason about eligibility and sponsorship needs.">
+          <SectionCard title="Work Authorization" subtitle="Stored separately so later automations can reason about eligibility and sponsorship needs.">
             <div className="grid min-w-0 gap-4 md:grid-cols-2">
               <label className="min-w-0">
                 <span className={labelClass}>Current status</span>
@@ -802,7 +808,7 @@ export default function ProfilePage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Preferences" subtitle="This helps future ranking, filtering, and job-fit prompts.">
+          <SectionCard title="Job Preferences" subtitle="Helps future ranking, filtering, and job-fit prompts.">
             <div className="grid min-w-0 gap-4 md:grid-cols-2">
               <label className="min-w-0"><span className={labelClass}>Job types</span><input value={joinList(profile.preferences.jobTypes)} onChange={(e) => updatePreferences("jobTypes", splitList(e.target.value))} placeholder="Full-time, Internship" className={inputClass} /></label>
               <label className="min-w-0"><span className={labelClass}>Preferred locations</span><input value={joinList(profile.preferences.preferredLocations)} onChange={(e) => updatePreferences("preferredLocations", splitList(e.target.value))} placeholder="Chennai, Bengaluru, Remote" className={inputClass} /></label>
@@ -811,7 +817,7 @@ export default function ProfilePage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Resume" subtitle="Reference info plus extracted text for later autofill and LLM prompts.">
+          <SectionCard title="Resume Data" subtitle="Reference info plus extracted text for later autofill and LLM prompts.">
             <div className="grid min-w-0 gap-4 md:grid-cols-2">
               <label className="min-w-0"><span className={labelClass}>File name</span><input value={profile.resume.fileName || ""} onChange={(e) => updateResume("fileName", e.target.value)} className={inputClass} /></label>
               <label className="min-w-0"><span className={labelClass}>File type</span><input value={profile.resume.fileType || ""} onChange={(e) => updateResume("fileType", e.target.value)} placeholder="pdf, docx" className={inputClass} /></label>
@@ -819,25 +825,20 @@ export default function ProfilePage() {
               <label className="md:col-span-2"><span className={labelClass}>Extracted resume text</span><textarea value={profile.resume.extractedText || ""} onChange={(e) => updateResume("extractedText", e.target.value)} rows={8} className={inputClass} /></label>
             </div>
           </SectionCard>
-
-          <SectionCard title="Candidate context preview" subtitle="This is the sanitized read-only shape other agentic flows should consume.">
-            <pre className="max-h-[360px] min-w-0 max-w-full overflow-auto whitespace-pre-wrap break-words rounded-2xl bg-zinc-950 p-4 text-[12.5px] leading-6 text-zinc-100">
-              {JSON.stringify(candidateContext, null, 2)}
-            </pre>
-          </SectionCard>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-8 flex justify-end">
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
+            className="rounded-xl bg-[#0052CC] px-6 py-3 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-60"
           >
-            {saving ? "Saving…" : "Save profile"}
+            {saving ? "Saving…" : "Save Profile Changes"}
           </button>
         </div>
       </main>
     </div>
   );
 }
+

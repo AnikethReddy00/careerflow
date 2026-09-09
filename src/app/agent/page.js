@@ -24,8 +24,8 @@ function formatDateTime(value) {
 function DecisionBadge({ decision }) {
   return (
     <span
-      className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
-        AGENT_DECISION_STYLES[decision] || "bg-zinc-100 text-zinc-600"
+      className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold ${
+        AGENT_DECISION_STYLES[decision] || "bg-slate-100 text-slate-600 border border-slate-200"
       }`}
     >
       {AGENT_DECISION_LABELS[decision] || decision}
@@ -102,15 +102,12 @@ export default function AgentActivity() {
     })();
   }, [fetchGmailStatus]);
 
-  // Turn the ?gmail= flag the OAuth callback set into a message, then strip it
-  // from the URL so a refresh doesn't re-show it. Wrapped in an IIFE so setState
-  // isn't called synchronously in the effect body (React 19 lint rule).
   useEffect(() => {
     (async () => {
       const flag = new URLSearchParams(window.location.search).get("gmail");
       if (!flag) return;
       const messages = {
-        connected: { tone: "ok", text: "Gmail connected." },
+        connected: { tone: "ok", text: "Gmail connected successfully." },
         denied: { tone: "err", text: "Gmail connection was cancelled." },
         notoken: {
           tone: "err",
@@ -126,7 +123,7 @@ export default function AgentActivity() {
     })();
   }, []);
 
-  async function handleRun() {
+  async function handleRunAgent() {
     setRunning(true);
     setError("");
     setLastSummary(null);
@@ -163,8 +160,6 @@ export default function AgentActivity() {
       const res = await fetch("/api/gmail/sync", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        // 409 = the Gmail link expired; nudge the user to reconnect rather than
-        // showing a raw error.
         if (res.status === 409) {
           setSyncError(
             data.message || "Your Gmail connection expired — reconnect Gmail."
@@ -189,103 +184,106 @@ export default function AgentActivity() {
 
   if (checking) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white text-sm text-zinc-400">
+      <div className="flex flex-1 items-center justify-center bg-[#F8FAFC] text-sm text-slate-400 font-sans">
         Loading…
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col bg-white text-zinc-900">
-      <header className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-5">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-            C
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">
-            CareerFlow<span className="text-indigo-600"> AI</span>
-          </span>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            ← Applications
-          </Link>
-          <Link
-            href="/profile"
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/browser"
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            Browser
-          </Link>
-          {user?.email && (
-            <span className="hidden text-sm text-zinc-400 sm:inline">
-              {user.email}
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A] font-sans">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+              C
             </span>
-          )}
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="text-sm font-medium text-zinc-500 transition hover:text-zinc-800"
-          >
-            Log out
-          </button>
-        </nav>
+            <span className="text-base font-bold tracking-tight text-[#0F172A]">
+              CareerFlow<span className="text-[#0052CC]"> AI</span>
+            </span>
+          </Link>
+          <nav className="flex items-center gap-3">
+            <Link
+              href="/dashboard"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/profile"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Profile
+            </Link>
+            <Link
+              href="/agent"
+              className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80"
+            >
+              Agent Logs
+            </Link>
+            <Link
+              href="/browser"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Browser
+            </Link>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              Log out
+            </button>
+          </nav>
+        </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-16 pt-6">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-6 pb-16 pt-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Agent activity
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A]">
+              Agent Activity & Audit Logs
             </h1>
-            <p className="mt-1 max-w-xl text-sm text-zinc-500">
+            <p className="mt-1 max-w-xl text-sm text-[#64748B]">
               Every cycle, the agent reviews each open application, decides what
               to do, and records it here — including when it decides to wait.
             </p>
           </div>
           <button
             type="button"
-            onClick={handleRun}
+            onClick={handleRunAgent}
             disabled={running}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60"
+            className="rounded-xl bg-[#0052CC] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-60"
           >
-            {running ? "Running…" : "Run agent now"}
+            {running ? "Running…" : "⚡ Run Agent Loop"}
           </button>
         </div>
 
-        {/* Gmail connection */}
-        <section className="mt-6 rounded-xl border border-zinc-200 bg-zinc-50/60 px-4 py-3">
+        {/* Gmail connection Card */}
+        <section className="mt-6 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-base shadow-sm ring-1 ring-zinc-200">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-lg border border-blue-200/60">
                 ✉️
               </span>
               <div>
-                <p className="text-sm font-medium text-zinc-800">
-                  Gmail connection
+                <p className="text-sm font-bold text-[#0F172A]">
+                  Gmail OAuth Connection
                 </p>
                 {gmailLoading ? (
-                  <p className="text-sm text-zinc-400">Checking…</p>
+                  <p className="text-xs text-slate-400">Checking…</p>
                 ) : gmail?.connected ? (
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-xs text-[#64748B] mt-0.5">
                     Connected as{" "}
-                    <span className="font-medium text-zinc-700">
+                    <span className="font-semibold text-slate-800 font-mono">
                       {gmail.email}
                     </span>{" "}
-                    — the agent can read recruiter replies.
+                    — the agent reads and classifies recruiter replies automatically.
                   </p>
                 ) : (
-                  <p className="text-sm text-zinc-500">
-                    Not connected. Connect Gmail so the agent can read recruiter
-                    replies and update status automatically.
+                  <p className="text-xs text-[#64748B] mt-0.5">
+                    Not connected. Connect Gmail so the agent can scan recruiter
+                    replies and update pipeline statuses.
                   </p>
                 )}
               </div>
@@ -296,22 +294,22 @@ export default function AgentActivity() {
                   type="button"
                   onClick={handleDisconnectGmail}
                   disabled={gmailBusy}
-                  className="shrink-0 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-60"
+                  className="shrink-0 rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
                 >
                   {gmailBusy ? "Disconnecting…" : "Disconnect"}
                 </button>
               ) : (
                 <a
                   href="/api/auth/google/start"
-                  className="shrink-0 rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-zinc-700"
+                  className="shrink-0 rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-bold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
                 >
-                  Connect Gmail
+                  Connect Gmail →
                 </a>
               ))}
           </div>
           {gmailNotice && (
             <p
-              className={`mt-2 text-sm ${
+              className={`mt-3 text-xs font-semibold ${
                 gmailNotice.tone === "ok" ? "text-emerald-700" : "text-rose-700"
               }`}
             >
@@ -320,74 +318,64 @@ export default function AgentActivity() {
           )}
         </section>
 
-        {/* Inbox — read-only view of the messages the agent can see */}
+        {/* Inbox Section */}
         {gmail?.connected && (
-          <section className="mt-6">
+          <section className="mt-8 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                Inbox
-              </h2>
+              <div>
+                <h2 className="text-base font-bold text-[#0F172A]">
+                  Synced Mailbox
+                </h2>
+                <p className="text-xs text-[#64748B]">Messages retrieved from Gmail and triaged by Groq AI.</p>
+              </div>
               <button
                 type="button"
                 onClick={handleSyncInbox}
                 disabled={syncing}
-                className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-60"
+                className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60"
               >
-                {syncing ? "Syncing…" : "Sync inbox"}
+                {syncing ? "Syncing…" : "🔄 Sync Inbox Now"}
               </button>
             </div>
 
             {syncError && (
-              <p className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+              <p className="mt-4 rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-semibold text-rose-800">
                 {syncError}
               </p>
             )}
 
-            {messages !== null && messages.length > 0 && !classified && (
-              <p className="mt-3 text-xs text-zinc-400">
-                Showing your inbox without AI labels — set GROQ_API_KEY in
-                .env.local to classify these.
-              </p>
-            )}
-
-            {messages !== null && messages.length === 0 && !syncError && (
-              <p className="mt-3 text-sm text-zinc-400">
-                No recent inbox messages found.
-              </p>
-            )}
-
             {messages !== null && messages.length > 0 && (
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-4 divide-y divide-slate-100">
                 {messages.map((m) => (
                   <li
                     key={m.id}
-                    className="rounded-xl border border-zinc-100 bg-white px-4 py-3"
+                    className="py-3.5 first:pt-0 last:pb-0"
                   >
                     <div className="flex items-center gap-2">
                       {m.classification && (
                         <span
-                          className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                          className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                             EMAIL_CLASSIFICATION_STYLES[m.classification] ||
-                            "bg-zinc-100 text-zinc-600"
+                            "bg-slate-100 text-slate-600 border border-slate-200"
                           }`}
                         >
                           {EMAIL_CLASSIFICATION_LABELS[m.classification] ||
                             m.classification}
                         </span>
                       )}
-                      <p className="truncate text-sm font-semibold text-zinc-900">
+                      <p className="truncate text-xs font-bold text-[#0F172A]">
                         {m.subject || "(no subject)"}
                       </p>
-                      <span className="ml-auto shrink-0 text-xs text-zinc-400">
+                      <span className="ml-auto shrink-0 text-xs text-slate-400">
                         {formatDateTime(m.date)}
                       </span>
                     </div>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                      <span className="font-medium text-zinc-800">
+                      <span className="font-semibold text-slate-700">
                         {m.senderName || m.from}
                       </span>
                       {m.senderEmail && (
-                        <span className="text-zinc-500 font-mono">
+                        <span className="text-slate-500 font-mono text-[11px]">
                           &lt;{m.senderEmail}&gt;
                         </span>
                       )}
@@ -395,13 +383,13 @@ export default function AgentActivity() {
                         href={`mailto:${m.senderEmail || m.from}?subject=${encodeURIComponent(
                           m.subject?.startsWith("Re:") ? m.subject : `Re: ${m.subject || ""}`
                         )}`}
-                        className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[11px] font-medium text-indigo-600 hover:bg-zinc-50"
+                        className="rounded-lg border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-[#0052CC] hover:bg-slate-50"
                       >
-                        Reply
+                        ✉️ Reply
                       </a>
                     </div>
                     {m.snippet && (
-                      <p className="mt-1 line-clamp-2 text-sm text-zinc-600">
+                      <p className="mt-1 line-clamp-2 text-xs text-[#64748B]">
                         {m.snippet}
                       </p>
                     )}
@@ -413,68 +401,68 @@ export default function AgentActivity() {
         )}
 
         {lastSummary && (
-          <p className="mt-4 rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-800">
+          <p className="mt-4 rounded-xl bg-blue-50/80 border border-blue-200/80 px-4 py-3 text-xs font-semibold text-[#0052CC]">
             {summaryLine(lastSummary)}
           </p>
         )}
 
         {error && (
-          <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+          <p className="mt-4 rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-semibold text-rose-800">
             {error}
           </p>
         )}
 
         <section className="mt-8">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-400">
-            Decision log
+          <h2 className="mb-3 text-base font-bold text-[#0F172A]">
+            Autonomous Decision Log
           </h2>
 
           {loading ? (
-            <p className="py-10 text-center text-sm text-zinc-400">Loading…</p>
+            <p className="py-10 text-center text-sm text-slate-400">Loading…</p>
           ) : logs.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-zinc-200 py-14 text-center">
-              <p className="text-sm font-medium text-zinc-600">
+            <div className="rounded-2xl border border-dashed border-slate-200 py-14 text-center bg-white">
+              <p className="text-sm font-semibold text-slate-700">
                 No agent activity yet
               </p>
-              <p className="mt-1 text-sm text-zinc-400">
-                Click “Run agent now” to have it review your open applications.
+              <p className="mt-1 text-xs text-slate-400">
+                Click “Run agent loop” to review your open applications.
               </p>
             </div>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {logs.map((log) => (
                 <li
                   key={log._id}
-                  className="rounded-xl border border-zinc-100 bg-white px-4 py-3"
+                  className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm"
                 >
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <DecisionBadge decision={log.decision} />
                     {log.applicationId ? (
                       <Link
                         href={`/dashboard/${log.applicationId._id}`}
-                        className="truncate text-sm font-medium text-zinc-800 hover:underline"
+                        className="truncate text-xs font-bold text-[#0F172A] hover:text-[#0052CC]"
                       >
                         {log.applicationId.roleTitle}
-                        <span className="text-zinc-400">
+                        <span className="text-slate-400 font-normal">
                           {" "}
                           @ {log.applicationId.companyName}
                         </span>
                       </Link>
                     ) : (
-                      <span className="text-sm text-zinc-400">
+                      <span className="text-xs text-slate-400">
                         (application removed)
                       </span>
                     )}
-                    <span className="ml-auto text-xs text-zinc-400">
+                    <span className="ml-auto text-[11px] text-slate-400 font-medium">
                       {formatDateTime(log.cycleAt)}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-zinc-600">
+                  <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
                     {log.reasoningSummary}
                   </p>
                   {log.actionTaken && (
-                    <p className="mt-0.5 text-xs text-zinc-400">
-                      {log.actionTaken}
+                    <p className="mt-1 text-[11px] text-[#0052CC] font-semibold">
+                      Action: {log.actionTaken}
                     </p>
                   )}
                 </li>
@@ -486,3 +474,4 @@ export default function AgentActivity() {
     </div>
   );
 }
+

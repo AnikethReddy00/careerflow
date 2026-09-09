@@ -345,8 +345,8 @@ export default function Dashboard() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
-  const labelClass = "mb-1 block text-xs font-medium text-zinc-600";
+    "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-[#0F172A] placeholder-slate-400 transition focus:border-[#0052CC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/15";
+  const labelClass = "mb-1.5 block text-xs font-semibold text-slate-700";
 
   const filteredApps = apps.filter((app) => {
     if (statusFilter === "all") return true;
@@ -357,52 +357,58 @@ export default function Dashboard() {
 
   if (checking) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white text-sm text-zinc-400">
+      <div className="flex flex-1 items-center justify-center bg-[#F8FAFC] text-sm text-slate-400 font-sans">
         Loading…
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50/50 text-zinc-900">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A] font-sans">
       {/* Navigation Header */}
-      <header className="border-b border-zinc-200 bg-white sticky top-0 z-20">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white shadow-sm shadow-indigo-200">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
               C
             </span>
-            <span className="text-base font-semibold tracking-tight text-zinc-900">
-              CareerFlow<span className="text-indigo-600"> AI</span>
+            <span className="text-base font-bold tracking-tight text-[#0F172A]">
+              CareerFlow<span className="text-[#0052CC]"> AI</span>
             </span>
           </Link>
-          <nav className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/60 px-3 py-1 text-xs font-medium text-emerald-800 sm:flex">
+          <nav className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3 py-1 text-xs font-semibold text-emerald-800 sm:flex">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               Groq AI Active (Ultra-Fast)
             </div>
             <Link
+              href="/dashboard"
+              className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80"
+            >
+              Dashboard
+            </Link>
+            <Link
               href="/profile"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >
               Profile
             </Link>
             <Link
               href="/agent"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >
               Agent Logs
             </Link>
             <Link
               href="/browser"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >
               Browser
             </Link>
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
             >
               Log out
             </button>
@@ -413,91 +419,91 @@ export default function Dashboard() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">
         {/* Banner notices */}
         {notice && (
-          <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800 flex items-center justify-between">
+          <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900 flex items-center justify-between shadow-sm">
             <span>{notice}</span>
-            <button onClick={() => setNotice("")} className="text-emerald-600 hover:text-emerald-900">✕</button>
+            <button onClick={() => setNotice("")} className="text-emerald-700 hover:text-emerald-950 font-bold">✕</button>
           </div>
         )}
         {error && (
-          <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-800 flex items-center justify-between">
+          <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-900 flex items-center justify-between shadow-sm">
             <span>{error}</span>
-            <button onClick={() => setError("")} className="text-rose-600 hover:text-rose-900">✕</button>
+            <button onClick={() => setError("")} className="text-rose-700 hover:text-rose-950 font-bold">✕</button>
           </div>
         )}
 
         {/* Command Center Control Bar */}
-        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A]">
                 Application Command Center
               </h1>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm text-[#64748B]">
                 Single unified pipeline: intake with AI auto-fill, auto-monitor with reasoner, and review follow-ups.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={handleSyncGmail}
                 disabled={syncingGmail}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50"
               >
-                <span>{syncingGmail ? "Syncing..." : "Sync Recruiter Mail"}</span>
+                <span>{syncingGmail ? "Syncing Gmail..." : "✉️ Sync Recruiter Mail"}</span>
               </button>
               <button
                 type="button"
                 onClick={handleRunAgent}
                 disabled={runningAgent}
-                className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#0052CC] px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-50"
               >
-                <span>{runningAgent ? "Evaluating..." : "Run Agent Loop"}</span>
+                <span>{runningAgent ? "Evaluating..." : "⚡ Run Agent Loop"}</span>
               </button>
             </div>
           </div>
 
           {agentSummary && (
-            <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50/60 px-4 py-3 text-xs text-indigo-900">
-              <span className="font-semibold">Last Agent Cycle:</span> Scanned {agentSummary.scanned} applications — {agentSummary.drafted} drafted, {agentSummary.escalated} escalated, {agentSummary.noAction} waiting.
+            <div className="mt-4 rounded-xl border border-blue-200/70 bg-blue-50/70 px-4 py-3 text-xs text-[#0052CC]">
+              <span className="font-bold">Last Agent Cycle:</span> Scanned {agentSummary.scanned} applications — {agentSummary.drafted} drafted, {agentSummary.escalated} escalated, {agentSummary.noAction} waiting.
             </div>
           )}
         </div>
 
         {/* Synced Recruiter Mail & AI Triage Feed */}
         {syncedMessages.length > 0 && (
-          <div className="mt-8 rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
+          <div className="mt-8 rounded-2xl border border-blue-200/80 bg-white p-6 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0052CC] text-xs font-bold text-white">
                     {syncedMessages.length}
                   </span>
-                  <h2 className="text-base font-semibold text-zinc-900">
+                  <h2 className="text-base font-bold text-[#0F172A]">
                     Synced Recruiter Mail ({syncedMessages.length} Messages Triaged)
                   </h2>
                 </div>
-                <p className="text-xs text-zinc-500 mt-0.5">
+                <p className="text-xs text-[#64748B] mt-0.5">
                   Inbox scanned and categorized by AI.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowMessages((v) => !v)}
-                className="text-xs font-medium text-indigo-600 hover:text-indigo-800 underline"
+                className="text-xs font-semibold text-[#0052CC] hover:text-[#0043A4] underline"
               >
                 {showMessages ? "Hide Synced Mail" : "Show Synced Mail"}
               </button>
             </div>
 
             {updatesApplied.length > 0 && (
-              <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 text-xs text-emerald-900">
-                <span className="font-semibold">Auto-Updated Pipeline:</span>
+              <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50/80 p-3.5 text-xs text-emerald-900">
+                <span className="font-bold">Auto-Updated Pipeline:</span>
                 <ul className="mt-1 list-disc list-inside space-y-0.5">
                   {updatesApplied.map((u, i) => (
                     <li key={i}>
-                      <span className="font-medium">{u.company}</span>: moved from{" "}
+                      <span className="font-semibold">{u.company}</span>: moved from{" "}
                       <span className="capitalize">{u.fromStatus}</span> to{" "}
-                      <span className="font-bold capitalize">{u.toStatus}</span>
+                      <span className="font-bold capitalize text-emerald-800">{u.toStatus}</span>
                     </li>
                   ))}
                 </ul>
@@ -505,26 +511,26 @@ export default function Dashboard() {
             )}
 
             {showMessages && (
-              <ul className="divide-y divide-zinc-100 max-h-[460px] overflow-y-auto pr-1">
+              <ul className="divide-y divide-slate-100 max-h-[460px] overflow-y-auto pr-1">
                 {syncedMessages.map((msg) => (
                   <li key={msg.id} className="py-3.5 first:pt-0 last:pb-0">
                     <div className="flex flex-wrap items-center gap-2">
                       {msg.classification && (
                         <span
-                          className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                          className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                             EMAIL_CLASSIFICATION_STYLES[msg.classification] ||
-                            "bg-zinc-100 text-zinc-600"
+                            "bg-slate-100 text-slate-600 border border-slate-200"
                           }`}
                         >
                           {EMAIL_CLASSIFICATION_LABELS[msg.classification] ||
                             msg.classification}
                         </span>
                       )}
-                      <span className="text-xs font-semibold text-zinc-900 truncate max-w-[200px]">
+                      <span className="text-xs font-bold text-[#0F172A] truncate max-w-[200px]">
                         {msg.senderName || msg.from}
                       </span>
                       {msg.senderEmail && (
-                        <span className="text-[11px] text-zinc-500 font-mono truncate max-w-[240px]">
+                        <span className="text-[11px] text-slate-500 font-mono truncate max-w-[240px]">
                           &lt;{msg.senderEmail}&gt;
                         </span>
                       )}
@@ -536,7 +542,7 @@ export default function Dashboard() {
                             ? msg.subject
                             : `Re: ${msg.subject || "Job Application"}`
                         )}`}
-                        className="inline-flex items-center gap-1 rounded border border-zinc-200 bg-white px-2 py-0.5 text-[11px] font-medium text-zinc-700 hover:bg-zinc-50 hover:text-indigo-600 transition"
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0052CC] transition"
                         title={`Reply directly to ${msg.senderEmail || msg.from}`}
                       >
                         ✉️ Reply
@@ -546,7 +552,7 @@ export default function Dashboard() {
                       {msg.matchedApplication ? (
                         <Link
                           href={`/dashboard/${msg.matchedApplication.id}`}
-                          className="inline-flex items-center gap-1 rounded bg-indigo-50 border border-indigo-200 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 hover:bg-indigo-100"
+                          className="inline-flex items-center gap-1 rounded-lg bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-semibold text-[#0052CC] hover:bg-blue-100"
                         >
                           Linked: {msg.matchedApplication.companyName} ↗
                         </Link>
@@ -554,21 +560,21 @@ export default function Dashboard() {
                         <button
                           type="button"
                           onClick={() => handleQuickAddFromEmail(msg)}
-                          className="inline-flex items-center gap-1 rounded bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-100"
+                          className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-100"
                         >
                           + Track {msg.suggestedApplication.companyName} in Pipeline
                         </button>
                       ) : null}
 
-                      <span className="text-xs text-zinc-400 ml-auto shrink-0">
+                      <span className="text-xs text-slate-400 ml-auto shrink-0">
                         {formatDate(msg.date)}
                       </span>
                     </div>
-                    <p className="mt-1 text-xs font-medium text-zinc-900 truncate">
+                    <p className="mt-1 text-xs font-semibold text-[#0F172A] truncate">
                       {msg.subject || "(No Subject)"}
                     </p>
                     {msg.snippet && (
-                      <p className="mt-0.5 text-xs text-zinc-500 line-clamp-2">
+                      <p className="mt-0.5 text-xs text-[#64748B] line-clamp-2">
                         {msg.snippet}
                       </p>
                     )}
@@ -587,11 +593,11 @@ export default function Dashboard() {
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
                   {drafts.length}
                 </span>
-                <h2 className="text-base font-semibold text-zinc-900">
+                <h2 className="text-base font-bold text-[#0F172A]">
                   Agent Follow-Up Queue ({drafts.length} Pending Approval)
                 </h2>
               </div>
-              <span className="text-xs font-medium text-amber-800">
+              <span className="text-xs font-semibold text-amber-800">
                 Generated with AI + Candidate Profile
               </span>
             </div>
@@ -604,28 +610,28 @@ export default function Dashboard() {
                 return (
                   <div
                     key={draft._id}
-                    className="flex flex-col justify-between rounded-xl border border-amber-200/80 bg-white p-5 shadow-sm"
+                    className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <h3 className="text-sm font-semibold text-zinc-900">
-                            {app.roleTitle || "Role"} · <span className="text-zinc-600">{app.companyName || "Company"}</span>
+                          <h3 className="text-sm font-bold text-[#0F172A]">
+                            {app.roleTitle || "Role"} · <span className="text-slate-600">{app.companyName || "Company"}</span>
                           </h3>
-                          <p className="text-xs text-zinc-400">
-                            Subject: <span className="text-zinc-700 font-medium">{draft.subject}</span>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            Subject: <span className="text-slate-700 font-semibold">{draft.subject}</span>
                           </p>
                         </div>
-                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800">
+                        <span className="rounded-full bg-amber-100/80 border border-amber-200 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800">
                           Follow-up
                         </span>
                       </div>
 
-                      <div className="mt-3 rounded-lg border border-zinc-100 bg-zinc-50 p-3 text-xs text-zinc-700 whitespace-pre-wrap font-sans">
+                      <div className="mt-3 rounded-xl border border-slate-100 bg-slate-50/70 p-3 text-xs text-slate-700 whitespace-pre-wrap font-sans">
                         {isEditing ? (
                           <textarea
                             rows={6}
-                            className="w-full bg-white border border-zinc-200 rounded p-2 text-xs text-zinc-800 focus:outline-none focus:border-indigo-500"
+                            className="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0052CC]"
                             value={editDraftText}
                             onChange={(e) => setEditDraftText(e.target.value)}
                           />
@@ -635,20 +641,20 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between gap-2 border-t border-zinc-100 pt-3">
+                    <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
                       {isEditing ? (
                         <>
                           <button
                             type="button"
                             onClick={() => setEditingDraftId(null)}
-                            className="text-xs font-medium text-zinc-500 hover:text-zinc-800"
+                            className="text-xs font-medium text-slate-500 hover:text-slate-800"
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={() => handleApproveDraft(draft._id, editDraftText)}
-                            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500"
+                            className="rounded-xl bg-[#0052CC] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#0043A4]"
                           >
                             Save & Approve
                           </button>
@@ -662,14 +668,14 @@ export default function Dashboard() {
                                 setEditingDraftId(draft._id);
                                 setEditDraftText(draft.finalText || draft.draftText);
                               }}
-                              className="text-xs font-medium text-zinc-600 hover:text-zinc-900 underline"
+                              className="text-xs font-semibold text-[#0052CC] hover:underline"
                             >
-                              Edit
+                              Edit Draft
                             </button>
                             <button
                               type="button"
                               onClick={() => handleDismissDraft(draft._id)}
-                              className="text-xs font-medium text-zinc-400 hover:text-rose-600"
+                              className="text-xs font-medium text-slate-400 hover:text-rose-600"
                             >
                               Dismiss
                             </button>
@@ -677,7 +683,7 @@ export default function Dashboard() {
                           <button
                             type="button"
                             onClick={() => handleApproveDraft(draft._id)}
-                            className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500 shadow-sm"
+                            className="rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500 shadow-sm"
                           >
                             Approve & Mark Sent ✓
                           </button>
@@ -692,27 +698,27 @@ export default function Dashboard() {
         )}
 
         {/* AI Job Intake Section */}
-        <div className="mt-8 rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm">
+        <div className="mt-8 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-base font-semibold text-zinc-900">
+              <h2 className="text-base font-bold text-[#0F172A]">
                 1-Click Job Intake & AI Extraction
               </h2>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-[#64748B]">
                 Paste any job posting or fill directly — AI extracts role, company, platform, and key skills.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setShowPaste((v) => !v)}
-              className="rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-1.5 text-xs font-semibold text-zinc-700 transition hover:bg-zinc-100"
+              className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100"
             >
               {showPaste ? "Collapse Paste Box" : "+ Paste Full Job Description"}
             </button>
           </div>
 
           {showPaste && (
-            <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50/30 p-4">
+            <div className="mt-4 rounded-2xl border border-blue-200/80 bg-blue-50/30 p-4">
               <textarea
                 rows={5}
                 className={inputClass}
@@ -725,12 +731,12 @@ export default function Dashboard() {
                   type="button"
                   onClick={handleExtract}
                   disabled={extracting || pasteText.trim().length < 40}
-                  className="rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
+                  className="rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0043A4] disabled:opacity-50"
                 >
-                  {extracting ? "Extracting with AI..." : "Extract with AI"}
+                  {extracting ? "Extracting with AI..." : "⚡ Extract with AI"}
                 </button>
                 {extractError && (
-                  <span className="text-xs text-rose-600">{extractError}</span>
+                  <span className="text-xs text-rose-600 font-medium">{extractError}</span>
                 )}
               </div>
             </div>
@@ -810,7 +816,7 @@ export default function Dashboard() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800 disabled:opacity-60"
+                  className="w-full rounded-xl bg-[#0052CC] px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-60"
                 >
                   {submitting ? "Adding..." : "+ Add to Pipeline"}
                 </button>
@@ -818,8 +824,8 @@ export default function Dashboard() {
             </div>
 
             {form.notes && (
-              <div className="mt-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-600">
-                <span className="font-semibold text-zinc-800">Extracted Notes:</span> {form.notes}
+              <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-xs text-slate-600">
+                <span className="font-semibold text-slate-800">Extracted Notes:</span> {form.notes}
               </div>
             )}
           </form>
@@ -829,24 +835,24 @@ export default function Dashboard() {
         <div className="mt-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
             <div>
-              <h2 className="text-base font-semibold text-zinc-900">
+              <h2 className="text-base font-bold text-[#0F172A]">
                 Active Job Pipeline ({apps.length})
               </h2>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-[#64748B]">
                 The autonomous agent actively tracks open roles and reasons over days of silence.
               </p>
             </div>
             {/* Filter Pills */}
-            <div className="flex flex-wrap gap-1.5 bg-zinc-100 p-1 rounded-xl text-xs">
+            <div className="flex flex-wrap gap-1 bg-slate-100/90 p-1 rounded-xl text-xs border border-slate-200/60">
               {["all", "open", "applied", "in_review", "interview", "assessment", "closed"].map((tab) => (
                 <button
                   key={tab}
                   type="button"
                   onClick={() => setStatusFilter(tab)}
-                  className={`px-2.5 py-1 rounded-lg font-medium capitalize transition ${
+                  className={`px-3 py-1.5 rounded-lg font-semibold capitalize transition ${
                     statusFilter === tab
-                      ? "bg-white text-zinc-900 shadow-sm"
-                      : "text-zinc-600 hover:text-zinc-900"
+                      ? "bg-white text-[#0052CC] shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   {tab.replace("_", " ")}
@@ -856,46 +862,46 @@ export default function Dashboard() {
           </div>
 
           {loading ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-12 text-center text-sm text-zinc-400">
+            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400">
               Loading applications…
             </div>
           ) : filteredApps.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-zinc-200 bg-white py-14 text-center">
-              <p className="text-sm font-medium text-zinc-700">No applications match this view</p>
-              <p className="mt-1 text-xs text-zinc-400">Add a role above to kick off monitoring.</p>
+            <div className="rounded-2xl border border-dashed border-slate-200 bg-white py-14 text-center">
+              <p className="text-sm font-semibold text-slate-700">No applications match this view</p>
+              <p className="mt-1 text-xs text-slate-400">Add a role above to kick off monitoring.</p>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm">
-              <ul className="divide-y divide-zinc-100">
+            <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+              <ul className="divide-y divide-slate-100">
                 {filteredApps.map((app) => (
                   <li
                     key={app._id}
-                    className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between transition hover:bg-zinc-50/50"
+                    className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between transition hover:bg-slate-50/60"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2.5">
                         <Link
                           href={`/dashboard/${app._id}`}
-                          className="truncate text-sm font-bold text-zinc-900 hover:text-indigo-600"
+                          className="truncate text-sm font-bold text-[#0F172A] hover:text-[#0052CC] transition"
                         >
                           {app.roleTitle}
                         </Link>
-                        <span className="text-zinc-300">·</span>
-                        <span className="truncate text-sm font-medium text-zinc-600">
+                        <span className="text-slate-300">·</span>
+                        <span className="truncate text-sm font-semibold text-[#64748B]">
                           {app.companyName}
                         </span>
                         {app.jobUrl && (
                           <Link
                             href={`/browser?url=${encodeURIComponent(app.jobUrl)}`}
-                            className="rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700 hover:bg-indigo-100"
+                            className="rounded-lg bg-blue-50 border border-blue-200/60 px-2 py-0.5 text-[10px] font-semibold text-[#0052CC] hover:bg-blue-100"
                             title="Open in Browser Assist"
                           >
                             Browser Assist ↗
                           </Link>
                         )}
                       </div>
-                      <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-zinc-400">
-                        <span className="font-medium text-zinc-500">
+                      <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-slate-400">
+                        <span className="font-semibold text-slate-600">
                           {SOURCE_PLATFORM_LABELS[app.sourcePlatform] || app.sourcePlatform}
                         </span>
                         <span>·</span>
@@ -903,7 +909,7 @@ export default function Dashboard() {
                         {app.lastEmailAt && (
                           <>
                             <span>·</span>
-                            <span className="text-emerald-600 font-medium">
+                            <span className="text-emerald-700 font-semibold">
                               Last Mail: {formatDate(app.lastEmailAt)}
                             </span>
                           </>
@@ -917,8 +923,8 @@ export default function Dashboard() {
                         value={app.currentStatus}
                         disabled={savingId === app._id}
                         onChange={(e) => handleStatusChange(app._id, e.target.value)}
-                        className={`cursor-pointer rounded-full border-0 px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:opacity-50 ${
-                          STATUS_STYLES[app.currentStatus] || "bg-zinc-100 text-zinc-700"
+                        className={`cursor-pointer rounded-full px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 disabled:opacity-50 ${
+                          STATUS_STYLES[app.currentStatus] || "bg-slate-100 text-slate-700 border border-slate-200"
                         }`}
                       >
                         {APPLICATION_STATUS_VALUES.map((v) => (
@@ -937,17 +943,17 @@ export default function Dashboard() {
 
         {/* Live Reasoner Audit Log Stream */}
         {agentLogs.length > 0 && (
-          <div className="mt-8 rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm">
+          <div className="mt-8 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-base font-semibold text-zinc-900">
+                <h2 className="text-base font-bold text-[#0F172A]">
                   Autonomous Agent Decision Feed
                 </h2>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-[#64748B]">
                   Transparent audit log showing what the agent evaluated and why.
                 </p>
               </div>
-              <Link href="/agent" className="text-xs font-medium text-indigo-600 hover:underline">
+              <Link href="/agent" className="text-xs font-semibold text-[#0052CC] hover:underline">
                 View all logs →
               </Link>
             </div>
@@ -958,24 +964,24 @@ export default function Dashboard() {
                 return (
                   <div
                     key={log._id}
-                    className="flex flex-col gap-1 rounded-xl border border-zinc-100 bg-zinc-50/70 p-3.5 text-xs sm:flex-row sm:items-center sm:justify-between"
+                    className="flex flex-col gap-1 rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 text-xs sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <span
-                        className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-                          AGENT_DECISION_STYLES[log.decision] || "bg-zinc-200 text-zinc-700"
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                          AGENT_DECISION_STYLES[log.decision] || "bg-slate-200 text-slate-700"
                         }`}
                       >
                         {AGENT_DECISION_LABELS[log.decision] || log.decision}
                       </span>
-                      <span className="font-semibold text-zinc-800 truncate">
+                      <span className="font-bold text-[#0F172A] truncate">
                         {app.roleTitle ? `${app.roleTitle} @ ${app.companyName}` : "Application"}
                       </span>
-                      <span className="text-zinc-400 truncate hidden md:inline">
+                      <span className="text-[#64748B] truncate hidden md:inline">
                         — {log.reasoningSummary}
                       </span>
                     </div>
-                    <span className="text-[11px] text-zinc-400 shrink-0">
+                    <span className="text-[11px] text-slate-400 shrink-0 font-medium">
                       {formatTime(log.cycleAt)}
                     </span>
                   </div>
@@ -988,3 +994,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

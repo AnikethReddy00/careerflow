@@ -1,4 +1,7 @@
 import { getCurrentUser } from "@/lib/session";
+import { connectDB } from "@/lib/mongodb";
+import { getOrCreateCandidateProfile } from "@/lib/candidateProfile";
+import { autofillPage, scanAndPlanForm } from "@/lib/browser/autofill";
 import {
   backBrowserSession,
   closeBrowserSession,
@@ -54,6 +57,44 @@ export async function POST(request) {
     if (action === "open") {
       return Response.json({
         session: await openBrowserSession({ userId: user._id, url: body?.url }),
+      });
+    }
+
+    if (action === "scan") {
+      await connectDB();
+      const session = await getBrowserSession(user._id, body?.sessionId);
+      if (!session) {
+        return jsonError("Browser session not found.");
+      }
+      const profileDoc = await getOrCreateCandidateProfile(user);
+      const profile = profileDoc.toObject ? profileDoc.toObject() : profileDoc;
+      const scanResult = await scanAndPlanForm({ session, profile, user });
+      return Response.json({
+        scan: scanResult,
+      });
+    }
+
+    if (action === "autofill") {
+      await connectDB();
+      const session = await getBrowserSession(user._id, body?.sessionId);
+      if (!session) {
+        return jsonError("Browser session not found.");
+      }
+      const profileDoc = await getOrCreateCandidateProfile(user);
+      const profile = profileDoc.toObject ? profileDoc.toObject() : profileDoc;
+      const autofillResult = await autofillPage({
+        session,
+        profile,
+        user,
+        customPlan: body?.plan,
+      });
+      const snap = await snapshotBrowserSession(session);
+      return Response.json({
+        session: {
+          ...snap,
+          result: autofillResult,
+        },
+        autofill: autofillResult,
       });
     }
 

@@ -112,12 +112,12 @@ export default function Home() {
             Autonomous Agentic Career Platform
           </div>
 
-          <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-extrabold tracking-tight text-[#0F172A] sm:text-6xl sm:leading-[1.12]">
+          <h1 className="mx-auto mt-5 max-w-3xl text-3xl font-extrabold tracking-tight text-[#0F172A] sm:text-5xl sm:leading-[1.15]">
             Your only job is to <span className="text-[#0052CC]">apply</span>.<br />
             The agent coordinates the rest.
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-[#64748B]">
+          <p className="mx-auto mt-5 max-w-2xl text-sm sm:text-base leading-relaxed text-[#64748B]">
             CareerFlow autonomously monitors every job submission, reads your inbox for recruiter replies, classifies interview invites, updates application statuses, and drafts personalized follow-up outreach.
           </p>
 

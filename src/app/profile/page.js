@@ -238,6 +238,25 @@ export default function ProfilePage() {
     });
   }
 
+  async function handlePrefillProfile() {
+    setSaving(true);
+    setError("");
+    try {
+      const res = await fetch("/api/profile/prefill", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to prefill profile");
+      setProfile(data.profile);
+      setCompleteness(data.completeness || { percent: 100, completed: 12, total: 12 });
+      setCandidateContext(data.candidateContext || null);
+      setNotice("Profile successfully prefilled with test resume & skills data! ✓");
+      setTimeout(() => setNotice(""), 5000);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function handleSave() {
     setSaving(true);
     setError("");
@@ -246,14 +265,14 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profile),
+        body: JSON.stringify({ profile }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to save profile");
-      setProfile(data.profile || EMPTY_PROFILE);
-      setCompleteness(data.completeness || completeness);
+      setProfile(data.profile);
+      setCompleteness(data.completeness || { percent: 0, completed: 0, total: 0 });
       setCandidateContext(data.candidateContext || null);
-      setNotice("Profile saved successfully.");
+      setNotice("Profile changes saved successfully! ✓");
       setTimeout(() => setNotice(""), 4000);
     } catch (e) {
       setError(e.message);
@@ -827,7 +846,15 @@ export default function ProfilePage() {
           </SectionCard>
         </div>
 
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex flex-wrap items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={handlePrefillProfile}
+            disabled={saving}
+            className="rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 text-sm font-semibold text-[#0052CC] transition hover:bg-blue-100 disabled:opacity-60"
+          >
+            ⚡ Prefill with Test Profile Data
+          </button>
           <button
             type="button"
             onClick={handleSave}

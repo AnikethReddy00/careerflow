@@ -68,6 +68,12 @@ export default function Home() {
               Dashboard
             </Link>
             <Link
+              href="/intelligence"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Intelligence
+            </Link>
+            <Link
               href="/agent"
               className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >

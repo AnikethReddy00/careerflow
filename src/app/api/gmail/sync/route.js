@@ -78,7 +78,7 @@ export async function POST() {
 
   try {
     const accessToken = await getAccessTokenForUser(user._id);
-    const messages = await listRecentMessages(accessToken, { maxResults: 8 });
+    const messages = await listRecentMessages(accessToken, { maxResults: 20 });
 
     let classified = false;
     const updatesApplied = [];
@@ -94,6 +94,11 @@ export async function POST() {
       const openApps = await Application.find({ userId: user._id });
 
       for (const msg of messages) {
+        // Skip irrelevant messages from pipeline progression
+        if (!msg.classification || msg.classification === EMAIL_CLASSIFICATION.IRRELEVANT) {
+          continue;
+        }
+
         const msgSearchText = `${msg.from || ""} ${msg.subject || ""} ${msg.snippet || ""}`.toLowerCase();
         let matchedApp = null;
 
@@ -114,51 +119,49 @@ export async function POST() {
             currentStatus: matchedApp.currentStatus,
           };
 
-          if (msg.classification && msg.classification !== EMAIL_CLASSIFICATION.IRRELEVANT) {
-            const newStatus = CLASSIFICATION_TO_STATUS[msg.classification];
-            const now = new Date();
+          const newStatus = CLASSIFICATION_TO_STATUS[msg.classification];
+          const now = new Date();
 
-            if (newStatus && newStatus !== matchedApp.currentStatus) {
-              const prev = matchedApp.currentStatus;
-              matchedApp.currentStatus = newStatus;
-              matchedApp.lastStatusChangeAt = now;
-              matchedApp.lastEmailAt = now;
-              if (TERMINAL_STATUSES.includes(newStatus)) {
-                matchedApp.isOpen = false;
-              }
-              await matchedApp.save();
-
-              await StatusHistory.create({
-                applicationId: matchedApp._id,
-                userId: user._id,
-                previousStatus: prev,
-                newStatus,
-                changedBy: ACTOR.AGENT,
-                reason: `Inbound email classified as ${msg.classification} ("${msg.subject}")`,
-                changedAt: now,
-              });
-
-              await AgentActionLog.create({
-                userId: user._id,
-                applicationId: matchedApp._id,
-                cycleAt: now,
-                decision: AGENT_DECISION.UPDATE_STATUS,
-                actionTaken: `Updated status from ${prev} to ${newStatus}.`,
-                reasoningSummary: `Received email with subject "${msg.subject}" classified as ${msg.classification}.`,
-              });
-
-              updatesApplied.push({
-                applicationId: matchedApp._id,
-                company: matchedApp.companyName,
-                fromStatus: prev,
-                toStatus: newStatus,
-              });
-            } else {
-              matchedApp.lastEmailAt = now;
-              await matchedApp.save();
+          if (newStatus && newStatus !== matchedApp.currentStatus) {
+            const prev = matchedApp.currentStatus;
+            matchedApp.currentStatus = newStatus;
+            matchedApp.lastStatusChangeAt = now;
+            matchedApp.lastEmailAt = now;
+            if (TERMINAL_STATUSES.includes(newStatus)) {
+              matchedApp.isOpen = false;
             }
+            await matchedApp.save();
+
+            await StatusHistory.create({
+              applicationId: matchedApp._id,
+              userId: user._id,
+              previousStatus: prev,
+              newStatus,
+              changedBy: ACTOR.AGENT,
+              reason: `Inbound email classified as ${msg.classification} ("${msg.subject}")`,
+              changedAt: now,
+            });
+
+            await AgentActionLog.create({
+              userId: user._id,
+              applicationId: matchedApp._id,
+              cycleAt: now,
+              decision: AGENT_DECISION.UPDATE_STATUS,
+              actionTaken: `Updated status from ${prev} to ${newStatus}.`,
+              reasoningSummary: `Received email with subject "${msg.subject}" classified as ${msg.classification}.`,
+            });
+
+            updatesApplied.push({
+              applicationId: matchedApp._id,
+              company: matchedApp.companyName,
+              fromStatus: prev,
+              toStatus: newStatus,
+            });
+          } else {
+            matchedApp.lastEmailAt = now;
+            await matchedApp.save();
           }
-        } else if (msg.classification && msg.classification !== EMAIL_CLASSIFICATION.IRRELEVANT) {
+        } else {
           // Unmatched job email -> suggest quick 1-click creation
           const guessedCompany = extractCandidateCompany(msg.from, msg.subject);
           msg.suggestedApplication = {
@@ -168,7 +171,7 @@ export async function POST() {
           };
         }
 
-        // Persist EmailEvent in MongoDB
+        // Persist relevant EmailEvent in MongoDB
         try {
           await EmailEvent.findOneAndUpdate(
             { gmailMessageId: msg.id },
@@ -195,7 +198,18 @@ export async function POST() {
       console.warn("Classification / auto-progression notice:", e.message);
     }
 
-    return NextResponse.json({ messages, classified, updatesApplied });
+    // Only return relevant job/recruiter messages — completely exclude irrelevant emails
+    const relevantMessages = messages.filter(
+      (m) => m.classification && m.classification !== EMAIL_CLASSIFICATION.IRRELEVANT
+    );
+
+    return NextResponse.json({
+      messages: relevantMessages,
+      totalScanned: messages.length,
+      relevantCount: relevantMessages.length,
+      classified,
+      updatesApplied,
+    });
   } catch (err) {
     if (err instanceof GoogleOAuthError && RECONNECT_CODES.has(err.code)) {
       return NextResponse.json(

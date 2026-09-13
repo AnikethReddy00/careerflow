@@ -369,6 +369,9 @@ export default function ProfilePage() {
             <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
               Dashboard
             </Link>
+            <Link href="/intelligence" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Intelligence
+            </Link>
             <Link href="/profile" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80">
               Profile
             </Link>

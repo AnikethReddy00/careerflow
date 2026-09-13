@@ -210,6 +210,12 @@ export default function AgentActivity() {
               Dashboard
             </Link>
             <Link
+              href="/intelligence"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Intelligence
+            </Link>
+            <Link
               href="/profile"
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >
@@ -341,6 +347,12 @@ export default function AgentActivity() {
             {syncError && (
               <p className="mt-4 rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-semibold text-rose-800">
                 {syncError}
+              </p>
+            )}
+
+            {messages !== null && messages.length === 0 && (
+              <p className="mt-4 rounded-xl bg-slate-50 border border-slate-200/80 px-4 py-3 text-xs text-slate-500">
+                No recruiter or application-related messages found in recent inbox sync (non-job emails filtered out).
               </p>
             )}
 

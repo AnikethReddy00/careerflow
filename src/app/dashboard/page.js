@@ -244,15 +244,24 @@ export default function Dashboard() {
       const res = await fetch("/api/gmail/sync", { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to sync Gmail");
-      setSyncedMessages(data.messages || []);
+      const relevant = (data.messages || []).filter(
+        (m) => m.classification && m.classification !== "irrelevant"
+      );
+      setSyncedMessages(relevant);
       setUpdatesApplied(data.updatesApplied || []);
       setShowMessages(true);
       const updates = data.updatesApplied?.length || 0;
-      setNotice(
-        `Gmail synced: ${data.messages?.length || 0} messages retrieved and classified${
-          updates > 0 ? `, ${updates} application statuses updated!` : ""
-        }`
-      );
+      if (relevant.length > 0) {
+        setNotice(
+          `Gmail synced: ${relevant.length} relevant recruiter message${relevant.length === 1 ? "" : "s"} triaged${
+            updates > 0 ? `, ${updates} application status update(s) applied!` : "!"
+          }`
+        );
+      } else {
+        setNotice(
+          `Gmail synced: Scanned recent inbox (${data.totalScanned || 0} emails), non-job emails filtered out.`
+        );
+      }
       setTimeout(() => setNotice(""), 5000);
       await loadData();
     } catch (e) {
@@ -388,6 +397,12 @@ export default function Dashboard() {
               Dashboard
             </Link>
             <Link
+              href="/intelligence"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Intelligence
+            </Link>
+            <Link
               href="/profile"
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >
@@ -479,11 +494,11 @@ export default function Dashboard() {
                     {syncedMessages.length}
                   </span>
                   <h2 className="text-base font-bold text-[#0F172A]">
-                    Synced Recruiter Mail ({syncedMessages.length} Messages Triaged)
+                    Synced Recruiter Mail ({syncedMessages.length} Relevant Messages)
                   </h2>
                 </div>
                 <p className="text-xs text-[#64748B] mt-0.5">
-                  Inbox scanned and categorized by AI.
+                  Inbox scanned and filtered by AI — showing only actionable recruiter & application emails.
                 </p>
               </div>
               <button

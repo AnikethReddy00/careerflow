@@ -474,14 +474,14 @@ export async function autofillPage({ session, profile, user, customPlan = null }
           controlType: field.type || field.tagName,
           verified: true,
         });
-        auditLog.push(`[Fill #${field.index + 1}] ✓ Verified "${field.label}" filled with "${typeof plan.value === 'string' && plan.value.length > 35 ? plan.value.slice(0, 32) + '…' : plan.value}"`);
+        auditLog.push(`[SUCCESS #${field.index + 1}] Verified "${field.label}" filled with "${typeof plan.value === 'string' && plan.value.length > 35 ? plan.value.slice(0, 32) + '…' : plan.value}"`);
       } else {
         skipped.push({
           index: field.index,
           label: field.label,
           reason: verification.error || "DOM injection failed",
         });
-        auditLog.push(`[Warn #${field.index + 1}] ⚠️ Could not apply to "${field.label}": ${verification.error}`);
+        auditLog.push(`[WARN #${field.index + 1}] Could not apply to "${field.label}": ${verification.error}`);
       }
     } catch (err) {
       skipped.push({
@@ -489,7 +489,7 @@ export async function autofillPage({ session, profile, user, customPlan = null }
         label: field.label,
         reason: err.message,
       });
-      auditLog.push(`[Error #${field.index + 1}] ❌ Error on "${field.label}": ${err.message}`);
+      auditLog.push(`[ERROR #${field.index + 1}] Error on "${field.label}": ${err.message}`);
     }
   }
 

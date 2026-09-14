@@ -18,6 +18,17 @@ import {
   EMAIL_CLASSIFICATION_LABELS,
   EMAIL_CLASSIFICATION_STYLES,
 } from "@/lib/labels";
+import {
+  Mail,
+  Zap,
+  Check,
+  X,
+  Sparkles,
+  Plus,
+  ExternalLink,
+  ChevronRight,
+  Send,
+} from "lucide-react";
 
 const EMPTY_FORM = {
   companyName: "",
@@ -397,6 +408,12 @@ export default function Dashboard() {
               Dashboard
             </Link>
             <Link
+              href="/jobs"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Recommended Jobs
+            </Link>
+            <Link
               href="/intelligence"
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >
@@ -436,13 +453,13 @@ export default function Dashboard() {
         {notice && (
           <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900 flex items-center justify-between shadow-sm">
             <span>{notice}</span>
-            <button onClick={() => setNotice("")} className="text-emerald-700 hover:text-emerald-950 font-bold">✕</button>
+            <button onClick={() => setNotice("")} className="text-emerald-700 hover:text-emerald-950 p-0.5"><X className="h-4 w-4" /></button>
           </div>
         )}
         {error && (
           <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-900 flex items-center justify-between shadow-sm">
             <span>{error}</span>
-            <button onClick={() => setError("")} className="text-rose-700 hover:text-rose-950 font-bold">✕</button>
+            <button onClick={() => setError("")} className="text-rose-700 hover:text-rose-950 p-0.5"><X className="h-4 w-4" /></button>
           </div>
         )}
 
@@ -464,7 +481,8 @@ export default function Dashboard() {
                 disabled={syncingGmail}
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50"
               >
-                <span>{syncingGmail ? "Syncing Gmail..." : "✉️ Sync Recruiter Mail"}</span>
+                <Mail className="h-4 w-4 text-slate-500" />
+                <span>{syncingGmail ? "Syncing Gmail..." : "Sync Recruiter Mail"}</span>
               </button>
               <button
                 type="button"
@@ -472,7 +490,8 @@ export default function Dashboard() {
                 disabled={runningAgent}
                 className="inline-flex items-center gap-2 rounded-xl bg-[#0052CC] px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-50"
               >
-                <span>{runningAgent ? "Evaluating..." : "⚡ Run Agent Loop"}</span>
+                <Zap className="h-4 w-4 text-white" />
+                <span>{runningAgent ? "Evaluating..." : "Run Agent Loop"}</span>
               </button>
             </div>
           </div>
@@ -560,7 +579,8 @@ export default function Dashboard() {
                         className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0052CC] transition"
                         title={`Reply directly to ${msg.senderEmail || msg.from}`}
                       >
-                        ✉️ Reply
+                        <Mail className="h-3 w-3 text-slate-500" />
+                        <span>Reply</span>
                       </a>
 
                       {/* Linked application or quick-add action */}
@@ -569,7 +589,8 @@ export default function Dashboard() {
                           href={`/dashboard/${msg.matchedApplication.id}`}
                           className="inline-flex items-center gap-1 rounded-lg bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-semibold text-[#0052CC] hover:bg-blue-100"
                         >
-                          Linked: {msg.matchedApplication.companyName} ↗
+                          <span>Linked: {msg.matchedApplication.companyName}</span>
+                          <ExternalLink className="h-3 w-3" />
                         </Link>
                       ) : msg.suggestedApplication ? (
                         <button
@@ -577,7 +598,8 @@ export default function Dashboard() {
                           onClick={() => handleQuickAddFromEmail(msg)}
                           className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-100"
                         >
-                          + Track {msg.suggestedApplication.companyName} in Pipeline
+                          <Plus className="h-3 w-3" />
+                          <span>Track {msg.suggestedApplication.companyName} in Pipeline</span>
                         </button>
                       ) : null}
 
@@ -698,9 +720,10 @@ export default function Dashboard() {
                           <button
                             type="button"
                             onClick={() => handleApproveDraft(draft._id)}
-                            className="rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500 shadow-sm"
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500 shadow-sm"
                           >
-                            Approve & Mark Sent ✓
+                            <Check className="h-3.5 w-3.5" />
+                            <span>Approve & Mark Sent</span>
                           </button>
                         </>
                       )}
@@ -746,9 +769,10 @@ export default function Dashboard() {
                   type="button"
                   onClick={handleExtract}
                   disabled={extracting || pasteText.trim().length < 40}
-                  className="rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0043A4] disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#0043A4] disabled:opacity-50"
                 >
-                  {extracting ? "Extracting with AI..." : "⚡ Extract with AI"}
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>{extracting ? "Extracting with AI..." : "Extract with AI"}</span>
                 </button>
                 {extractError && (
                   <span className="text-xs text-rose-600 font-medium">{extractError}</span>

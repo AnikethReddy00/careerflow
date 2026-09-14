@@ -5,45 +5,77 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 import { APPLICATION_STATUS_LABELS, STATUS_STYLES } from "@/lib/labels";
+import {
+  BarChart3,
+  Target,
+  Calendar,
+  AlertTriangle,
+  Building2,
+  Lightbulb,
+  Send,
+  Trash2,
+  ArrowRight,
+  CheckCircle2,
+  Sparkles,
+  Bot,
+  User,
+  Clock,
+  Briefcase,
+  Layers,
+  ChevronRight,
+  TrendingUp,
+} from "lucide-react";
 
 const STARTER_PROMPTS = [
   {
-    icon: "📊",
+    id: "funnel",
+    icon: BarChart3,
+    iconColor: "text-blue-600 bg-blue-50 border-blue-200",
     title: "Application Funnel",
     desc: "Calculate stage conversions & drop-offs",
     query: "How is my application funnel performing and where is my biggest bottleneck?",
     mode: "analyze",
   },
   {
-    icon: "🎯",
+    id: "roles",
+    icon: Target,
+    iconColor: "text-indigo-600 bg-indigo-50 border-indigo-200",
     title: "Role Performance",
     desc: "Compare AI/ML vs Fullstack vs SWE",
     query: "Which job roles give me the highest interview rate?",
     mode: "analyze",
   },
   {
-    icon: "📅",
+    id: "report",
+    icon: Calendar,
+    iconColor: "text-violet-600 bg-violet-50 border-violet-200",
     title: "Weekly Report",
     desc: "Executive summary of progress & changes",
     query: "Give me my weekly job-search report with highlights and attention items.",
     mode: "decide",
   },
   {
-    icon: "⚠️",
+    id: "stale",
+    icon: AlertTriangle,
+    iconColor: "text-amber-600 bg-amber-50 border-amber-200",
     title: "Stale Applications",
     desc: "Find jobs with no status update in >14 days",
     query: "Which applications are currently stale and waiting for a response?",
     mode: "query",
   },
   {
-    icon: "🏢",
+    id: "sources",
+    icon: Building2,
+    iconColor: "text-emerald-600 bg-emerald-50 border-emerald-200",
     title: "Source Breakdown",
     desc: "Compare LinkedIn vs Referrals vs Portals",
     query: "Which application sources or channels are converting best for me?",
     mode: "analyze",
   },
   {
-    icon: "💡",
+    id: "strategy",
+    icon: Lightbulb,
+    iconColor: "text-cyan-600 bg-cyan-50 border-cyan-200",
     title: "Strategic Focus",
     desc: "AI recommendations to maximize offers",
     query: "What should I focus on to improve my conversion rates and land offers?",
@@ -64,7 +96,7 @@ export default function IntelligencePage() {
       id: "welcome",
       role: "assistant",
       content:
-        "👋 **Welcome to Job Search Intelligence!**\n\nI'm your dedicated data analyst for your job search. I pull exact metrics directly from your application database to analyze your funnel, compare roles, detect bottlenecks, and provide data-backed recommendations.\n\n*Ask me anything below or tap one of the suggested questions to get started.*",
+        "**Welcome to Job Search Intelligence**\n\nI am your dedicated analytics and decision assistant. I pull verified metrics directly from your application database to analyze your funnel, compare roles, detect bottlenecks, and provide data-backed recommendations.\n\n*Submit a question below or choose from the recommended queries.*",
       suggestedFollowUps: [
         "How is my application funnel performing?",
         "Which job roles give me the highest interview rate?",
@@ -120,7 +152,6 @@ export default function IntelligencePage() {
     setIsSubmitting(true);
 
     try {
-      // Build conversation history excluding initial welcome
       const historyPayload = messages
         .filter((m) => m.id !== "welcome")
         .map((m) => ({ role: m.role, content: m.content }));
@@ -158,7 +189,7 @@ export default function IntelligencePage() {
         {
           id: "err-" + Date.now(),
           role: "assistant",
-          content: `⚠️ **Analysis Error:** ${err.message}. Please try asking again.`,
+          content: `**Analysis Error:** ${err.message}. Please verify connection and try again.`,
           timestamp: new Date().toISOString(),
         },
       ]);
@@ -179,7 +210,7 @@ export default function IntelligencePage() {
         id: "welcome",
         role: "assistant",
         content:
-          "👋 Chat history cleared. What would you like to analyze about your job search?",
+          "Conversation history cleared. What would you like to analyze regarding your applications and pipeline?",
         suggestedFollowUps: [
           "How is my application funnel performing?",
           "Which job roles give me the highest interview rate?",
@@ -239,6 +270,12 @@ export default function IntelligencePage() {
               Dashboard
             </Link>
             <Link
+              href="/jobs"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Recommended Jobs
+            </Link>
+            <Link
               href="/intelligence"
               className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80"
             >
@@ -277,8 +314,9 @@ export default function IntelligencePage() {
         {/* Top Analytics Ribbon */}
         <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Total Applied
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <span>Total Applied</span>
+              <Briefcase className="h-3.5 w-3.5 text-slate-400" />
             </div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold tracking-tight text-slate-900">
@@ -289,8 +327,9 @@ export default function IntelligencePage() {
           </div>
 
           <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Active Pipelines
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <span>Active Pipelines</span>
+              <Layers className="h-3.5 w-3.5 text-[#0052CC]" />
             </div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold tracking-tight text-[#0052CC]">
@@ -301,8 +340,9 @@ export default function IntelligencePage() {
           </div>
 
           <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Interviews
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <span>Interviews</span>
+              <TrendingUp className="h-3.5 w-3.5 text-indigo-600" />
             </div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold tracking-tight text-indigo-600">
@@ -313,8 +353,9 @@ export default function IntelligencePage() {
           </div>
 
           <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Offers
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <span>Offers</span>
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
             </div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold tracking-tight text-emerald-600">
@@ -325,20 +366,22 @@ export default function IntelligencePage() {
           </div>
 
           <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Top Role
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <span>Top Role</span>
+              <Target className="h-3.5 w-3.5 text-violet-600" />
             </div>
             <div className="mt-1 truncate text-sm font-bold text-slate-900" title={summary.bestRole}>
               {loadingSnapshot ? "…" : summary.bestRole.split("(")[0]}
             </div>
             <div className="text-[11px] text-slate-500 truncate">
-              {summary.bestRole.includes("(") ? "(" + summary.bestRole.split("(")[1] : "Highest rate"}
+              {summary.bestRole.includes("(") ? "(" + summary.bestRole.split("(")[1] : "Highest conversion"}
             </div>
           </div>
 
           <div className="rounded-2xl border border-amber-200/80 bg-amber-50/50 p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wider text-amber-700">
-              Funnel Bottleneck
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-amber-700">
+              <span>Bottleneck</span>
+              <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
             </div>
             <div className="mt-1 truncate text-xs font-bold text-amber-900" title={summary.biggestBottleneck}>
               {loadingSnapshot ? "…" : summary.biggestBottleneck}
@@ -354,12 +397,12 @@ export default function IntelligencePage() {
             {/* Chat Header Bar */}
             <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-6 py-3.5">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#0052CC] text-white text-xs font-bold">
-                  AI
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#0052CC] text-white">
+                  <Bot className="h-4 w-4" />
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-slate-900">Job Search Intelligence Assistant</h2>
-                  <p className="text-[11px] text-slate-500">Deterministic Analytics + Groq LLM Reasoning</p>
+                  <p className="text-[11px] text-slate-500">Deterministic Analytics & LLM Reasoning</p>
                 </div>
               </div>
 
@@ -367,8 +410,9 @@ export default function IntelligencePage() {
                 <button
                   type="button"
                   onClick={handleResetChat}
-                  className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
                 >
+                  <Trash2 className="h-3.5 w-3.5 text-slate-400" />
                   Clear Chat
                 </button>
               </div>
@@ -391,35 +435,38 @@ export default function IntelligencePage() {
               <button
                 type="button"
                 onClick={() => setActiveMode("query")}
-                className={`rounded-full px-3 py-1 font-medium transition ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-medium transition ${
                   activeMode === "query"
                     ? "bg-emerald-600 text-white"
                     : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
                 }`}
               >
-                🟢 1. Query Data
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Query Data
               </button>
               <button
                 type="button"
                 onClick={() => setActiveMode("analyze")}
-                className={`rounded-full px-3 py-1 font-medium transition ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-medium transition ${
                   activeMode === "analyze"
                     ? "bg-[#0052CC] text-white"
                     : "bg-blue-50 text-[#0052CC] hover:bg-blue-100"
                 }`}
               >
-                🔵 2. Analyze Funnel
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                Analyze Funnel
               </button>
               <button
                 type="button"
                 onClick={() => setActiveMode("decide")}
-                className={`rounded-full px-3 py-1 font-medium transition ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-medium transition ${
                   activeMode === "decide"
                     ? "bg-purple-600 text-white"
                     : "bg-purple-50 text-purple-700 hover:bg-purple-100"
                 }`}
               >
-                🟣 3. Strategic Advice
+                <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
+                Strategic Advice
               </button>
             </div>
 
@@ -439,7 +486,7 @@ export default function IntelligencePage() {
                         : "bg-white border border-slate-200/90 text-slate-800 rounded-bl-none shadow-sm"
                     }`}
                   >
-                    {/* Message Content with Markdown-style formatting */}
+                    {/* Message Content */}
                     <div className="text-sm leading-relaxed whitespace-pre-wrap font-sans">
                       {msg.content}
                     </div>
@@ -483,8 +530,9 @@ export default function IntelligencePage() {
                     {/* Suggested Follow-Ups */}
                     {msg.suggestedFollowUps && msg.suggestedFollowUps.length > 0 && (
                       <div className="mt-4 pt-3 border-t border-slate-100">
-                        <div className="text-[11px] font-semibold text-slate-400 mb-1.5">
-                          💡 Suggested follow-ups:
+                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 mb-1.5">
+                          <Sparkles className="h-3 w-3 text-blue-500" />
+                          Suggested follow-ups:
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {msg.suggestedFollowUps.map((prompt, pIdx) => (
@@ -492,9 +540,10 @@ export default function IntelligencePage() {
                               key={pIdx}
                               type="button"
                               onClick={() => handleSendMessage(prompt)}
-                              className="rounded-lg border border-blue-200/80 bg-blue-50/60 px-2.5 py-1 text-xs font-medium text-[#0052CC] hover:bg-blue-100/80 hover:border-blue-300 transition text-left"
+                              className="inline-flex items-center gap-1 rounded-lg border border-blue-200/80 bg-blue-50/60 px-2.5 py-1 text-xs font-medium text-[#0052CC] hover:bg-blue-100/80 hover:border-blue-300 transition text-left"
                             >
-                              {prompt} →
+                              <span>{prompt}</span>
+                              <ChevronRight className="h-3 w-3 shrink-0" />
                             </button>
                           ))}
                         </div>
@@ -516,7 +565,7 @@ export default function IntelligencePage() {
                       <span className="h-2 w-2 rounded-full bg-[#0052CC] animate-bounce" style={{ animationDelay: "150ms" }} />
                       <span className="h-2 w-2 rounded-full bg-[#0052CC] animate-bounce" style={{ animationDelay: "300ms" }} />
                     </div>
-                    <span>Querying application database & analyzing metrics…</span>
+                    <span>Querying database & analyzing metrics…</span>
                   </div>
                 </div>
               )}
@@ -537,16 +586,17 @@ export default function IntelligencePage() {
                   type="text"
                   value={inputQuery}
                   onChange={(e) => setInputQuery(e.target.value)}
-                  placeholder="Ask anything about your job search (e.g., 'What's my OA pass rate?', 'Show active ML jobs')..."
+                  placeholder="Ask anything about your job search (e.g., 'What is my OA pass rate?', 'Show active ML jobs')..."
                   className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0052CC] focus:outline-none focus:ring-2 focus:ring-[#0052CC]/15"
                   disabled={isSubmitting}
                 />
                 <button
                   type="submit"
                   disabled={isSubmitting || !inputQuery.trim()}
-                  className="inline-flex items-center justify-center rounded-xl bg-[#0052CC] px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0047B3] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0052CC] px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0047B3] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send
+                  <span>Send</span>
+                  <Send className="h-4 w-4" />
                 </button>
               </div>
             </form>
@@ -557,34 +607,39 @@ export default function IntelligencePage() {
             {/* Starter Prompts Card */}
             <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-slate-900">Recommended Questions</h3>
+                <h3 className="text-sm font-bold text-slate-900">Recommended Queries</h3>
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
                   {filteredStarters.length} Prompts
                 </span>
               </div>
 
               <div className="space-y-2.5">
-                {filteredStarters.map((item, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleSendMessage(item.query)}
-                    className="w-full text-left rounded-2xl border border-slate-200/70 bg-slate-50/50 p-3.5 hover:border-blue-200 hover:bg-blue-50/50 transition group"
-                  >
-                    <div className="flex items-start gap-3">
-                      <span className="text-xl">{item.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-bold text-slate-900 group-hover:text-[#0052CC] transition">
-                          {item.title}
+                {filteredStarters.map((item) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleSendMessage(item.query)}
+                      className="w-full text-left rounded-2xl border border-slate-200/70 bg-slate-50/50 p-3.5 hover:border-blue-200 hover:bg-blue-50/50 transition group"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`flex h-8 w-8 items-center justify-center rounded-xl border shrink-0 ${item.iconColor}`}>
+                          <IconComponent className="h-4 w-4" />
                         </div>
-                        <div className="text-[11px] text-slate-500 truncate">
-                          {item.desc}
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-slate-900 group-hover:text-[#0052CC] transition">
+                            {item.title}
+                          </div>
+                          <div className="text-[11px] text-slate-500 truncate">
+                            {item.desc}
+                          </div>
                         </div>
+                        <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#0052CC] group-hover:translate-x-0.5 transition shrink-0 mt-1" />
                       </div>
-                      <span className="text-slate-400 group-hover:text-[#0052CC] text-xs">→</span>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -656,9 +711,10 @@ export default function IntelligencePage() {
                     onClick={() =>
                       handleSendMessage("Provide a deep-dive analysis of my application funnel bottlenecks and how to fix them.")
                     }
-                    className="text-xs font-bold text-[#0052CC] hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-[#0052CC] hover:underline"
                   >
-                    Analyze Funnel in Chat →
+                    <span>Analyze Funnel in Chat</span>
+                    <ArrowRight className="h-3 w-3" />
                   </button>
                 </div>
               </div>

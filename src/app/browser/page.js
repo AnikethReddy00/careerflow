@@ -4,6 +4,20 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRequireAuth } from "@/lib/useRequireAuth";
+import {
+  User,
+  FlaskConical,
+  Search,
+  Zap,
+  RotateCcw,
+  Check,
+  X,
+  Paperclip,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink,
+  ShieldCheck,
+} from "lucide-react";
 
 function formatDateTime(value) {
   if (!value) return "—";
@@ -77,6 +91,10 @@ export default function BrowserLauncherPage() {
   useEffect(() => {
     (async () => {
       try {
+        const queryUrl = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("url") : null;
+        if (queryUrl) {
+          setUrl(queryUrl);
+        }
         await Promise.all([refreshSessions(""), loadProfile()]);
       } catch (e) {
         setError(e.message);
@@ -113,13 +131,13 @@ export default function BrowserLauncherPage() {
 
       if (action === "scan" && data.scan) {
         setScanReport(data.scan);
-        setNotice(`🔍 Scan complete: Analyzed ${data.scan.totalFields} form fields with LLM planning.`);
+        setNotice(`Scan complete: Analyzed ${data.scan.totalFields} form fields with LLM planning.`);
         setTimeout(() => setNotice(""), 6000);
       }
 
       if (action === "autofill" && data.autofill) {
         setAutofillReport(data.autofill);
-        setNotice(`⚡ 2nd Check Verified & Filled! Successfully filled ${data.autofill.filledCount} of ${data.autofill.totalFieldsFound} fields.`);
+        setNotice(`Verified & Filled: Successfully injected ${data.autofill.filledCount} of ${data.autofill.totalFieldsFound} fields into browser DOM.`);
         setTimeout(() => setNotice(""), 6000);
       }
 
@@ -190,7 +208,7 @@ export default function BrowserLauncherPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to prefill profile");
       setProfile(data.profile);
-      setNotice("Candidate profile prefilled with test resume & skills data! ✓");
+      setNotice("Candidate profile prefilled with test resume & skills data.");
       setTimeout(() => setNotice(""), 5000);
     } catch (e) {
       setError(e.message);
@@ -235,14 +253,17 @@ export default function BrowserLauncherPage() {
             <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
               Dashboard
             </Link>
+            <Link href="/jobs" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Recommended Jobs
+            </Link>
             <Link href="/intelligence" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
               Intelligence
             </Link>
-            <Link href="/agent" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Agent Activity
-            </Link>
             <Link href="/profile" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
               Profile
+            </Link>
+            <Link href="/agent" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
+              Agent Activity
             </Link>
             <Link href="/browser" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80">
               Browser
@@ -283,7 +304,9 @@ export default function BrowserLauncherPage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-base">👤</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100/80 text-[#0052CC]">
+                  <User className="h-4 w-4" />
+                </span>
                 <h2 className="text-sm font-bold text-[#0F172A]">
                   Candidate Profile: {profile?.personal?.firstName ? `${profile.personal.firstName} ${profile.personal.lastName || ""}` : (user?.name || "Test Profile")}
                 </h2>
@@ -301,27 +324,30 @@ export default function BrowserLauncherPage() {
                 type="button"
                 onClick={handleOpenDemoForm}
                 disabled={busy}
-                className="rounded-xl border border-blue-200 bg-white px-4 py-2 text-xs font-bold text-[#0052CC] shadow-sm transition hover:bg-blue-50 hover:border-blue-300 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-white px-4 py-2 text-xs font-bold text-[#0052CC] shadow-sm transition hover:bg-blue-50 hover:border-blue-300 disabled:opacity-50"
               >
-                🧪 Open Demo Job Form
+                <FlaskConical className="h-3.5 w-3.5" />
+                <span>Open Demo Job Form</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleScanForm}
                 disabled={busy || scanning || !activeSessionId}
-                className="rounded-xl border border-[#0052CC] bg-blue-50 px-4 py-2 text-xs font-bold text-[#0052CC] shadow-sm transition hover:bg-blue-100 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-[#0052CC] bg-blue-50 px-4 py-2 text-xs font-bold text-[#0052CC] shadow-sm transition hover:bg-blue-100 disabled:opacity-50"
               >
-                {scanning ? "🔍 Scanning Form…" : "🔍 Step 1: Scan & Inspect Form"}
+                <Search className={`h-3.5 w-3.5 ${scanning ? "animate-spin" : ""}`} />
+                <span>{scanning ? "Scanning Form…" : "Step 1: Scan & Inspect Form"}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleAutofill}
                 disabled={busy || autofilling || !activeSessionId}
-                className="rounded-xl bg-[#0052CC] px-5 py-2 text-xs font-bold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#0052CC] px-5 py-2 text-xs font-bold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-50"
               >
-                {autofilling ? "⚡ 2nd-Check Filling…" : "⚡ Step 2: Verify & Fill Form"}
+                <Zap className={`h-3.5 w-3.5 ${autofilling ? "animate-pulse" : ""}`} />
+                <span>{autofilling ? "2nd-Check Filling…" : "Step 2: Verify & Fill Form"}</span>
               </button>
 
               <button
@@ -329,9 +355,10 @@ export default function BrowserLauncherPage() {
                 onClick={handlePrefillProfile}
                 disabled={busy}
                 title="Reset/Seed profile with realistic test data"
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
               >
-                🔄 Seed Test Data
+                <RotateCcw className="h-3.5 w-3.5" />
+                <span>Seed Test Data</span>
               </button>
             </div>
           </div>
@@ -349,7 +376,8 @@ export default function BrowserLauncherPage() {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div>
                 <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-bold text-[#0052CC]">
-                  <span>🔍</span> Phase 1 Inspection: What is on the Plate
+                  <Search className="h-3.5 w-3.5" />
+                  <span>Phase 1 Inspection: Form Structure Analysis</span>
                 </div>
                 <h2 className="mt-1 text-base font-bold text-[#0F172A]">
                   Discovered Form Elements ({scanReport.totalFields} fields found)
@@ -372,16 +400,18 @@ export default function BrowserLauncherPage() {
                   type="button"
                   onClick={handleAutofill}
                   disabled={busy || autofilling}
-                  className="rounded-xl bg-[#0052CC] px-4 py-1.5 text-xs font-bold text-white transition hover:bg-[#0043A4]"
+                  className="inline-flex items-center gap-1 rounded-xl bg-[#0052CC] px-4 py-1.5 text-xs font-bold text-white transition hover:bg-[#0043A4]"
                 >
-                  ⚡ Execute Verified Fill →
+                  <Zap className="h-3 w-3" />
+                  <span>Execute Verified Fill</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setScanReport(null)}
-                  className="text-xs text-slate-400 hover:text-slate-600"
+                  className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
                 >
-                  ✕ Close
+                  <X className="h-3.5 w-3.5" />
+                  <span>Close</span>
                 </button>
               </div>
             </div>
@@ -420,11 +450,13 @@ export default function BrowserLauncherPage() {
                       <td className="py-2.5 px-3">
                         {item.status === "ready_to_fill" ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
-                            ✓ Ready
+                            <Check className="h-3 w-3" />
+                            <span>Ready</span>
                           </span>
                         ) : item.status === "file_upload_required" ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-[#0052CC] border border-blue-200">
-                            📎 Upload File
+                            <Paperclip className="h-3 w-3" />
+                            <span>Upload File</span>
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200">
@@ -446,7 +478,8 @@ export default function BrowserLauncherPage() {
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
                 <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
-                  <span>⚡</span> Phase 2: Verified 2nd-Check DOM Injection
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>Phase 2: Verified DOM Injection</span>
                 </div>
                 <h2 className="mt-1 text-base font-bold text-[#0F172A]">
                   Autofill Results & Verification ({autofillReport.filledCount} fields verified in DOM)
@@ -462,9 +495,10 @@ export default function BrowserLauncherPage() {
                 <button
                   type="button"
                   onClick={() => setAutofillReport(null)}
-                  className="text-xs text-slate-400 hover:text-slate-600"
+                  className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
                 >
-                  ✕ Dismiss
+                  <X className="h-3.5 w-3.5" />
+                  <span>Dismiss</span>
                 </button>
               </div>
             </div>
@@ -488,7 +522,7 @@ export default function BrowserLauncherPage() {
                 <div key={idx} className="rounded-xl border border-slate-100 bg-slate-50/80 p-3 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-800 truncate">{item.matchedField || item.label}</span>
-                    <span className="text-emerald-600 font-bold">✓</span>
+                    <Check className="h-3.5 w-3.5 text-emerald-600 font-bold" />
                   </div>
                   <div className="mt-1 truncate font-mono text-slate-900 font-semibold">{String(item.value)}</div>
                   <div className="mt-1 text-[10px] text-slate-400">Verified Value: {String(item.verifiedValue || item.value)}</div>
@@ -574,7 +608,7 @@ export default function BrowserLauncherPage() {
                 </button>
               </div>
               <p className="mt-3 text-xs text-[#64748B]">
-                Chrome opens in live headed mode. Navigate to any company portal, then use <strong>🔍 Step 1: Scan & Inspect Form</strong> to discover what is on the page, and <strong>⚡ Step 2: Verify & Fill Form</strong> to inject values.
+                Chrome opens in live headed mode. Navigate to any company portal, then use <strong>Step 1: Scan & Inspect Form</strong> to discover what is on the page, and <strong>Step 2: Verify & Fill Form</strong> to inject values.
               </p>
             </div>
 

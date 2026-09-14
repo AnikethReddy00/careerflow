@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Building2, CheckCircle2 } from "lucide-react";
 
 export default function DemoApplicationForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -23,8 +24,9 @@ export default function DemoApplicationForm() {
     <div className="min-h-screen bg-[#F8FAFC] py-12 px-6 font-sans">
       <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="border-b border-slate-100 pb-5">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[#0052CC]">
-            🏢 Stripe / Tech Corp — Job Application
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[#0052CC]">
+            <Building2 className="h-3.5 w-3.5" />
+            <span>Stripe / Tech Corp — Job Application</span>
           </div>
           <h1 className="mt-3 text-2xl font-extrabold text-[#0F172A]">
             Senior Full Stack Engineer
@@ -36,7 +38,10 @@ export default function DemoApplicationForm() {
 
         {submitted ? (
           <div className="mt-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-            <h2 className="text-lg font-bold text-emerald-800">Application Submitted! 🎉</h2>
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 mb-2">
+              <CheckCircle2 className="h-6 w-6" />
+            </div>
+            <h2 className="text-lg font-bold text-emerald-800">Application Submitted</h2>
             <p className="mt-2 text-sm text-emerald-700">
               Form data successfully received and validated.
             </p>

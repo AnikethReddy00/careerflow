@@ -416,8 +416,18 @@ export default function ApplicationDetail() {
                       <dt className="text-xs font-semibold text-slate-400">
                         Monitoring Status
                       </dt>
-                      <dd className="mt-0.5 text-sm font-bold text-[#0F172A]">
-                        {app.isOpen ? "🟢 Open — Active Agent Tracking" : "⚪ Closed"}
+                      <dd className="mt-1 flex items-center gap-1.5 text-xs font-bold text-[#0F172A]">
+                        {app.isOpen ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-emerald-800 font-semibold">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            Open — Active Tracking
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-slate-600 font-semibold">
+                            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                            Closed
+                          </span>
+                        )}
                       </dd>
                     </div>
                     {app.jobUrl && (

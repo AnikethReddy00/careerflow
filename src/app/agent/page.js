@@ -10,6 +10,16 @@ import {
   EMAIL_CLASSIFICATION_STYLES,
 } from "@/lib/labels";
 import { useRequireAuth } from "@/lib/useRequireAuth";
+import {
+  Zap,
+  Mail,
+  RefreshCw,
+  ArrowRight,
+  Inbox,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+} from "lucide-react";
 
 function formatDateTime(value) {
   if (!value) return "—";
@@ -210,6 +220,12 @@ export default function AgentActivity() {
               Dashboard
             </Link>
             <Link
+              href="/jobs"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
+            >
+              Recommended Jobs
+            </Link>
+            <Link
               href="/intelligence"
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
             >
@@ -259,9 +275,10 @@ export default function AgentActivity() {
             type="button"
             onClick={handleRunAgent}
             disabled={running}
-            className="rounded-xl bg-[#0052CC] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#0052CC] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4] hover:-translate-y-0.5 disabled:opacity-60"
           >
-            {running ? "Running…" : "⚡ Run Agent Loop"}
+            <Zap className="h-4 w-4 text-white" />
+            <span>{running ? "Running…" : "Run Agent Loop"}</span>
           </button>
         </div>
 
@@ -269,8 +286,8 @@ export default function AgentActivity() {
         <section className="mt-6 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-lg border border-blue-200/60">
-                ✉️
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-lg border border-blue-200/60 text-[#0052CC]">
+                <Mail className="h-5 w-5" />
               </span>
               <div>
                 <p className="text-sm font-bold text-[#0F172A]">
@@ -307,9 +324,10 @@ export default function AgentActivity() {
               ) : (
                 <a
                   href="/api/auth/google/start"
-                  className="shrink-0 rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-bold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
+                  className="inline-flex items-center gap-1.5 shrink-0 rounded-xl bg-[#0052CC] px-4 py-2 text-xs font-bold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
                 >
-                  Connect Gmail →
+                  <span>Connect Gmail</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </a>
               ))}
           </div>
@@ -338,9 +356,10 @@ export default function AgentActivity() {
                 type="button"
                 onClick={handleSyncInbox}
                 disabled={syncing}
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60"
               >
-                {syncing ? "Syncing…" : "🔄 Sync Inbox Now"}
+                <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin" : ""}`} />
+                <span>{syncing ? "Syncing…" : "Sync Inbox Now"}</span>
               </button>
             </div>
 
@@ -395,9 +414,10 @@ export default function AgentActivity() {
                         href={`mailto:${m.senderEmail || m.from}?subject=${encodeURIComponent(
                           m.subject?.startsWith("Re:") ? m.subject : `Re: ${m.subject || ""}`
                         )}`}
-                        className="rounded-lg border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-[#0052CC] hover:bg-slate-50"
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-[#0052CC] hover:bg-slate-50"
                       >
-                        ✉️ Reply
+                        <Mail className="h-3 w-3" />
+                        <span>Reply</span>
                       </a>
                     </div>
                     {m.snippet && (

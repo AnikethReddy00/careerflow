@@ -18,6 +18,7 @@ import {
   ExternalLink,
   ShieldCheck,
 } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function formatDateTime(value) {
   if (!value) return "—";
@@ -268,6 +269,7 @@ export default function BrowserLauncherPage() {
             <Link href="/browser" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80">
               Browser
             </Link>
+            <ThemeToggle className="ml-1" />
             {user?.email && <span className="hidden text-xs font-mono text-slate-400 sm:inline">{user.email}</span>}
             <button
               type="button"

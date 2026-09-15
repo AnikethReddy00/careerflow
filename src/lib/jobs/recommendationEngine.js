@@ -99,10 +99,13 @@ export function generateJobRecommendations({
   searchQuery = "",
   remoteOnly = false,
   minSalary = 0,
+  jobPool = null,
 } = {}) {
   const candidateSkills = extractCandidateSkillPool(profile);
   const preferredLocations = profile.preferences?.preferredLocations || [];
   const remotePref = (profile.preferences?.remotePreference || "").toLowerCase();
+
+  const sourceJobs = Array.isArray(jobPool) && jobPool.length > 0 ? jobPool : JOB_DIRECTORY;
 
   // Map historical interview rates by category
   const roleConversionMap = {};
@@ -118,7 +121,7 @@ export function generateJobRecommendations({
     });
   }
 
-  const scoredJobs = JOB_DIRECTORY.map((job) => {
+  const scoredJobs = sourceJobs.map((job) => {
     // 1. Skill Match Score (Max 45 pts)
     const matchedRequired = [];
     const missingRequired = [];

@@ -25,6 +25,7 @@ import {
   ChevronRight,
   TrendingUp,
 } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const STARTER_PROMPTS = [
   {
@@ -299,6 +300,7 @@ export default function IntelligencePage() {
             >
               Browser
             </Link>
+            <ThemeToggle className="ml-1" />
             <button
               type="button"
               onClick={handleLogout}

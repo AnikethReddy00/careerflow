@@ -29,6 +29,7 @@ import {
   ChevronRight,
   Send,
 } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const EMPTY_FORM = {
   companyName: "",
@@ -437,6 +438,7 @@ export default function Dashboard() {
             >
               Browser
             </Link>
+            <ThemeToggle className="ml-1" />
             <button
               type="button"
               onClick={handleLogout}

@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/session";
 import { getOrCreateCandidateProfile } from "@/lib/candidateProfile";
 import { computeRolePerformance } from "@/lib/intelligence/analyticsEngine";
 import { generateJobRecommendations } from "@/lib/jobs/recommendationEngine";
+import { getLiveAndCuratedJobs } from "@/lib/jobs/liveJobFetcher";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,9 @@ export async function GET(request) {
       // fallback
     }
 
+    // Fetch live market jobs from Jobicy/public feeds + curated postings
+    const liveAndCurated = await getLiveAndCuratedJobs();
+
     const result = generateJobRecommendations({
       profile,
       rolePerformance,
@@ -37,6 +41,7 @@ export async function GET(request) {
       searchQuery,
       remoteOnly,
       minSalary,
+      jobPool: liveAndCurated,
     });
 
     return Response.json({

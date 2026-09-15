@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   Clock,
 } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function formatDateTime(value) {
   if (!value) return "—";
@@ -249,6 +250,7 @@ export default function AgentActivity() {
             >
               Browser
             </Link>
+            <ThemeToggle className="ml-1" />
             <button
               type="button"
               onClick={handleLogout}

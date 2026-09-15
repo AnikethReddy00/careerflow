@@ -17,6 +17,7 @@ import {
   RotateCcw,
   FileText,
 } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const EMPTY_PROFILE = {
   personal: { firstName: "", lastName: "", email: "", phone: "", location: "" },
@@ -397,6 +398,7 @@ export default function ProfilePage() {
             <Link href="/browser" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
               Browser
             </Link>
+            <ThemeToggle className="ml-1" />
             {user?.email && <span className="hidden max-w-[220px] truncate text-xs text-slate-400 sm:inline font-mono">{user.email}</span>}
             <button
               type="button"

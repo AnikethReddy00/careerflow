@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import PermissionsModal from "@/components/PermissionsModal";
+import ThemeToggle from "@/components/ThemeToggle";
 import { ArrowRight, Check, BrainCircuit } from "lucide-react";
 
 // The four steps of the agent's reasoning loop — the core idea of the project.
@@ -95,6 +96,7 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-2.5">
+            <ThemeToggle />
             <Link
               href="/login"
               className="rounded-xl px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"

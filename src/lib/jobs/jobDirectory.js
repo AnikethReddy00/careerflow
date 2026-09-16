@@ -27,7 +27,7 @@ export const JOB_DIRECTORY = [
       "Scale developer tooling handling billions of token requests daily",
       "Competitive equity package + full healthcare + 401(k) matching",
     ],
-    applyUrl: "https://openai.com/careers/applied-research-engineer",
+    applyUrl: "https://job-boards.greenhouse.io/openai/jobs/5277884004",
     demoUrl: "/demo-application",
   },
   {
@@ -51,7 +51,7 @@ export const JOB_DIRECTORY = [
       "Autonomous product ownership with rapid release cycles",
       "Comprehensive remote stipend and top-tier benefits",
     ],
-    applyUrl: "https://anthropic.com/careers/fullstack-ai",
+    applyUrl: "https://job-boards.greenhouse.io/anthropic/jobs/4019445007",
     demoUrl: "/demo-application",
   },
   {
@@ -74,7 +74,7 @@ export const JOB_DIRECTORY = [
       "Power training data infrastructure for premier frontier AI labs",
       "Work on high-throughput distributed systems in production",
     ],
-    applyUrl: "https://scale.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/scaleai/jobs/4329241004",
     demoUrl: "/demo-application",
   },
   {
@@ -97,7 +97,7 @@ export const JOB_DIRECTORY = [
       "Direct impact on millions of daily active search queries",
       "Work with bleeding edge LLM serving engines and custom CUDA kernels",
     ],
-    applyUrl: "https://perplexity.ai/careers",
+    applyUrl: "https://jobs.ashbyhq.com/perplexity/48e91404-5853-4f51-b847-bb7cb1d76378",
     demoUrl: "/demo-application",
   },
 
@@ -123,7 +123,7 @@ export const JOB_DIRECTORY = [
       "100% remote-first team with flexible working hours",
       "Exceptional equity grants and annual performance bonuses",
     ],
-    applyUrl: "https://stripe.com/jobs/full-stack-engineer",
+    applyUrl: "https://job-boards.greenhouse.io/stripe/jobs/5829103002",
     demoUrl: "/demo-application",
   },
   {
@@ -147,7 +147,7 @@ export const JOB_DIRECTORY = [
       "Work with zero bureaucracy in a tight-knit high-talent crew",
       "Top-of-market base salary + equity",
     ],
-    applyUrl: "https://linear.app/careers/product-engineer",
+    applyUrl: "https://jobs.ashbyhq.com/linear/1ccbe0ae-ba8d-4eb4-b976-59bfe00cbe90",
     demoUrl: "/demo-application",
   },
   {
@@ -170,7 +170,7 @@ export const JOB_DIRECTORY = [
       "Direct influence over modern web development standards",
       "Generous equipment and wellness stipend",
     ],
-    applyUrl: "https://vercel.com/careers/full-stack",
+    applyUrl: "https://job-boards.greenhouse.io/vercel/jobs/5645391",
     demoUrl: "/demo-application",
   },
   {
@@ -193,7 +193,7 @@ export const JOB_DIRECTORY = [
       "100% remote asynchronous team across 30+ countries",
       "Build open source software used by 1M+ developers",
     ],
-    applyUrl: "https://supabase.com/careers",
+    applyUrl: "https://jobs.ashbyhq.com/supabase/305e9112-a5f7-4ebc-8857-7bbfaecb9ae9",
     demoUrl: "/demo-application",
   },
 
@@ -218,7 +218,7 @@ export const JOB_DIRECTORY = [
       "Live and work anywhere program (travel stipends provided)",
       "Work with one of the most respected design system teams in tech",
     ],
-    applyUrl: "https://careers.airbnb.com/positions/frontend-engineer",
+    applyUrl: "https://careers.airbnb.com/positions/5640231/",
     demoUrl: "/demo-application",
   },
   {
@@ -241,7 +241,7 @@ export const JOB_DIRECTORY = [
       "Complex client-side architecture solving hard browser performance problems",
       "Fast-growing B2B product with huge developer traction",
     ],
-    applyUrl: "https://retool.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/retool/jobs/5823194",
     demoUrl: "/demo-application",
   },
   {
@@ -264,7 +264,7 @@ export const JOB_DIRECTORY = [
       "Push browser capabilities to the absolute limit",
       "Unmatched collaborative design culture and strong perks",
     ],
-    applyUrl: "https://figma.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/figma/jobs/5918231",
     demoUrl: "/demo-application",
   },
 
@@ -289,7 +289,7 @@ export const JOB_DIRECTORY = [
       "Petabyte-scale distributed systems and high-availability operations",
       "Generous RSU refreshers and competitive annual bonus",
     ],
-    applyUrl: "https://uber.com/careers/backend-logistics",
+    applyUrl: "https://uber.wd5.myworkdayjobs.com/UberCareers/job/Software-Engineer-Backend_JR123456",
     demoUrl: "/demo-application",
   },
   {
@@ -312,7 +312,7 @@ export const JOB_DIRECTORY = [
       "Help make the global internet faster and more secure",
       "Strong remote-friendly engineering culture",
     ],
-    applyUrl: "https://cloudflare.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/cloudflare/jobs/5839210",
     demoUrl: "/demo-application",
   },
   {
@@ -335,7 +335,7 @@ export const JOB_DIRECTORY = [
       "Fastest growing cloud observability platform",
       "Work with massive scale distributed databases and streaming pipelines",
     ],
-    applyUrl: "https://datadoghq.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/datadog/jobs/5719382",
     demoUrl: "/demo-application",
   },
 
@@ -360,7 +360,7 @@ export const JOB_DIRECTORY = [
       "Foundational infrastructure supporting the global internet economy",
       "Substantial total compensation and industry prestige",
     ],
-    applyUrl: "https://amazon.jobs",
+    applyUrl: "https://amazon.jobs/en/jobs/2598341/software-development-engineer-aws",
     demoUrl: "/demo-application",
   },
   {
@@ -383,7 +383,7 @@ export const JOB_DIRECTORY = [
       "Pioneer in Infrastructure as Code and cloud automation",
       "True remote-first culture with generous home office allowances",
     ],
-    applyUrl: "https://hashicorp.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/hashicorp/jobs/5632190",
     demoUrl: "/demo-application",
   },
 
@@ -408,7 +408,7 @@ export const JOB_DIRECTORY = [
       "Work at the cutting edge of cloud data warehousing and data science",
       "Highly competitive compensation and RSU packages",
     ],
-    applyUrl: "https://snowflake.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/snowflake/jobs/5812903",
     demoUrl: "/demo-application",
   },
   {
@@ -431,7 +431,7 @@ export const JOB_DIRECTORY = [
       "Creator of the open source standard for modern data transformation",
       "Transparent remote company culture and strong community",
     ],
-    applyUrl: "https://getdbt.com/careers",
+    applyUrl: "https://job-boards.greenhouse.io/dbtlabsinc/jobs/5891234",
     demoUrl: "/demo-application",
   },
 ];

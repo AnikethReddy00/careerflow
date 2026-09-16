@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavigationSheet from "@/components/NavigationSheet";
+import AppLayout from "@/components/AppLayout";
 import {
   Sparkles,
   Search,
@@ -21,6 +23,7 @@ import {
   Target,
   Lightbulb,
   BookmarkCheck,
+  ExternalLink,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -171,7 +174,7 @@ export default function JobRecommendationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/60 dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <AppLayout user={user}>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-900 px-4 py-3 text-white shadow-xl animate-in fade-in slide-in-from-bottom-2">
@@ -190,6 +193,7 @@ export default function JobRecommendationsPage() {
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 dark:border-slate-800/80 dark:bg-[#0F172A]/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
+            <NavigationSheet user={user} />
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0052CC] text-white shadow-sm shadow-blue-500/30">
                 <Sparkles className="h-4 w-4" />
@@ -198,60 +202,14 @@ export default function JobRecommendationsPage() {
                 CareerFlow
               </span>
             </Link>
-            <span className="rounded-full bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 text-xs font-semibold text-[#0052CC] dark:text-blue-400 border border-blue-200 dark:border-blue-900">
+            <span className="hidden sm:inline-flex rounded-full bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 text-xs font-semibold text-[#0052CC] dark:text-blue-400 border border-blue-200 dark:border-blue-900">
               Job Recommendations
             </span>
           </div>
 
-          <nav className="flex items-center gap-1 sm:gap-2">
-            <Link
-              href="/dashboard"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-slate-100/70 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-            >
-              Applications
-            </Link>
-            <Link
-              href="/jobs"
-              className="rounded-lg bg-blue-50 dark:bg-blue-950/80 px-3 py-1.5 text-sm font-semibold text-[#0052CC] dark:text-blue-400 transition"
-            >
-              Recommended Jobs
-            </Link>
-            <Link
-              href="/intelligence"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-slate-100/70 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-            >
-              Intelligence
-            </Link>
-            <Link
-              href="/profile"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-slate-100/70 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-            >
-              Profile
-            </Link>
-            <Link
-              href="/browser"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-slate-100/70 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-            >
-              Browser
-            </Link>
-            <Link
-              href="/agent"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-slate-100/70 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-            >
-              Agent Logs
-            </Link>
-
-            {/* Light/Dark Mode Toggle */}
-            <ThemeToggle className="ml-1" />
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-            >
-              Log out
-            </button>
-          </nav>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -466,8 +424,17 @@ export default function JobRecommendationsPage() {
                               {job.postedDaysAgo === 1 ? "1d ago" : `${job.postedDaysAgo}d ago`}
                             </span>
                           </div>
-                          <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-[#0052CC] dark:group-hover:text-blue-400 transition">
-                            {job.title}
+                          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                            <a
+                              href={job.applyUrl || "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 hover:text-[#0052CC] dark:hover:text-blue-400 hover:underline transition"
+                              title="Open job posting in a new tab"
+                            >
+                              <span>{job.title}</span>
+                              <ExternalLink className="h-3.5 w-3.5 opacity-50 group-hover:opacity-100 transition shrink-0" />
+                            </a>
                           </h3>
                         </div>
                       </div>
@@ -559,14 +526,27 @@ export default function JobRecommendationsPage() {
 
                   {/* Actions Toolbar */}
                   <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => setActiveJobModal(job)}
-                      className="flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-[#0052CC] dark:hover:text-blue-400 transition"
-                    >
-                      <Target className="h-3.5 w-3.5 text-slate-400" />
-                      Fit & Prep Coach
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setActiveJobModal(job)}
+                        className="flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-[#0052CC] dark:hover:text-blue-400 transition"
+                      >
+                        <Target className="h-3.5 w-3.5 text-slate-400" />
+                        Fit & Prep Coach
+                      </button>
+
+                      <a
+                        href={job.applyUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-[#0052CC] dark:text-slate-400 dark:hover:text-blue-400 transition"
+                        title="Open direct job posting in a new tab"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        View Posting
+                      </a>
+                    </div>
 
                     <div className="flex items-center gap-2">
                       {/* Track in Pipeline */}
@@ -638,12 +618,31 @@ export default function JobRecommendationsPage() {
                   </div>
                 )}
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    {activeJobModal.title}
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <a
+                      href={activeJobModal.applyUrl || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-[#0052CC] dark:hover:text-blue-400 hover:underline inline-flex items-center gap-1.5 transition"
+                    >
+                      <span>{activeJobModal.title}</span>
+                      <ExternalLink className="h-4 w-4 opacity-60 hover:opacity-100 transition" />
+                    </a>
                   </h3>
-                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    {activeJobModal.company} • {activeJobModal.location} ({activeJobModal.workplaceType})
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      {activeJobModal.company} • {activeJobModal.location} ({activeJobModal.workplaceType})
+                    </span>
+                    <a
+                      href={activeJobModal.applyUrl || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0052CC] dark:text-[#2684FF] hover:underline"
+                    >
+                      <span>{activeJobModal.applyUrl ? new URL(activeJobModal.applyUrl).hostname.replace("www.", "") : "Official Posting"}</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -772,33 +771,45 @@ export default function JobRecommendationsPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  handleTrackInPipeline(activeJobModal);
-                }}
-                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
+              <a
+                href={activeJobModal.applyUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
               >
-                {trackedMap[activeJobModal.id] === "tracked"
-                  ? "Tracked in Pipeline"
-                  : "Track in Pipeline"}
-              </button>
+                <ExternalLink className="h-3.5 w-3.5" />
+                <span>Open Job Post</span>
+              </a>
 
-              <button
-                type="button"
-                onClick={() => {
-                  handleLaunchBrowserAutofill(activeJobModal);
-                }}
-                className="flex items-center gap-1.5 rounded-xl bg-[#0052CC] hover:bg-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-sm"
-              >
-                <Zap className="h-3.5 w-3.5 fill-current" />
-                Launch Browser Autofill
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleTrackInPipeline(activeJobModal);
+                  }}
+                  className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+                >
+                  {trackedMap[activeJobModal.id] === "tracked"
+                    ? "Tracked in Pipeline"
+                    : "Track in Pipeline"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleLaunchBrowserAutofill(activeJobModal);
+                  }}
+                  className="flex items-center gap-1.5 rounded-xl bg-[#0052CC] hover:bg-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-sm"
+                >
+                  <Zap className="h-3.5 w-3.5 fill-current" />
+                  Launch Browser Autofill
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </AppLayout>
   );
 }

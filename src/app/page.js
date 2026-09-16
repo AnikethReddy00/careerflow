@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import PermissionsModal from "@/components/PermissionsModal";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavigationSheet from "@/components/NavigationSheet";
+import AppLayout from "@/components/AppLayout";
 import { ArrowRight, Check, BrainCircuit } from "lucide-react";
 
 // The four steps of the agent's reasoning loop — the core idea of the project.
@@ -46,66 +48,36 @@ export default function Home() {
   const [connected, setConnected] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A]">
+    <AppLayout>
       {/* Background ambient glow effect like JobSync */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-gradient-to-b from-[#E6F0FF]/60 via-[#F0F6FF]/30 to-transparent" />
 
       {/* Navigation Header */}
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
-              C
-            </span>
-            <span className="text-base font-bold tracking-tight text-[#0F172A]">
-              CareerFlow<span className="text-[#0052CC]"> AI</span>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-1 sm:flex">
-            <Link
-              href="/dashboard"
-              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Dashboard
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 dark:border-slate-800 dark:bg-[#0F172A]/90 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-3.5">
+          <div className="flex items-center gap-3">
+            <NavigationSheet />
+            <Link href="/" className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+                C
+              </span>
+              <span className="text-base font-bold tracking-tight text-[#0F172A] dark:text-white">
+                CareerFlow<span className="text-[#0052CC] dark:text-[#2684FF]"> AI</span>
+              </span>
             </Link>
-            <Link
-              href="/jobs"
-              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Recommended Jobs
-            </Link>
-            <Link
-              href="/intelligence"
-              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Intelligence
-            </Link>
-            <Link
-              href="/profile"
-              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Profile
-            </Link>
-            <Link
-              href="/browser"
-              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Browser Assist
-            </Link>
-          </nav>
+          </div>
 
           <div className="flex items-center gap-2.5">
             <ThemeToggle />
             <Link
               href="/login"
-              className="rounded-xl px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+              className="rounded-xl px-3.5 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               Sign In
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-xl bg-[#0052CC] px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
+              className="hidden sm:inline-flex rounded-xl bg-[#0052CC] px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-[#0052CC]/25 transition hover:bg-[#0043A4]"
             >
               Get Started →
             </Link>
@@ -267,7 +239,7 @@ export default function Home() {
         }}
         onDismiss={() => setModalOpen(false)}
       />
-    </div>
+    </AppLayout>
   );
 }
 

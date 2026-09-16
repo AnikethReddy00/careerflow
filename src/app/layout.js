@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SidebarProvider } from "@/components/SidebarContext";
 
 export const metadata = {
   title: "CareerFlow AI — Autonomous Job Application Intelligence",
@@ -36,7 +37,9 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-full flex flex-col bg-[#F8FAFC] text-[#0F172A] dark:bg-[#0B0F19] dark:text-[#F8FAFC] font-sans selection:bg-[#0052CC] selection:text-white">
         <ThemeProvider>
-          {children}
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

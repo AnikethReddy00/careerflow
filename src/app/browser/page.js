@@ -19,6 +19,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavigationSheet from "@/components/NavigationSheet";
+import AppLayout from "@/components/AppLayout";
 
 function formatDateTime(value) {
   if (!value) return "—";
@@ -239,46 +241,23 @@ export default function BrowserLauncherPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A] font-sans">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+    <AppLayout user={user}>
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 dark:border-slate-800 dark:bg-[#0F172A]/90 backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3.5">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
-              C
-            </span>
-            <span className="text-base font-bold tracking-tight text-[#0F172A]">
-              CareerFlow<span className="text-[#0052CC]"> AI</span>
-            </span>
-          </Link>
-          <nav className="flex items-center gap-1.5 sm:gap-2">
-            <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Dashboard
+          <div className="flex items-center gap-3">
+            <NavigationSheet user={user} />
+            <Link href="/" className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+                C
+              </span>
+              <span className="text-base font-bold tracking-tight text-[#0F172A] dark:text-white">
+                CareerFlow<span className="text-[#0052CC] dark:text-[#2684FF]"> AI</span>
+              </span>
             </Link>
-            <Link href="/jobs" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Recommended Jobs
-            </Link>
-            <Link href="/intelligence" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Intelligence
-            </Link>
-            <Link href="/profile" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Profile
-            </Link>
-            <Link href="/agent" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Agent Activity
-            </Link>
-            <Link href="/browser" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80">
-              Browser
-            </Link>
-            <ThemeToggle className="ml-1" />
-            {user?.email && <span className="hidden text-xs font-mono text-slate-400 sm:inline">{user.email}</span>}
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-            >
-              Log out
-            </button>
-          </nav>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -662,6 +641,6 @@ export default function BrowserLauncherPage() {
           </section>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 }

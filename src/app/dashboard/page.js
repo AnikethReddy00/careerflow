@@ -30,6 +30,8 @@ import {
   Send,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavigationSheet from "@/components/NavigationSheet";
+import AppLayout from "@/components/AppLayout";
 
 const EMPTY_FORM = {
   companyName: "",
@@ -385,68 +387,30 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A] font-sans">
+    <AppLayout user={user}>
       {/* Navigation Header */}
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
-              C
-            </span>
-            <span className="text-base font-bold tracking-tight text-[#0F172A]">
-              CareerFlow<span className="text-[#0052CC]"> AI</span>
-            </span>
-          </Link>
-          <nav className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3 py-1 text-xs font-semibold text-emerald-800 sm:flex">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 dark:border-slate-800 dark:bg-[#0F172A]/90 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-3.5">
+          <div className="flex items-center gap-3">
+            <NavigationSheet user={user} />
+            <Link href="/" className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+                C
+              </span>
+              <span className="text-base font-bold tracking-tight text-[#0F172A] dark:text-white">
+                CareerFlow<span className="text-[#0052CC] dark:text-[#2684FF]"> AI</span>
+              </span>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/70 dark:border-emerald-800 dark:bg-emerald-950/60 px-3 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-300 md:flex">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Groq AI Active (Ultra-Fast)
+              Groq AI Active
             </div>
-            <Link
-              href="/dashboard"
-              className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/jobs"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Recommended Jobs
-            </Link>
-            <Link
-              href="/intelligence"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Intelligence
-            </Link>
-            <Link
-              href="/profile"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Profile
-            </Link>
-            <Link
-              href="/agent"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Agent Logs
-            </Link>
-            <Link
-              href="/browser"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Browser
-            </Link>
-            <ThemeToggle className="ml-1" />
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-            >
-              Log out
-            </button>
-          </nav>
+
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -876,15 +840,15 @@ export default function Dashboard() {
         <div className="mt-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
             <div>
-              <h2 className="text-base font-bold text-[#0F172A]">
+              <h2 className="text-base font-bold text-[#0F172A] dark:text-white">
                 Active Job Pipeline ({apps.length})
               </h2>
-              <p className="text-xs text-[#64748B]">
+              <p className="text-xs text-[#64748B] dark:text-slate-400">
                 The autonomous agent actively tracks open roles and reasons over days of silence.
               </p>
             </div>
             {/* Filter Pills */}
-            <div className="flex flex-wrap gap-1 bg-slate-100/90 p-1 rounded-xl text-xs border border-slate-200/60">
+            <div className="flex flex-wrap gap-1 bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-xl text-xs border border-slate-200/60 dark:border-slate-700">
               {["all", "open", "applied", "in_review", "interview", "assessment", "closed"].map((tab) => (
                 <button
                   key={tab}
@@ -892,8 +856,8 @@ export default function Dashboard() {
                   onClick={() => setStatusFilter(tab)}
                   className={`px-3 py-1.5 rounded-lg font-semibold capitalize transition ${
                     statusFilter === tab
-                      ? "bg-white text-[#0052CC] shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-white dark:bg-slate-700 text-[#0052CC] dark:text-white shadow-sm"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {tab.replace("_", " ")}
@@ -903,46 +867,46 @@ export default function Dashboard() {
           </div>
 
           {loading ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-12 text-center text-sm text-slate-400">
               Loading applications…
             </div>
           ) : filteredApps.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white py-14 text-center">
-              <p className="text-sm font-semibold text-slate-700">No applications match this view</p>
+            <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] py-14 text-center">
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No applications match this view</p>
               <p className="mt-1 text-xs text-slate-400">Add a role above to kick off monitoring.</p>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-              <ul className="divide-y divide-slate-100">
+            <div className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] shadow-sm">
+              <ul className="divide-y divide-slate-100 dark:divide-slate-800">
                 {filteredApps.map((app) => (
                   <li
                     key={app._id}
-                    className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between transition hover:bg-slate-50/60"
+                    className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between transition duration-150 hover:bg-slate-50/80 dark:hover:bg-[#1E293B]/80"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2.5">
                         <Link
                           href={`/dashboard/${app._id}`}
-                          className="truncate text-sm font-bold text-[#0F172A] hover:text-[#0052CC] transition"
+                          className="truncate text-sm font-bold text-[#0F172A] dark:text-white hover:text-[#0052CC] dark:hover:text-[#2684FF] transition"
                         >
                           {app.roleTitle}
                         </Link>
-                        <span className="text-slate-300">·</span>
-                        <span className="truncate text-sm font-semibold text-[#64748B]">
+                        <span className="text-slate-300 dark:text-slate-600">·</span>
+                        <span className="truncate text-sm font-semibold text-[#64748B] dark:text-slate-400">
                           {app.companyName}
                         </span>
                         {app.jobUrl && (
                           <Link
                             href={`/browser?url=${encodeURIComponent(app.jobUrl)}`}
-                            className="rounded-lg bg-blue-50 border border-blue-200/60 px-2 py-0.5 text-[10px] font-semibold text-[#0052CC] hover:bg-blue-100"
+                            className="rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800 px-2 py-0.5 text-[10px] font-semibold text-[#0052CC] dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 transition"
                             title="Open in Browser Assist"
                           >
                             Browser Assist ↗
                           </Link>
                         )}
                       </div>
-                      <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-slate-400">
-                        <span className="font-semibold text-slate-600">
+                      <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-slate-400 dark:text-slate-500">
+                        <span className="font-semibold text-slate-600 dark:text-slate-300">
                           {SOURCE_PLATFORM_LABELS[app.sourcePlatform] || app.sourcePlatform}
                         </span>
                         <span>·</span>
@@ -950,7 +914,7 @@ export default function Dashboard() {
                         {app.lastEmailAt && (
                           <>
                             <span>·</span>
-                            <span className="text-emerald-700 font-semibold">
+                            <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
                               Last Mail: {formatDate(app.lastEmailAt)}
                             </span>
                           </>
@@ -964,12 +928,12 @@ export default function Dashboard() {
                         value={app.currentStatus}
                         disabled={savingId === app._id}
                         onChange={(e) => handleStatusChange(app._id, e.target.value)}
-                        className={`cursor-pointer rounded-full px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 disabled:opacity-50 ${
-                          STATUS_STYLES[app.currentStatus] || "bg-slate-100 text-slate-700 border border-slate-200"
+                        className={`cursor-pointer rounded-full px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 disabled:opacity-50 transition ${
+                          STATUS_STYLES[app.currentStatus] || "bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700"
                         }`}
                       >
                         {APPLICATION_STATUS_VALUES.map((v) => (
-                          <option key={v} value={v}>
+                          <option key={v} value={v} className="dark:bg-slate-900 dark:text-white">
                             {APPLICATION_STATUS_LABELS[v]}
                           </option>
                         ))}
@@ -1032,7 +996,7 @@ export default function Dashboard() {
           </div>
         )}
       </main>
-    </div>
+    </AppLayout>
   );
 }
 

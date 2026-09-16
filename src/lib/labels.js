@@ -33,13 +33,13 @@ export const APPLICATION_STATUS_LABELS = {
 
 // Tailwind badge classes per status — JobSync style (subtle bg with crisp text and border)
 export const STATUS_STYLES = {
-  [APPLICATION_STATUS.APPLIED]: "bg-slate-100 text-slate-700 border border-slate-200/80",
-  [APPLICATION_STATUS.IN_REVIEW]: "bg-blue-50 text-[#0052CC] border border-blue-200/70",
-  [APPLICATION_STATUS.INTERVIEW]: "bg-purple-50 text-purple-700 border border-purple-200/70",
-  [APPLICATION_STATUS.ASSESSMENT]: "bg-amber-50 text-amber-800 border border-amber-200/70",
-  [APPLICATION_STATUS.OFFER]: "bg-emerald-50 text-emerald-700 border border-emerald-200/70",
-  [APPLICATION_STATUS.REJECTED]: "bg-rose-50 text-rose-700 border border-rose-200/70",
-  [APPLICATION_STATUS.WITHDRAWN]: "bg-slate-100 text-slate-500 border border-slate-200/80",
+  [APPLICATION_STATUS.APPLIED]: "bg-slate-100 text-slate-700 border border-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+  [APPLICATION_STATUS.IN_REVIEW]: "bg-blue-50 text-[#0052CC] border border-blue-200/70 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800",
+  [APPLICATION_STATUS.INTERVIEW]: "bg-purple-50 text-purple-700 border border-purple-200/70 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800",
+  [APPLICATION_STATUS.ASSESSMENT]: "bg-amber-50 text-amber-800 border border-amber-200/70 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800",
+  [APPLICATION_STATUS.OFFER]: "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800",
+  [APPLICATION_STATUS.REJECTED]: "bg-rose-50 text-rose-700 border border-rose-200/70 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800",
+  [APPLICATION_STATUS.WITHDRAWN]: "bg-slate-100 text-slate-500 border border-slate-200/80 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",
 };
 
 // Labels + badge classes for what the agent decided on each cycle.

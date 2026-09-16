@@ -26,6 +26,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavigationSheet from "@/components/NavigationSheet";
+import AppLayout from "@/components/AppLayout";
 
 const STARTER_PROMPTS = [
   {
@@ -246,69 +248,29 @@ export default function IntelligencePage() {
       : STARTER_PROMPTS.filter((p) => p.mode === activeMode);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#0F172A] font-sans">
+    <AppLayout user={user}>
       {/* Header Navigation */}
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
-              C
-            </span>
-            <span className="text-base font-bold tracking-tight text-[#0F172A]">
-              CareerFlow<span className="text-[#0052CC]"> AI</span>
-            </span>
-          </Link>
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 dark:border-slate-800 dark:bg-[#0F172A]/90 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3.5">
+          <div className="flex items-center gap-3">
+            <NavigationSheet user={user} />
+            <Link href="/" className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+                C
+              </span>
+              <span className="text-base font-bold tracking-tight text-[#0F172A] dark:text-white">
+                CareerFlow<span className="text-[#0052CC] dark:text-[#2684FF]"> AI</span>
+              </span>
+            </Link>
+          </div>
 
-          <nav className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/70 px-3 py-1 text-xs font-semibold text-blue-800 md:flex">
-              <span className="h-2 w-2 rounded-full bg-[#0052CC] animate-pulse" />
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-1.5 rounded-full border border-blue-200/80 bg-blue-50/70 dark:border-blue-800 dark:bg-blue-950/60 px-3 py-1 text-xs font-semibold text-[#0052CC] dark:text-blue-300 md:flex">
+              <span className="h-2 w-2 rounded-full bg-[#0052CC] dark:bg-blue-400 animate-pulse" />
               Intelligence Engine Live
             </div>
-            <Link
-              href="/dashboard"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/jobs"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Recommended Jobs
-            </Link>
-            <Link
-              href="/intelligence"
-              className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80"
-            >
-              Intelligence
-            </Link>
-            <Link
-              href="/profile"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Profile
-            </Link>
-            <Link
-              href="/agent"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Agent Logs
-            </Link>
-            <Link
-              href="/browser"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900"
-            >
-              Browser
-            </Link>
-            <ThemeToggle className="ml-1" />
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-            >
-              Log out
-            </button>
-          </nav>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -724,6 +686,6 @@ export default function IntelligencePage() {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 }

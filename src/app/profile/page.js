@@ -18,6 +18,8 @@ import {
   FileText,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavigationSheet from "@/components/NavigationSheet";
+import AppLayout from "@/components/AppLayout";
 
 const EMPTY_PROFILE = {
   personal: { firstName: "", lastName: "", email: "", phone: "", location: "" },
@@ -368,46 +370,23 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden bg-[#F8FAFC] text-[#0F172A] font-sans">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
-              C
-            </span>
-            <span className="text-base font-bold tracking-tight text-[#0F172A]">
-              CareerFlow<span className="text-[#0052CC]"> AI</span>
-            </span>
-          </Link>
-          <nav className="flex min-w-0 flex-wrap items-center justify-end gap-3">
-            <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Dashboard
+    <AppLayout user={user}>
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 dark:border-slate-800 dark:bg-[#0F172A]/90 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-3.5">
+          <div className="flex items-center gap-3">
+            <NavigationSheet user={user} />
+            <Link href="/" className="flex min-w-0 items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0052CC] text-sm font-bold text-white shadow-sm shadow-[#0052CC]/25">
+                C
+              </span>
+              <span className="text-base font-bold tracking-tight text-[#0F172A] dark:text-white">
+                CareerFlow<span className="text-[#0052CC] dark:text-[#2684FF]"> AI</span>
+              </span>
             </Link>
-            <Link href="/jobs" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Recommended Jobs
-            </Link>
-            <Link href="/intelligence" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Intelligence
-            </Link>
-            <Link href="/profile" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-[#0052CC] bg-blue-50/80">
-              Profile
-            </Link>
-            <Link href="/agent" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Agent Logs
-            </Link>
-            <Link href="/browser" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100/70 hover:text-slate-900">
-              Browser
-            </Link>
-            <ThemeToggle className="ml-1" />
-            {user?.email && <span className="hidden max-w-[220px] truncate text-xs text-slate-400 sm:inline font-mono">{user.email}</span>}
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-            >
-              Log out
-            </button>
-          </nav>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -892,7 +871,7 @@ export default function ProfilePage() {
           </button>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 }
 

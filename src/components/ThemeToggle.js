@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "./ThemeProvider";
-import { Sun, Moon } from "lucide-react";
+import { FiSun, FiMoon } from "react-icons/fi";
 
 export default function ThemeToggle({ className = "" }) {
   const { theme, toggleTheme, mounted } = useTheme();
@@ -28,9 +28,9 @@ export default function ThemeToggle({ className = "" }) {
       aria-label="Toggle theme"
     >
       {isDark ? (
-        <Sun className="h-4 w-4 text-amber-400 transition-transform duration-200 rotate-0 hover:rotate-45" />
+        <FiSun className="h-4 w-4 text-amber-400 transition-transform duration-200 rotate-0 hover:rotate-45" />
       ) : (
-        <Moon className="h-4 w-4 text-slate-700 transition-transform duration-200 -rotate-12 hover:rotate-0" />
+        <FiMoon className="h-4 w-4 text-slate-700 transition-transform duration-200 -rotate-12 hover:rotate-0" />
       )}
     </button>
   );

@@ -36,6 +36,130 @@ const CATEGORIES = [
   "Data",
 ];
 
+const COUNTRIES = [
+  { id: "All", label: "All Locations (Global)" },
+  { id: "US", label: "United States (US)" },
+  { id: "IN", label: "India (IN)" },
+  { id: "UK", label: "United Kingdom (UK)" },
+  { id: "CA", label: "Canada (CA)" },
+  { id: "DE", label: "Germany (DE)" },
+  { id: "EU", label: "Europe (EU)" },
+  { id: "APAC", label: "Asia Pacific (APAC)" },
+  { id: "Remote", label: "Remote (Worldwide)" },
+];
+
+function matchesCountry(jobLocation = "", workplaceType = "", countryId = "All") {
+  if (countryId === "All") return true;
+  const loc = (jobLocation || "").toLowerCase();
+  const isRemote = (workplaceType || "").toLowerCase() === "remote" || loc.includes("remote");
+
+  if (countryId === "Remote") return isRemote;
+
+  if (countryId === "US") {
+    return (
+      loc.includes("united states") ||
+      loc.includes("us") ||
+      loc.includes("usa") ||
+      loc.includes("san francisco") ||
+      loc.includes("new york") ||
+      loc.includes("seattle") ||
+      loc.includes("austin") ||
+      loc.includes("sunnyvale") ||
+      loc.includes("san mateo") ||
+      loc.includes("boston") ||
+      loc.includes("california") ||
+      loc.includes("ca") ||
+      loc.includes("ny") ||
+      loc.includes("tx") ||
+      loc.includes("wa") ||
+      loc.includes("worldwide")
+    );
+  }
+  if (countryId === "IN") {
+    return (
+      loc.includes("india") ||
+      loc.includes("bangalore") ||
+      loc.includes("bengaluru") ||
+      loc.includes("hyderabad") ||
+      loc.includes("pune") ||
+      loc.includes("mumbai") ||
+      loc.includes("delhi") ||
+      loc.includes("noida") ||
+      loc.includes("gurgaon") ||
+      loc.includes("gurugram") ||
+      loc.includes("chennai") ||
+      loc.includes("worldwide") ||
+      loc.includes("global")
+    );
+  }
+  if (countryId === "UK") {
+    return (
+      loc.includes("uk") ||
+      loc.includes("united kingdom") ||
+      loc.includes("london") ||
+      loc.includes("england") ||
+      loc.includes("bristol") ||
+      loc.includes("cambridge") ||
+      loc.includes("oxford") ||
+      loc.includes("worldwide")
+    );
+  }
+  if (countryId === "CA") {
+    return (
+      loc.includes("canada") ||
+      loc.includes("toronto") ||
+      loc.includes("vancouver") ||
+      loc.includes("montreal") ||
+      loc.includes("waterloo") ||
+      loc.includes("ottawa") ||
+      loc.includes("worldwide")
+    );
+  }
+  if (countryId === "DE") {
+    return (
+      loc.includes("germany") ||
+      loc.includes("berlin") ||
+      loc.includes("munich") ||
+      loc.includes("frankfurt") ||
+      loc.includes("hamburg") ||
+      loc.includes("worldwide")
+    );
+  }
+  if (countryId === "EU") {
+    return (
+      loc.includes("europe") ||
+      loc.includes("eu") ||
+      loc.includes("london") ||
+      loc.includes("uk") ||
+      loc.includes("germany") ||
+      loc.includes("berlin") ||
+      loc.includes("france") ||
+      loc.includes("paris") ||
+      loc.includes("amsterdam") ||
+      loc.includes("netherlands") ||
+      loc.includes("ireland") ||
+      loc.includes("dublin") ||
+      loc.includes("spain") ||
+      loc.includes("worldwide")
+    );
+  }
+  if (countryId === "APAC") {
+    return (
+      loc.includes("apac") ||
+      loc.includes("asia") ||
+      loc.includes("india") ||
+      loc.includes("bangalore") ||
+      loc.includes("singapore") ||
+      loc.includes("japan") ||
+      loc.includes("tokyo") ||
+      loc.includes("australia") ||
+      loc.includes("sydney") ||
+      loc.includes("worldwide")
+    );
+  }
+  return true;
+}
+
 export default function JobRecommendationsPage() {
   const router = useRouter();
   const { user, checking } = useRequireAuth();
@@ -49,6 +173,7 @@ export default function JobRecommendationsPage() {
   });
 
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCountry, setSelectedCountry] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [remoteOnly, setRemoteOnly] = useState(false);
   const [highMatchOnly, setHighMatchOnly] = useState(false);
@@ -108,6 +233,10 @@ export default function JobRecommendationsPage() {
       );
     }
 
+    if (selectedCountry !== "All") {
+      list = list.filter((j) => matchesCountry(j.location, j.workplaceType, selectedCountry));
+    }
+
     if (highMatchOnly) {
       list = list.filter((j) => j.matchScore >= 80);
     }
@@ -121,7 +250,7 @@ export default function JobRecommendationsPage() {
     }
 
     return list;
-  }, [jobs, searchQuery, highMatchOnly, sortBy]);
+  }, [jobs, searchQuery, selectedCountry, highMatchOnly, sortBy]);
 
   async function handleTrackInPipeline(job) {
     if (trackedMap[job.id] === "tracked" || trackedMap[job.id] === "tracking") return;
@@ -319,6 +448,23 @@ export default function JobRecommendationsPage() {
                 80%+ High Match
               </button>
 
+              {/* Country / Location Selector */}
+              <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-300">
+                <MapPin className="h-3.5 w-3.5 text-[#0052CC] dark:text-blue-400" />
+                <span className="font-medium text-slate-500 dark:text-slate-400">Country:</span>
+                <select
+                  value={selectedCountry}
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+                  className="bg-transparent font-semibold text-slate-800 dark:text-slate-100 outline-none cursor-pointer"
+                >
+                  {COUNTRIES.map((c) => (
+                    <option key={c.id} value={c.id} className="dark:bg-slate-900 text-slate-900 dark:text-white">
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-300">
                 <SlidersHorizontal className="h-3.5 w-3.5 text-slate-400" />
                 <span className="font-medium text-slate-500 dark:text-slate-400">Sort:</span>
@@ -376,6 +522,7 @@ export default function JobRecommendationsPage() {
             <button
               onClick={() => {
                 setSelectedCategory("All");
+                setSelectedCountry("All");
                 setSearchQuery("");
                 setRemoteOnly(false);
                 setHighMatchOnly(false);

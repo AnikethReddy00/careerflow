@@ -33,24 +33,71 @@ function normalizeRole(roleTitle = "") {
  */
 export async function computeFunnelMetrics(userId) {
   const userObjId = new mongoose.Types.ObjectId(userId);
-  const apps = await Application.find({ userId: userObjId }).lean();
+  const [apps, history] = await Promise.all([
+    Application.find({ userId: userObjId }).lean(),
+    StatusHistory.find({ userId: userObjId }).lean(),
+  ]);
 
   const totalApplications = apps.length;
   const activeApplications = apps.filter((a) => a.isOpen).length;
 
-  // Stages count (either currently at or reached via status history)
-  const assessmentCount = apps.filter(
-    (a) => a.currentStatus === APPLICATION_STATUS.ASSESSMENT || a.currentStatus === APPLICATION_STATUS.INTERVIEW || a.currentStatus === APPLICATION_STATUS.OFFERED
-  ).length;
+  // Build status map for every application from currentStatus and history
+  const appStatusMap = new Map();
+  for (const app of apps) {
+    const idStr = app._id.toString();
+    const set = new Set();
+    if (app.currentStatus) set.add(String(app.currentStatus).toLowerCase());
+    appStatusMap.set(idStr, set);
+  }
 
-  const interviewCount = apps.filter(
-    (a) => a.currentStatus === APPLICATION_STATUS.INTERVIEW || a.currentStatus === APPLICATION_STATUS.OFFERED
-  ).length;
+  for (const h of history) {
+    const idStr = h.applicationId?.toString();
+    if (idStr && appStatusMap.has(idStr)) {
+      if (h.previousStatus) appStatusMap.get(idStr).add(String(h.previousStatus).toLowerCase());
+      if (h.newStatus) appStatusMap.get(idStr).add(String(h.newStatus).toLowerCase());
+    }
+  }
 
-  const offerCount = apps.filter(
-    (a) => a.currentStatus === APPLICATION_STATUS.OFFERED
-  ).length;
+  // Helper to check if an app reached a certain stage
+  const reachedAssessment = (a) => {
+    const s = appStatusMap.get(a._id.toString());
+    return (
+      s?.has(APPLICATION_STATUS.ASSESSMENT) ||
+      s?.has(APPLICATION_STATUS.INTERVIEW) ||
+      s?.has(APPLICATION_STATUS.OFFER) ||
+      s?.has("offered") ||
+      a.currentStatus === APPLICATION_STATUS.ASSESSMENT ||
+      a.currentStatus === APPLICATION_STATUS.INTERVIEW ||
+      a.currentStatus === APPLICATION_STATUS.OFFER ||
+      a.currentStatus === "offered"
+    );
+  };
 
+  const reachedInterview = (a) => {
+    const s = appStatusMap.get(a._id.toString());
+    return (
+      s?.has(APPLICATION_STATUS.INTERVIEW) ||
+      s?.has(APPLICATION_STATUS.OFFER) ||
+      s?.has("offered") ||
+      a.currentStatus === APPLICATION_STATUS.INTERVIEW ||
+      a.currentStatus === APPLICATION_STATUS.OFFER ||
+      a.currentStatus === "offered"
+    );
+  };
+
+  const reachedOffer = (a) => {
+    const s = appStatusMap.get(a._id.toString());
+    return (
+      s?.has(APPLICATION_STATUS.OFFER) ||
+      s?.has("offered") ||
+      a.currentStatus === APPLICATION_STATUS.OFFER ||
+      a.currentStatus === "offered"
+    );
+  };
+
+  const assessmentCount = apps.filter(reachedAssessment).length;
+  const interviewCount = apps.filter(reachedInterview).length;
+  const offerCount = apps.filter(reachedOffer).length;
   const rejectedCount = apps.filter(
     (a) => a.currentStatus === APPLICATION_STATUS.REJECTED
   ).length;
@@ -101,12 +148,32 @@ export async function computeFunnelMetrics(userId) {
  */
 export async function computeRolePerformance(userId) {
   const userObjId = new mongoose.Types.ObjectId(userId);
-  const apps = await Application.find({ userId: userObjId }).lean();
+  const [apps, history] = await Promise.all([
+    Application.find({ userId: userObjId }).lean(),
+    StatusHistory.find({ userId: userObjId }).lean(),
+  ]);
+
+  const appStatusMap = new Map();
+  for (const app of apps) {
+    const idStr = app._id.toString();
+    const set = new Set();
+    if (app.currentStatus) set.add(String(app.currentStatus).toLowerCase());
+    appStatusMap.set(idStr, set);
+  }
+  for (const h of history) {
+    const idStr = h.applicationId?.toString();
+    if (idStr && appStatusMap.has(idStr)) {
+      if (h.previousStatus) appStatusMap.get(idStr).add(String(h.previousStatus).toLowerCase());
+      if (h.newStatus) appStatusMap.get(idStr).add(String(h.newStatus).toLowerCase());
+    }
+  }
 
   const roleMap = {};
 
   for (const app of apps) {
     const roleCat = normalizeRole(app.roleTitle);
+    const statuses = appStatusMap.get(app._id.toString()) || new Set();
+
     if (!roleMap[roleCat]) {
       roleMap[roleCat] = {
         category: roleCat,
@@ -119,13 +186,28 @@ export async function computeRolePerformance(userId) {
     }
     roleMap[roleCat].totalApplied += 1;
     if (app.isOpen) roleMap[roleCat].active += 1;
-    if (app.currentStatus === APPLICATION_STATUS.INTERVIEW || app.currentStatus === APPLICATION_STATUS.OFFERED) {
+
+    const hasInterview =
+      statuses.has(APPLICATION_STATUS.INTERVIEW) ||
+      statuses.has(APPLICATION_STATUS.OFFER) ||
+      statuses.has("offered") ||
+      app.currentStatus === APPLICATION_STATUS.INTERVIEW ||
+      app.currentStatus === APPLICATION_STATUS.OFFER ||
+      app.currentStatus === "offered";
+
+    const hasOffer =
+      statuses.has(APPLICATION_STATUS.OFFER) ||
+      statuses.has("offered") ||
+      app.currentStatus === APPLICATION_STATUS.OFFER ||
+      app.currentStatus === "offered";
+
+    if (hasInterview) {
       roleMap[roleCat].interviews += 1;
     }
-    if (app.currentStatus === APPLICATION_STATUS.OFFERED) {
+    if (hasOffer) {
       roleMap[roleCat].offers += 1;
     }
-    if (app.currentStatus === APPLICATION_STATUS.REJECTED) {
+    if (app.currentStatus === APPLICATION_STATUS.REJECTED || statuses.has("rejected")) {
       roleMap[roleCat].rejected += 1;
     }
   }
@@ -146,12 +228,32 @@ export async function computeRolePerformance(userId) {
  */
 export async function computeSourcePerformance(userId) {
   const userObjId = new mongoose.Types.ObjectId(userId);
-  const apps = await Application.find({ userId: userObjId }).lean();
+  const [apps, history] = await Promise.all([
+    Application.find({ userId: userObjId }).lean(),
+    StatusHistory.find({ userId: userObjId }).lean(),
+  ]);
+
+  const appStatusMap = new Map();
+  for (const app of apps) {
+    const idStr = app._id.toString();
+    const set = new Set();
+    if (app.currentStatus) set.add(String(app.currentStatus).toLowerCase());
+    appStatusMap.set(idStr, set);
+  }
+  for (const h of history) {
+    const idStr = h.applicationId?.toString();
+    if (idStr && appStatusMap.has(idStr)) {
+      if (h.previousStatus) appStatusMap.get(idStr).add(String(h.previousStatus).toLowerCase());
+      if (h.newStatus) appStatusMap.get(idStr).add(String(h.newStatus).toLowerCase());
+    }
+  }
 
   const sourceMap = {};
 
   for (const app of apps) {
     const source = app.sourcePlatform || "other";
+    const statuses = appStatusMap.get(app._id.toString()) || new Set();
+
     if (!sourceMap[source]) {
       sourceMap[source] = {
         platform: source,
@@ -162,13 +264,28 @@ export async function computeSourcePerformance(userId) {
       };
     }
     sourceMap[source].totalApplied += 1;
-    if (app.currentStatus === APPLICATION_STATUS.INTERVIEW || app.currentStatus === APPLICATION_STATUS.OFFERED) {
+
+    const hasInterview =
+      statuses.has(APPLICATION_STATUS.INTERVIEW) ||
+      statuses.has(APPLICATION_STATUS.OFFER) ||
+      statuses.has("offered") ||
+      app.currentStatus === APPLICATION_STATUS.INTERVIEW ||
+      app.currentStatus === APPLICATION_STATUS.OFFER ||
+      app.currentStatus === "offered";
+
+    const hasOffer =
+      statuses.has(APPLICATION_STATUS.OFFER) ||
+      statuses.has("offered") ||
+      app.currentStatus === APPLICATION_STATUS.OFFER ||
+      app.currentStatus === "offered";
+
+    if (hasInterview) {
       sourceMap[source].interviews += 1;
     }
-    if (app.currentStatus === APPLICATION_STATUS.OFFERED) {
+    if (hasOffer) {
       sourceMap[source].offers += 1;
     }
-    if (app.currentStatus === APPLICATION_STATUS.REJECTED) {
+    if (app.currentStatus === APPLICATION_STATUS.REJECTED || statuses.has("rejected")) {
       sourceMap[source].rejected += 1;
     }
   }
@@ -302,6 +419,8 @@ export async function queryApplicationsWithFilters(userId, filters = {}) {
   if (filters.status && filters.status !== "all") {
     if (filters.status === "active") {
       query.isOpen = true;
+    } else if (filters.status === "offer" || filters.status === "offered") {
+      query.currentStatus = { $in: [APPLICATION_STATUS.OFFER, "offered"] };
     } else {
       query.currentStatus = filters.status;
     }

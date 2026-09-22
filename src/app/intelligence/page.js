@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRequireAuth } from "@/lib/useRequireAuth";
@@ -24,6 +24,7 @@ import {
   Layers,
   ChevronRight,
   TrendingUp,
+  RefreshCw,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import NavigationSheet from "@/components/NavigationSheet";
@@ -92,6 +93,7 @@ export default function IntelligencePage() {
 
   const [snapshot, setSnapshot] = useState(null);
   const [loadingSnapshot, setLoadingSnapshot] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Chat state
   const [messages, setMessages] = useState([
@@ -115,24 +117,35 @@ export default function IntelligencePage() {
 
   const messagesEndRef = useRef(null);
 
-  // Load snapshot on mount
-  useEffect(() => {
+  const loadSnapshot = useCallback(async (silent = false) => {
     if (!user) return;
-    async function loadSnapshot() {
-      try {
-        const res = await fetch("/api/intelligence/snapshot");
-        const data = await res.json();
-        if (res.ok && data.snapshot) {
-          setSnapshot(data.snapshot);
-        }
-      } catch (err) {
-        console.error("Failed to load intelligence snapshot:", err);
-      } finally {
-        setLoadingSnapshot(false);
+    if (!silent) setIsRefreshing(true);
+    try {
+      const res = await fetch("/api/intelligence/snapshot", {
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (res.ok && data.snapshot) {
+        setSnapshot(data.snapshot);
       }
+    } catch (err) {
+      console.error("Failed to load intelligence snapshot:", err);
+    } finally {
+      setLoadingSnapshot(false);
+      setIsRefreshing(false);
     }
-    loadSnapshot();
   }, [user]);
+
+  // Load snapshot on mount and window focus
+  useEffect(() => {
+    loadSnapshot();
+
+    const onFocus = () => {
+      loadSnapshot(true);
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [loadSnapshot]);
 
   // Scroll to bottom when new messages appear
   useEffect(() => {
@@ -186,6 +199,8 @@ export default function IntelligencePage() {
       };
 
       setMessages((prev) => [...prev, botMsg]);
+      // Background refresh latest metrics
+      loadSnapshot(true);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -265,6 +280,16 @@ export default function IntelligencePage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => loadSnapshot(false)}
+              disabled={isRefreshing || loadingSnapshot}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 shadow-sm transition hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
+              title="Refresh Analytics Snapshot"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 text-slate-500 ${isRefreshing ? "animate-spin text-[#0052CC]" : ""}`} />
+              <span className="hidden sm:inline">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
+            </button>
             <div className="hidden items-center gap-1.5 rounded-full border border-blue-200/80 bg-blue-50/70 dark:border-blue-800 dark:bg-blue-950/60 px-3 py-1 text-xs font-semibold text-[#0052CC] dark:text-blue-300 md:flex">
               <span className="h-2 w-2 rounded-full bg-[#0052CC] dark:bg-blue-400 animate-pulse" />
               Intelligence Engine Live

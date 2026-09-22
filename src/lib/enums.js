@@ -8,10 +8,11 @@ export const APPLICATION_STATUS = {
   INTERVIEW: "interview",
   ASSESSMENT: "assessment",
   OFFER: "offer",
+  OFFERED: "offer",
   REJECTED: "rejected",
   WITHDRAWN: "withdrawn",
 };
-export const APPLICATION_STATUS_VALUES = Object.values(APPLICATION_STATUS);
+export const APPLICATION_STATUS_VALUES = Array.from(new Set(Object.values(APPLICATION_STATUS)));
 
 // Terminal statuses stop the monitoring loop (application is no longer "open").
 export const TERMINAL_STATUSES = [

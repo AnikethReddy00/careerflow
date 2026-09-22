@@ -59,7 +59,7 @@ export async function processChatbotQuery({ userId, message, history = [] }) {
     else if (lowerMsg.includes("rejected")) filters.status = "rejected";
     else if (lowerMsg.includes("interview")) filters.status = "interview";
     else if (lowerMsg.includes("assessment") || lowerMsg.includes("oa")) filters.status = "assessment";
-    else if (lowerMsg.includes("offer")) filters.status = "offered";
+    else if (lowerMsg.includes("offer")) filters.status = "offer";
 
     if (/machine learning|ml|ai/i.test(lowerMsg)) filters.roleKeyword = "ML";
     else if (/fullstack|full stack/i.test(lowerMsg)) filters.roleKeyword = "Full Stack";

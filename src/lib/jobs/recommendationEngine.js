@@ -1,4 +1,4 @@
-import { JOB_DIRECTORY } from "./jobDirectory";
+import { JOB_DIRECTORY } from "./jobDirectory.js";
 
 // Synonym dictionary for fuzzy skill matching
 const SKILL_SYNONYMS = {

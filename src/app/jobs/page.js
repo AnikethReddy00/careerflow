@@ -88,6 +88,15 @@ function matchesCountry(jobLocation = "", workplaceType = "", countryId = "All")
       loc.includes("gurgaon") ||
       loc.includes("gurugram") ||
       loc.includes("chennai") ||
+      loc.includes("kolkata") ||
+      loc.includes("ahmedabad") ||
+      loc.includes("chandigarh") ||
+      loc.includes("karnataka") ||
+      loc.includes("telangana") ||
+      loc.includes("maharashtra") ||
+      loc.includes("haryana") ||
+      loc.includes("tamil nadu") ||
+      loc.includes("remote - india") ||
       loc.includes("worldwide") ||
       loc.includes("global")
     );

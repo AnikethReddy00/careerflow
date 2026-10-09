@@ -284,9 +284,13 @@ export default function JobRecommendationsPage() {
         setTimeout(() => setToastMessage(""), 4000);
       } else {
         setTrackedMap((prev) => ({ ...prev, [job.id]: "idle" }));
+        setToastMessage(data.error || "Failed to track job in pipeline");
+        setTimeout(() => setToastMessage(""), 4000);
       }
     } catch {
       setTrackedMap((prev) => ({ ...prev, [job.id]: "idle" }));
+      setToastMessage("Network error while tracking job");
+      setTimeout(() => setToastMessage(""), 4000);
     }
   }
 

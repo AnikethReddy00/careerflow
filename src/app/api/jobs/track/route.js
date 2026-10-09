@@ -3,6 +3,7 @@ import Application from "@/models/Application";
 import { getCurrentUser } from "@/lib/session";
 import { SOURCE_PLATFORM, APPLICATION_STATUS } from "@/lib/enums";
 import { buildCandidateSnapshot, getOrCreateCandidateProfile } from "@/lib/candidateProfile";
+import { inferSource } from "@/lib/llm/jobExtraction";
 
 export const dynamic = "force-dynamic";
 
@@ -42,12 +43,16 @@ export async function POST(request) {
 
     const appNotes = notes || (salaryRange ? `Recommended via JobSync Engine. Target comp: ${salaryRange}` : "Recommended via JobSync Engine.");
 
+    // Infer source platform from jobUrl (Greenhouse, Lever, LinkedIn, or Company Portal)
+    const platform = inferSource(jobUrl) || SOURCE_PLATFORM.COMPANY_PORTAL;
+
     const application = await Application.create({
       userId: user._id,
       companyName: companyName.trim(),
       roleTitle: roleTitle.trim(),
-      sourcePlatform: SOURCE_PLATFORM.OTHER,
+      sourcePlatform: platform,
       currentStatus: APPLICATION_STATUS.APPLIED,
+      isOpen: true,
       jobUrl: jobUrl?.trim() || undefined,
       notes: appNotes,
       applicationDate: new Date(),

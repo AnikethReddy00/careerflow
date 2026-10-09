@@ -23,6 +23,7 @@ import {
 import ThemeToggle from "@/components/ThemeToggle";
 import NavigationSheet from "@/components/NavigationSheet";
 import AppLayout from "@/components/AppLayout";
+import FormattedMarkdown from "@/components/FormattedMarkdown";
 
 function formatDateTime(value) {
   if (!value) return "—";
@@ -453,9 +454,9 @@ export default function AgentActivity() {
                       {formatDateTime(log.cycleAt)}
                     </span>
                   </div>
-                  <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
-                    {log.reasoningSummary}
-                  </p>
+                  <div className="mt-1.5 text-xs text-slate-600 dark:text-slate-300">
+                    <FormattedMarkdown content={log.reasoningSummary} />
+                  </div>
                   {log.actionTaken && (
                     <p className="mt-1 text-[11px] text-[#0052CC] font-semibold">
                       Action: {log.actionTaken}

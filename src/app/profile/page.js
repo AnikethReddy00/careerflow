@@ -27,6 +27,7 @@ import {
 import ThemeToggle from "@/components/ThemeToggle";
 import NavigationSheet from "@/components/NavigationSheet";
 import AppLayout from "@/components/AppLayout";
+import FormattedMarkdown from "@/components/FormattedMarkdown";
 
 const EMPTY_PROFILE = {
   personal: { firstName: "", lastName: "", email: "", phone: "", location: "" },
@@ -979,11 +980,11 @@ export default function ProfilePage() {
                         ) : (
                           <div className="space-y-3">
                             <div className="flex items-start gap-2.5">
-                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/60 text-xs font-bold text-[#0052CC] dark:text-[#579DFF]">
+                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/60 text-xs font-bold text-[#0052CC] dark:text-[#579DFF] shadow-2xs">
                                 AI
                               </span>
                               <div className="flex-1 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-[#0F172A] p-4 shadow-sm text-xs text-slate-800 dark:text-slate-200">
-                                <p className="leading-relaxed font-medium">{msg.text}</p>
+                                <FormattedMarkdown content={msg.text} />
 
                                 {msg.analysis && (
                                   <div className="mt-4 space-y-4 border-t border-slate-100 dark:border-slate-800 pt-4">
@@ -1034,9 +1035,12 @@ export default function ProfilePage() {
                                           <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
                                           <span>Experience & Depth Gaps:</span>
                                         </h4>
-                                        <ul className="mt-1 list-disc list-inside space-y-0.5 text-slate-700 dark:text-slate-300">
+                                        <ul className="mt-1 space-y-1 text-slate-700 dark:text-slate-300">
                                           {msg.analysis.experienceGaps.map((gap, i) => (
-                                            <li key={i}>{gap}</li>
+                                            <li key={i} className="flex items-start gap-2">
+                                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                                              <span className="flex-1"><FormattedMarkdown content={gap} /></span>
+                                            </li>
                                           ))}
                                         </ul>
                                       </div>
@@ -1049,9 +1053,12 @@ export default function ProfilePage() {
                                           <Lightbulb className="h-3.5 w-3.5" />
                                           <span>Actionable Recommendations:</span>
                                         </h4>
-                                        <ul className="mt-1 list-disc list-inside space-y-0.5 text-slate-700 dark:text-slate-300">
+                                        <ul className="mt-1 space-y-1 text-slate-700 dark:text-slate-300">
                                           {msg.analysis.recommendations.map((rec, i) => (
-                                            <li key={i}>{rec}</li>
+                                            <li key={i} className="flex items-start gap-2">
+                                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0052CC] dark:bg-[#579DFF]" />
+                                              <span className="flex-1"><FormattedMarkdown content={rec} /></span>
+                                            </li>
                                           ))}
                                         </ul>
                                       </div>

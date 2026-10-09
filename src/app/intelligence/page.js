@@ -29,6 +29,7 @@ import {
 import ThemeToggle from "@/components/ThemeToggle";
 import NavigationSheet from "@/components/NavigationSheet";
 import AppLayout from "@/components/AppLayout";
+import FormattedMarkdown from "@/components/FormattedMarkdown";
 
 const STARTER_PROMPTS = [
   {
@@ -471,14 +472,16 @@ export default function IntelligencePage() {
                   <div
                     className={`max-w-[90%] rounded-2xl p-4 sm:max-w-[85%] ${
                       msg.role === "user"
-                        ? "bg-[#0052CC] text-white rounded-br-none shadow-md shadow-blue-500/10"
-                        : "bg-white border border-slate-200/90 text-slate-800 rounded-bl-none shadow-sm"
+                        ? "bg-[#0052CC] text-white rounded-br-none shadow-md shadow-blue-500/10 text-xs sm:text-sm font-medium leading-relaxed"
+                        : "bg-white border border-slate-200/90 dark:border-slate-800 dark:bg-[#0F172A] text-slate-800 dark:text-slate-200 rounded-bl-none shadow-sm"
                     }`}
                   >
                     {/* Message Content */}
-                    <div className="text-sm leading-relaxed whitespace-pre-wrap font-sans">
-                      {msg.content}
-                    </div>
+                    {msg.role === "user" ? (
+                      <div className="whitespace-pre-wrap">{msg.content}</div>
+                    ) : (
+                      <FormattedMarkdown content={msg.content} />
+                    )}
 
                     {/* Application Result Cards if attached */}
                     {msg.applicationResults && msg.applicationResults.length > 0 && (

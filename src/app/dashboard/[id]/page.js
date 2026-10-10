@@ -56,7 +56,7 @@ function StatusPill({ status }) {
 export default function ApplicationDetail() {
   const { id } = useParams();
   const router = useRouter();
-  const { checking } = useRequireAuth();
+  const { user, checking } = useRequireAuth();
   const [app, setApp] = useState(null);
   const [history, setHistory] = useState([]);
   const [emails, setEmails] = useState([]);

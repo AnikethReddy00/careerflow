@@ -33,8 +33,10 @@ const CLASSIFICATION_SCHEMA = {
 const SYSTEM_PROMPT =
   "You triage a job seeker's email inbox. For each message decide how it relates " +
   "to THAT person's own job applications, using only the sender, subject, and " +
-  "preview. Be conservative: mass job alerts, newsletters, promotions, and " +
-  "personal mail are 'irrelevant', not real application replies.";
+  "preview. Pay close attention to rejection indicators and polite rejection phrasing " +
+  "(such as 'unfortunately', 'regret to inform', 'pursuing other candidates', 'decided to move forward with another', " +
+  "'will not be advancing', 'position has been filled', 'wish you the best in your search'). " +
+  "Be conservative: mass job alerts, newsletters, promotions, and personal mail are 'irrelevant', not real application replies.";
 
 function truncate(value, max) {
   const s = String(value || "").replace(/\s+/g, " ").trim();
@@ -56,7 +58,7 @@ export function buildUserPrompt(messages) {
     "- interview_invitation: invites you to interview or to schedule a call\n" +
     "- assessment: a coding test, take-home, or online assessment to complete\n" +
     "- offer: a job offer or offer-related message\n" +
-    "- rejection: your application was declined / not moving forward\n" +
+    "- rejection: your application was declined, rejected, or not moving forward. Look out for polite rejection cues, synonyms, and phrases such as 'unfortunately', 'regret to inform', 'not moving forward', 'pursuing other candidates', 'more closely aligned', 'decided to move forward with other', 'not selected', 'unable to offer', 'position has been filled/closed', 'wish you the best in your job search', etc.\n" +
     "- general_reply: a real reply about your application that is none of the above (e.g. 'we received it', 'still under review')\n" +
     "- irrelevant: not about your own applications (job alerts, newsletters, promotions, personal mail)\n\n" +
     `Return JSON {"classifications": [{"ref": <the # number>, "label": <one label>}]} ` +
@@ -94,6 +96,62 @@ export function parseClassifications(raw, count) {
   return out;
 }
 
+// Rejection synonym and phrase dictionary
+const REJECTION_PHRASES = [
+  "unfortunately",
+  "regret to inform",
+  "regret to let you know",
+  "we regret",
+  "not moving forward",
+  "will not be moving forward",
+  "won't be moving forward",
+  "will not be advancing",
+  "not advancing",
+  "unable to offer",
+  "unable to proceed",
+  "unable to move forward",
+  "cannot move forward",
+  "other candidates",
+  "another candidate",
+  "more closely aligned",
+  "better aligned",
+  "pursuing other candidates",
+  "decided to pursue other",
+  "decided to move forward with other",
+  "decided to move forward with another",
+  "decided to proceed with other",
+  "decided not to move forward",
+  "decided not to proceed",
+  "not selected",
+  "not been selected",
+  "at this time, we will not",
+  "at this stage, we have decided",
+  "position has been filled",
+  "role has been filled",
+  "position has been closed",
+  "role has been closed",
+  "job has been closed",
+  "declined to move forward",
+  "application was not successful",
+  "application was unsuccessful",
+  "wish you the best in your job search",
+  "wish you best in your job search",
+  "wish you the best with your job search",
+  "wish you the best in your search",
+  "wish you success in your job search",
+  "wish you all the best in your search",
+  "keep your resume on file",
+  "keep your profile on file",
+  "keep your details on file",
+  "after careful consideration, we",
+  "after careful review, we have decided",
+  "we have chosen to move forward with",
+  "impressed with your qualifications, however",
+  "impressed with your background, however",
+  "high volume of applicants",
+  "high volume of applications",
+];
+
 // Heuristic classifier for instant classification and fallback
 export function classifyByHeuristics(messages) {
   return messages.map((m) => {
@@ -102,7 +160,9 @@ export function classifyByHeuristics(messages) {
       text.includes("offer letter") ||
       text.includes("offer of employment") ||
       text.includes("job offer") ||
-      text.includes("formal offer")
+      text.includes("formal offer") ||
+      text.includes("pleased to offer you") ||
+      text.includes("delighted to offer you")
     ) {
       return EMAIL_CLASSIFICATION.OFFER;
     }
@@ -113,7 +173,9 @@ export function classifyByHeuristics(messages) {
       text.includes("speaking with you") ||
       text.includes("next steps with") ||
       text.includes("invitation to connect") ||
-      text.includes("availability for a chat")
+      text.includes("availability for a chat") ||
+      text.includes("schedule a time") ||
+      text.includes("calendly.com")
     ) {
       return EMAIL_CLASSIFICATION.INTERVIEW_INVITATION;
     }
@@ -124,19 +186,13 @@ export function classifyByHeuristics(messages) {
       text.includes("coding challenge") ||
       text.includes("take-home") ||
       text.includes("technical test") ||
-      text.includes("online test")
+      text.includes("online test") ||
+      text.includes("codility") ||
+      text.includes("testgorilla")
     ) {
       return EMAIL_CLASSIFICATION.ASSESSMENT;
     }
-    if (
-      text.includes("unfortunately") ||
-      text.includes("not moving forward") ||
-      text.includes("other candidates") ||
-      text.includes("regret to inform") ||
-      text.includes("will not be advancing") ||
-      text.includes("decided to proceed with other") ||
-      text.includes("position has been filled")
-    ) {
+    if (REJECTION_PHRASES.some((phrase) => text.includes(phrase))) {
       return EMAIL_CLASSIFICATION.REJECTION;
     }
     if (
@@ -144,7 +200,8 @@ export function classifyByHeuristics(messages) {
       text.includes("application received") ||
       text.includes("we have received your application") ||
       text.includes("under review") ||
-      text.includes("application status")
+      text.includes("application status") ||
+      text.includes("application submitted")
     ) {
       return EMAIL_CLASSIFICATION.GENERAL_REPLY;
     }
